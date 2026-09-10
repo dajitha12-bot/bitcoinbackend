@@ -47,7 +47,6 @@ import AdversarialResults from '../pages/admin/AdversarialResults';
 import ActivityLogs from '../pages/admin/ActivityLogs';
 import SystemSettings from '../pages/admin/SystemSettings';
 
-
 // ============================================================
 // APPLICATION ROUTES
 // ============================================================
@@ -89,7 +88,6 @@ export const AppRoutes = () => {
         }
       >
 
-        {/* /analyst -> /analyst/dashboard */}
         <Route
           index
           element={
@@ -152,6 +150,7 @@ export const AppRoutes = () => {
       >
 
         {/* /admin -> /admin/dashboard */}
+
         <Route
           index
           element={
@@ -162,10 +161,18 @@ export const AppRoutes = () => {
           }
         />
 
+        {/* ====================================================
+            ADMIN DASHBOARD
+            ==================================================== */}
+
         <Route
           path="dashboard"
           element={<AdminDashboard />}
         />
+
+        {/* ====================================================
+            ANALYST MANAGEMENT
+            ==================================================== */}
 
         <Route
           path="analyst-approval"
@@ -177,6 +184,10 @@ export const AppRoutes = () => {
           element={<AnalystManagement />}
         />
 
+        {/* ====================================================
+            DATA MANAGEMENT
+            ==================================================== */}
+
         <Route
           path="dataset-management"
           element={<DatasetManagement />}
@@ -187,35 +198,78 @@ export const AppRoutes = () => {
           element={<TransactionManagement />}
         />
 
+        {/* ====================================================
+            FRAUD RESULTS
+            ==================================================== */}
+
         <Route
           path="fraud-results"
           element={<FraudResults />}
         />
+
+        {/* ====================================================
+            FRAUD RING MONITORING
+            ==================================================== */}
 
         <Route
           path="fraud-ring-monitoring"
           element={<FraudRingMonitoring />}
         />
 
+        {/* Alias:
+            /admin/fraud-rings
+            redirects to the main monitoring route
+        */}
+
+        <Route
+          path="fraud-rings"
+          element={
+            <Navigate
+              to="/admin/fraud-ring-monitoring"
+              replace
+            />
+          }
+        />
+
+        {/* ====================================================
+            MODEL PERFORMANCE
+            ==================================================== */}
+
         <Route
           path="model-performance"
           element={<ModelPerformance />}
         />
+
+        {/* ====================================================
+            TEMPORAL RESULTS
+            ==================================================== */}
 
         <Route
           path="temporal-results"
           element={<TemporalResults />}
         />
 
+        {/* ====================================================
+            ADVERSARIAL RESULTS
+            ==================================================== */}
+
         <Route
           path="adversarial-results"
           element={<AdversarialResults />}
         />
 
+        {/* ====================================================
+            ACTIVITY LOGS
+            ==================================================== */}
+
         <Route
           path="activity-logs"
           element={<ActivityLogs />}
         />
+
+        {/* ====================================================
+            SYSTEM SETTINGS
+            ==================================================== */}
 
         <Route
           path="system-settings"

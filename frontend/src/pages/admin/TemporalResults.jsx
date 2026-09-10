@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   GitCommit,
   ShieldCheck,
@@ -16,17 +16,27 @@ import fraudService from '../../services/fraudService';
 
 import '../../styles/temporal-results.css';
 
+
+/* ============================================================
+   ADMIN TEMPORAL RESULTS
+   Real Django API Integration
+   ============================================================ */
+
 export const TemporalResults = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState('');
+
 
   /* ==========================================================
-     LOAD TEMPORAL VALIDATION DATA
+     LOAD TEMPORAL DATA
      ========================================================== */
 
-  const loadData = async (isRefresh = false) => {
+  const loadData = useCallback(async (isRefresh = false) => {
     try {
+      setError('');
+
       if (isRefresh) {
         setRefreshing(true);
       } else {
@@ -37,18 +47,26 @@ export const TemporalResults = () => {
         await fraudService.getTemporalValidationData();
 
       setData(response);
-    } catch (error) {
+
+    } catch (err) {
       console.error(
         'Failed to load temporal validation data:',
-        error
+        err
       );
 
       setData(null);
+
+      setError(
+        err?.message ||
+        'Unable to load temporal validation data from the backend.'
+      );
+
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, []);
+
 
   /* ==========================================================
      INITIAL LOAD
@@ -56,10 +74,11 @@ export const TemporalResults = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
+
 
   /* ==========================================================
-     LOADING STATE
+     LOADING
      ========================================================== */
 
   if (loading) {
@@ -72,50 +91,220 @@ export const TemporalResults = () => {
     );
   }
 
+
   /* ==========================================================
-     DATA MAPPING
+     NORMALIZE BACKEND RESPONSE
      ========================================================== */
 
-  const summary = data?.summary || {};
+  const source =
+    data?.data ||
+    data ||
+    {};
+
+  const summary =
+    source?.summary ||
+    {};
+
+  const metrics =
+    source?.metrics ||
+    {};
+
   const chronological =
-    data?.metrics?.chronologicalSplit || {};
+    metrics?.chronologicalSplit ||
+    source?.chronologicalSplit ||
+    summary?.chronologicalSplit ||
+    {};
+
+
+  /* ==========================================================
+     TRANSACTION COUNTS
+     ========================================================== */
 
   const trainingTransactions =
-    summary.trainTransactionsCount ?? 384500;
+    summary?.trainTransactionsCount ??
+    summary?.trainingTransactionsCount ??
+    chronological?.trainTransactionsCount ??
+    chronological?.trainingTransactionsCount ??
+    0;
 
   const testTransactions =
-    summary.testTransactionsCount ?? 112300;
+    summary?.testTransactionsCount ??
+    summary?.testingTransactionsCount ??
+    chronological?.testTransactionsCount ??
+    chronological?.testingTransactionsCount ??
+    0;
+
+
+  /* ==========================================================
+     MODEL METRICS
+     ========================================================== */
+
+  const precisionValue =
+    chronological?.precision ??
+    metrics?.precision ??
+    source?.precision ??
+    null;
+
+  const recallValue =
+    chronological?.recall ??
+    metrics?.recall ??
+    source?.recall ??
+    null;
+
+  const f1Value =
+    chronological?.f1Score ??
+    chronological?.f1_score ??
+    metrics?.f1Score ??
+    metrics?.f1_score ??
+    source?.f1Score ??
+    source?.f1_score ??
+    null;
+
+  const rocAucValue =
+    chronological?.rocAuc ??
+    chronological?.roc_auc ??
+    metrics?.rocAuc ??
+    metrics?.roc_auc ??
+    source?.rocAuc ??
+    source?.roc_auc ??
+    null;
+
+
+  /* ==========================================================
+     FORMAT METRICS
+     ========================================================== */
+
+  const formatPercentage = (value) => {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ''
+    ) {
+      return 'N/A';
+    }
+
+    const numericValue = Number(value);
+
+    if (Number.isNaN(numericValue)) {
+      return 'N/A';
+    }
+
+    /*
+      Backend may return:
+      0.94  -> 94.0%
+      94    -> 94.0%
+    */
+
+    const percentage =
+      numericValue <= 1
+        ? numericValue * 100
+        : numericValue;
+
+    return `${percentage.toFixed(1)}%`;
+  };
+
+
+  const formatScore = (value) => {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ''
+    ) {
+      return 'N/A';
+    }
+
+    const numericValue = Number(value);
+
+    if (Number.isNaN(numericValue)) {
+      return 'N/A';
+    }
+
+    return numericValue.toFixed(3);
+  };
+
 
   const precision =
-    chronological.precision != null
-      ? `${(chronological.precision * 100).toFixed(1)}%`
-      : '94.2%';
+    formatPercentage(precisionValue);
 
   const recall =
-    chronological.recall != null
-      ? `${(chronological.recall * 100).toFixed(1)}%`
-      : '91.5%';
+    formatPercentage(recallValue);
 
   const f1Score =
-    chronological.f1Score != null
-      ? chronological.f1Score.toFixed(3)
-      : '0.928';
+    formatScore(f1Value);
 
   const rocAuc =
-    chronological.rocAuc != null
-      ? chronological.rocAuc.toFixed(3)
-      : '0.964';
+    formatScore(rocAucValue);
+
+
+  /* ==========================================================
+     LEAKAGE RISK
+     ========================================================== */
+
+  const rawLeakageRisk =
+    summary?.dataLeakageRisk ??
+    summary?.data_leakage_risk ??
+    source?.dataLeakageRisk ??
+    source?.data_leakage_risk ??
+    null;
+
 
   const leakageRisk =
-    summary.dataLeakageRisk || '0.00%';
+    rawLeakageRisk === null ||
+    rawLeakageRisk === undefined ||
+    rawLeakageRisk === ''
+      ? 'N/A'
+      : typeof rawLeakageRisk === 'number'
+        ? `${rawLeakageRisk <= 1
+            ? (rawLeakageRisk * 100).toFixed(2)
+            : rawLeakageRisk.toFixed(2)}%`
+        : String(rawLeakageRisk);
 
-  const temporalBoundary = '2026-01-01';
+
+  /* ==========================================================
+     TEMPORAL BOUNDARY
+     ========================================================== */
+
+  const temporalBoundary =
+    summary?.temporalBoundary ??
+    summary?.temporal_boundary ??
+    source?.temporalBoundary ??
+    source?.temporal_boundary ??
+    metrics?.temporalBoundary ??
+    metrics?.temporal_boundary ??
+    'Not available';
+
+
+  /* ==========================================================
+     FUTURE LEAKAGE STATUS
+     ========================================================== */
 
   const noFutureLeakage =
-    summary.noFutureLeakageVerified !== false;
+    summary?.noFutureLeakageVerified ??
+    summary?.no_future_leakage_verified ??
+    source?.noFutureLeakageVerified ??
+    source?.no_future_leakage_verified ??
+    true;
 
-  const formatNumber = (value) =>
-    Number(value).toLocaleString('en-IN');
+
+  /* ==========================================================
+     NUMBER FORMATTER
+     ========================================================== */
+
+  const formatNumber = (value) => {
+    const numericValue = Number(value);
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === '' ||
+      Number.isNaN(numericValue)
+    ) {
+      return '0';
+    }
+
+    return numericValue.toLocaleString('en-IN');
+  };
+
 
   /* ==========================================================
      MAIN PAGE
@@ -141,8 +330,11 @@ export const TemporalResults = () => {
             <div className="rf-temporal-title-content">
 
               <div className="rf-temporal-kicker">
+
                 <span className="rf-temporal-kicker-dot"></span>
+
                 TEMPORAL VALIDATION
+
               </div>
 
               <h1>
@@ -158,6 +350,11 @@ export const TemporalResults = () => {
 
           </div>
 
+
+          {/* ==================================================
+              HEADER ACTIONS
+              ================================================== */}
+
           <div className="rf-temporal-header-actions">
 
             <button
@@ -166,6 +363,7 @@ export const TemporalResults = () => {
               onClick={() => loadData(true)}
               disabled={refreshing}
             >
+
               <RefreshCw
                 size={14}
                 className={
@@ -183,6 +381,7 @@ export const TemporalResults = () => {
 
             </button>
 
+
             <div className="rf-temporal-leakage">
 
               <div className="rf-temporal-leakage-icon">
@@ -190,6 +389,7 @@ export const TemporalResults = () => {
               </div>
 
               <div className="rf-temporal-leakage-content">
+
                 <span>
                   LEAKAGE RISK
                 </span>
@@ -197,6 +397,7 @@ export const TemporalResults = () => {
                 <strong>
                   {leakageRisk}
                 </strong>
+
               </div>
 
             </div>
@@ -206,6 +407,51 @@ export const TemporalResults = () => {
         </div>
 
       </header>
+
+
+      {/* ======================================================
+          ERROR
+          ====================================================== */}
+
+      {error && (
+        <div
+          style={{
+            margin: '16px 24px',
+            padding: '14px 16px',
+            border: '1px solid rgba(239,68,68,0.35)',
+            background: 'rgba(239,68,68,0.08)',
+            color: '#fca5a5',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+          }}
+        >
+
+          <AlertTriangle size={17} />
+
+          <span style={{ flex: 1 }}>
+            {error}
+          </span>
+
+          <button
+            type="button"
+            onClick={() => loadData(true)}
+            disabled={refreshing}
+            style={{
+              border: '1px solid rgba(239,68,68,0.4)',
+              background: 'transparent',
+              color: 'inherit',
+              padding: '7px 12px',
+              borderRadius: '7px',
+              cursor: 'pointer',
+            }}
+          >
+            Retry
+          </button>
+
+        </div>
+      )}
 
 
       {/* ======================================================
@@ -223,12 +469,15 @@ export const TemporalResults = () => {
           </span>
 
           <span className="rf-temporal-status-active">
+
             {noFutureLeakage
               ? 'VERIFIED'
               : 'WARNING'}
+
           </span>
 
         </div>
+
 
         <div className="rf-temporal-status-right">
 
@@ -297,6 +546,7 @@ export const TemporalResults = () => {
           </div>
 
           <div>
+
             <span>
               MODEL VALIDATION
             </span>
@@ -304,6 +554,7 @@ export const TemporalResults = () => {
             <h2>
               Chronological Performance Snapshot
             </h2>
+
           </div>
 
         </div>
@@ -312,27 +563,70 @@ export const TemporalResults = () => {
         <div className="rf-temporal-performance-grid">
 
           <div className="rf-temporal-performance-card">
-            <span>PRECISION</span>
-            <strong>{precision}</strong>
-            <small>Temporal validation</small>
+
+            <span>
+              PRECISION
+            </span>
+
+            <strong>
+              {precision}
+            </strong>
+
+            <small>
+              Temporal validation
+            </small>
+
           </div>
 
-          <div className="rf-temporal-performance-card">
-            <span>RECALL</span>
-            <strong>{recall}</strong>
-            <small>Temporal validation</small>
-          </div>
 
           <div className="rf-temporal-performance-card">
-            <span>F1 SCORE</span>
-            <strong>{f1Score}</strong>
-            <small>Balanced performance</small>
+
+            <span>
+              RECALL
+            </span>
+
+            <strong>
+              {recall}
+            </strong>
+
+            <small>
+              Temporal validation
+            </small>
+
           </div>
 
+
           <div className="rf-temporal-performance-card">
-            <span>ROC-AUC</span>
-            <strong>{rocAuc}</strong>
-            <small>Classification quality</small>
+
+            <span>
+              F1 SCORE
+            </span>
+
+            <strong>
+              {f1Score}
+            </strong>
+
+            <small>
+              Balanced performance
+            </small>
+
+          </div>
+
+
+          <div className="rf-temporal-performance-card">
+
+            <span>
+              ROC-AUC
+            </span>
+
+            <strong>
+              {rocAuc}
+            </strong>
+
+            <small>
+              Classification quality
+            </small>
+
           </div>
 
         </div>
@@ -392,7 +686,8 @@ export const TemporalResults = () => {
 
               <strong>
                 {formatNumber(trainingTransactions)}
-                {' '}Transactions
+                {' '}
+                Transactions
               </strong>
 
               <span className="rf-temporal-period-detail">
@@ -461,7 +756,8 @@ export const TemporalResults = () => {
 
               <strong>
                 {formatNumber(testTransactions)}
-                {' '}Transactions
+                {' '}
+                Transactions
               </strong>
 
               <span className="rf-temporal-period-detail">
@@ -493,6 +789,7 @@ export const TemporalResults = () => {
 
         </div>
 
+
         <div className="rf-temporal-integrity-content">
 
           <div className="rf-temporal-integrity-title">
@@ -510,6 +807,7 @@ export const TemporalResults = () => {
           </p>
 
         </div>
+
 
         <div className="rf-temporal-integrity-badge">
           {leakageRisk}
@@ -533,7 +831,9 @@ export const TemporalResults = () => {
         </div>
 
         <div className="rf-temporal-footer-text">
+
           Chronological validation controls enabled
+
         </div>
 
       </footer>
@@ -541,5 +841,6 @@ export const TemporalResults = () => {
     </div>
   );
 };
+
 
 export default TemporalResults;

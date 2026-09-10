@@ -7,6 +7,7 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   'http://localhost:8000/api';
 
+
 /* ============================================================
    STORAGE KEYS
    ============================================================ */
@@ -15,8 +16,9 @@ const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const CURRENT_USER_KEY = 'ringfinder_current_user';
 
+
 /* ============================================================
-   API HELPERS
+   TOKEN HELPERS
    ============================================================ */
 
 const getAccessToken = () => {
@@ -26,6 +28,87 @@ const getAccessToken = () => {
 const getRefreshToken = () => {
   return localStorage.getItem(REFRESH_TOKEN_KEY) || '';
 };
+
+
+/* ============================================================
+   ROLE NORMALIZATION
+   Django Backend:
+     ADMIN
+     FRAUD_ANALYST
+
+   React Frontend:
+     admin
+     analyst
+   ============================================================ */
+
+const normalizeRole = (role) => {
+  if (!role) {
+    return '';
+  }
+
+  const normalized = String(role)
+    .trim()
+    .toUpperCase();
+
+  if (
+    normalized === 'ADMIN' ||
+    normalized === 'ADMINISTRATOR'
+  ) {
+    return 'admin';
+  }
+
+  if (
+    normalized === 'FRAUD_ANALYST' ||
+    normalized === 'FRAUD-ANALYST' ||
+    normalized === 'FRAUD ANALYST' ||
+    normalized === 'ANALYST'
+  ) {
+    return 'analyst';
+  }
+
+  return String(role)
+    .trim()
+    .toLowerCase();
+};
+
+
+/* ============================================================
+   STATUS NORMALIZATION
+   ============================================================ */
+
+const normalizeStatus = (status) => {
+  if (!status) {
+    return '';
+  }
+
+  return String(status)
+    .trim()
+    .toLowerCase();
+};
+
+
+/* ============================================================
+   USER NORMALIZATION
+   ============================================================ */
+
+const normalizeUser = (user) => {
+  if (!user) {
+    return null;
+  }
+
+  return {
+    ...user,
+
+    role: normalizeRole(user.role),
+
+    status: normalizeStatus(user.status),
+  };
+};
+
+
+/* ============================================================
+   REQUEST HEADERS
+   ============================================================ */
 
 const buildHeaders = (includeAuth = false) => {
   const headers = {
@@ -44,6 +127,48 @@ const buildHeaders = (includeAuth = false) => {
   return headers;
 };
 
+
+/* ============================================================
+   VALIDATION ERROR HELPER
+   ============================================================ */
+
+const extractValidationError = (data) => {
+  if (!data) {
+    return '';
+  }
+
+  if (data.errors) {
+    if (typeof data.errors === 'string') {
+      return data.errors;
+    }
+
+    if (typeof data.errors === 'object') {
+      const firstKey = Object.keys(data.errors)[0];
+
+      if (firstKey) {
+        const value = data.errors[firstKey];
+
+        if (Array.isArray(value)) {
+          return value[0];
+        }
+
+        return String(value);
+      }
+    }
+  }
+
+  if (data.detail) {
+    return String(data.detail);
+  }
+
+  if (data.message) {
+    return String(data.message);
+  }
+
+  return '';
+};
+
+
 /* ============================================================
    API REQUEST
    ============================================================ */
@@ -56,17 +181,30 @@ const apiRequest = async (
     authenticated = false,
   } = {}
 ) => {
-  const response = await fetch(
-    `${API_BASE_URL}${endpoint}`,
-    {
-      method,
-      headers: buildHeaders(authenticated),
-      body:
-        body !== undefined
-          ? JSON.stringify(body)
-          : undefined,
-    }
-  );
+  let response;
+
+  try {
+    response = await fetch(
+      `${API_BASE_URL}${endpoint}`,
+      {
+        method,
+        headers: buildHeaders(authenticated),
+        body:
+          body !== undefined
+            ? JSON.stringify(body)
+            : undefined,
+      }
+    );
+  } catch (networkError) {
+    const error = new Error(
+      'Unable to connect to RingFinder backend. Make sure Django is running on http://127.0.0.1:8000.'
+    );
+
+    error.status = 0;
+    error.data = networkError;
+
+    throw error;
+  }
 
   let data = null;
 
@@ -77,13 +215,11 @@ const apiRequest = async (
   }
 
   if (!response.ok) {
-    const error = new Error(
-      data?.message ||
-        data?.detail ||
-        data?.error ||
-        extractValidationError(data) ||
-        `Request failed with status ${response.status}`
-    );
+    const message =
+      extractValidationError(data) ||
+      `Request failed with status ${response.status}`;
+
+    const error = new Error(message);
 
     error.status = response.status;
     error.data = data;
@@ -94,35 +230,6 @@ const apiRequest = async (
   return data;
 };
 
-/* ============================================================
-   VALIDATION ERROR HELPER
-   ============================================================ */
-
-const extractValidationError = (data) => {
-  if (!data?.errors) {
-    return '';
-  }
-
-  if (typeof data.errors === 'string') {
-    return data.errors;
-  }
-
-  if (typeof data.errors === 'object') {
-    const firstKey = Object.keys(data.errors)[0];
-
-    if (firstKey) {
-      const value = data.errors[firstKey];
-
-      if (Array.isArray(value)) {
-        return value[0];
-      }
-
-      return String(value);
-    }
-  }
-
-  return '';
-};
 
 /* ============================================================
    CURRENT USER STORAGE
@@ -137,7 +244,9 @@ export const getCurrentUserFromStorage = () => {
   }
 
   try {
-    return JSON.parse(storedUser);
+    const parsedUser = JSON.parse(storedUser);
+
+    return normalizeUser(parsedUser);
   } catch (error) {
     console.error(
       'Failed to parse stored RingFinder user:',
@@ -150,17 +259,32 @@ export const getCurrentUserFromStorage = () => {
   }
 };
 
+
+/* ============================================================
+   SAVE CURRENT USER
+   ============================================================ */
+
 const saveCurrentUser = (user) => {
   if (!user) {
     localStorage.removeItem(CURRENT_USER_KEY);
-    return;
+
+    return null;
   }
+
+  const normalizedUser = normalizeUser(user);
 
   localStorage.setItem(
     CURRENT_USER_KEY,
-    JSON.stringify(user)
+    JSON.stringify(normalizedUser)
   );
+
+  return normalizedUser;
 };
+
+
+/* ============================================================
+   SAVE TOKENS
+   ============================================================ */
 
 const saveTokens = ({
   access,
@@ -181,6 +305,11 @@ const saveTokens = ({
   }
 };
 
+
+/* ============================================================
+   CLEAR AUTHENTICATION
+   ============================================================ */
+
 const clearAuthentication = () => {
   localStorage.removeItem(
     ACCESS_TOKEN_KEY
@@ -194,6 +323,7 @@ const clearAuthentication = () => {
     CURRENT_USER_KEY
   );
 };
+
 
 /* ============================================================
    TOKEN REFRESH
@@ -211,9 +341,11 @@ const refreshAccessToken = async () => {
       '/auth/token/refresh/',
       {
         method: 'POST',
+
         body: {
           refresh: refreshToken,
         },
+
         authenticated: false,
       }
     );
@@ -239,6 +371,7 @@ const refreshAccessToken = async () => {
     return null;
   }
 };
+
 
 /* ============================================================
    AUTH SERVICE
@@ -269,24 +402,32 @@ export const authService = {
           '/auth/login/',
           {
             method: 'POST',
+
             body: {
               email: normalizedEmail,
               password,
             },
+
             authenticated: false,
           }
         );
 
       /*
-       Backend response:
+        Expected Django response:
 
-       {
-         success: true,
-         message: "Login successful",
-         access: "...",
-         refresh: "...",
-         user: {...}
-       }
+        {
+          success: true,
+          message: "Login successful",
+          access: "...",
+          refresh: "...",
+          user: {
+            id: 1,
+            full_name: "...",
+            email: "...",
+            role: "ADMIN",
+            status: "APPROVED"
+          }
+        }
       */
 
       if (
@@ -299,34 +440,53 @@ export const authService = {
         );
       }
 
+      /* Save JWT tokens */
       saveTokens({
         access: response.access,
         refresh: response.refresh,
       });
 
-      saveCurrentUser(
-        response.user
+      /* Normalize Django role/status before storing */
+      const normalizedUser =
+        saveCurrentUser(response.user);
+
+      /*
+        IMPORTANT:
+
+        Django:
+          ADMIN → admin
+          FRAUD_ANALYST → analyst
+
+        React now receives the normalized role.
+      */
+
+      console.log(
+        'RingFinder login successful:',
+        {
+          email: normalizedUser?.email,
+          role: normalizedUser?.role,
+          status: normalizedUser?.status,
+        }
       );
 
       return {
         success: true,
+
         message:
           response.message ||
-          'Login successful',
+          'Login successful.',
+
         access: response.access,
+
         refresh: response.refresh,
-        user: response.user,
+
+        user: normalizedUser,
       };
     } catch (error) {
-      /*
-       Django backend already returns specific
-       messages for:
-
-       - Invalid credentials
-       - Pending analyst
-       - Rejected analyst
-       - Inactive analyst
-      */
+      console.error(
+        'RingFinder login failed:',
+        error
+      );
 
       const message =
         error?.message ||
@@ -344,6 +504,7 @@ export const authService = {
       throw authError;
     }
   },
+
 
   /* ==========================================================
      REGISTER
@@ -364,10 +525,12 @@ export const authService = {
       '';
 
     const email =
-      registrationData.email || '';
+      registrationData.email ||
+      '';
 
     const password =
-      registrationData.password || '';
+      registrationData.password ||
+      '';
 
     if (!name.trim()) {
       throw new Error(
@@ -388,7 +551,7 @@ export const authService = {
     }
 
     /*
-      Backend RegisterSerializer expects:
+      Django RegisterSerializer expects:
 
       full_name
       email
@@ -397,11 +560,14 @@ export const authService = {
       organization
       reason
 
-      role/status are assigned by Django.
+      Django assigns:
+      role = FRAUD_ANALYST
+      status = PENDING
     */
 
     const payload = {
-      full_name: name.trim(),
+      full_name:
+        name.trim(),
 
       email:
         email.trim().toLowerCase(),
@@ -427,18 +593,17 @@ export const authService = {
           '/auth/register/',
           {
             method: 'POST',
+
             body: payload,
+
             authenticated: false,
           }
         );
 
-      /*
-       Registration does NOT automatically
-       authenticate the user.
-
-       Django creates the analyst with
-       status = PENDING.
-      */
+      const registeredUser =
+        response?.data ||
+        response?.user ||
+        null;
 
       return {
         success:
@@ -449,14 +614,21 @@ export const authService = {
           'Registration successful. Your account is pending admin approval.',
 
         user:
-          response?.data ||
-          null,
+          registeredUser
+            ? normalizeUser(registeredUser)
+            : null,
 
         data:
-          response?.data ||
-          null,
+          registeredUser
+            ? normalizeUser(registeredUser)
+            : null,
       };
     } catch (error) {
+      console.error(
+        'RingFinder registration failed:',
+        error
+      );
+
       const message =
         error?.message ||
         'Registration failed. Please try again.';
@@ -474,6 +646,7 @@ export const authService = {
     }
   },
 
+
   /* ==========================================================
      LOGOUT
      ========================================================== */
@@ -484,8 +657,7 @@ export const authService = {
 
     try {
       /*
-       Django logout requires the
-       refresh token so it can blacklist it.
+        Django logout requires refresh token.
       */
 
       if (refreshToken) {
@@ -504,12 +676,12 @@ export const authService = {
       }
     } catch (error) {
       /*
-       Even if the server-side logout
-       fails, remove local authentication.
+        Even if backend logout fails,
+        clear frontend authentication.
       */
 
       console.warn(
-        'Server logout failed:',
+        'RingFinder server logout failed:',
         error
       );
     } finally {
@@ -518,18 +690,21 @@ export const authService = {
 
     return {
       success: true,
+
       message:
         'Logged out successfully.',
     };
   },
 
+
   /* ==========================================================
-     GET CURRENT USER
+     GET CURRENT USER FROM LOCAL STORAGE
      ========================================================== */
 
   getCurrentUser: () => {
     return getCurrentUserFromStorage();
   },
+
 
   /* ==========================================================
      FETCH CURRENT USER FROM DJANGO
@@ -542,17 +717,18 @@ export const authService = {
           '/auth/me/',
           {
             method: 'GET',
+
             authenticated: true,
           }
         );
 
       /*
-       Backend response:
+        Expected:
 
-       {
-         success: true,
-         data: {...}
-       }
+        {
+          success: true,
+          data: {...}
+        }
       */
 
       const user =
@@ -564,18 +740,17 @@ export const authService = {
         return null;
       }
 
-      saveCurrentUser(user);
+      const normalizedUser =
+        saveCurrentUser(user);
 
-      return user;
+      return normalizedUser;
     } catch (error) {
       /*
-       Access token may have expired.
-       Try refreshing it once.
+        Access token may have expired.
+        Try refreshing once.
       */
 
-      if (
-        error?.status === 401
-      ) {
+      if (error?.status === 401) {
         const newAccessToken =
           await refreshAccessToken();
 
@@ -586,6 +761,7 @@ export const authService = {
                 '/auth/me/',
                 {
                   method: 'GET',
+
                   authenticated: true,
                 }
               );
@@ -596,11 +772,10 @@ export const authService = {
               retryResponse;
 
             if (user) {
-              saveCurrentUser(
-                user
-              );
+              const normalizedUser =
+                saveCurrentUser(user);
 
-              return user;
+              return normalizedUser;
             }
           } catch (retryError) {
             console.error(
@@ -616,6 +791,7 @@ export const authService = {
       return null;
     }
   },
+
 
   /* ==========================================================
      REFRESH CURRENT USER
@@ -633,6 +809,7 @@ export const authService = {
       return await authService.fetchCurrentUser();
     },
 
+
   /* ==========================================================
      GET ACCESS TOKEN
      ========================================================== */
@@ -641,6 +818,7 @@ export const authService = {
     return getAccessToken();
   },
 
+
   /* ==========================================================
      GET REFRESH TOKEN
      ========================================================== */
@@ -648,6 +826,7 @@ export const authService = {
   getRefreshToken: () => {
     return getRefreshToken();
   },
+
 
   /* ==========================================================
      CHECK AUTHENTICATION
@@ -659,6 +838,7 @@ export const authService = {
     );
   },
 
+
   /* ==========================================================
      CLEAR AUTHENTICATION
      ========================================================== */
@@ -667,6 +847,7 @@ export const authService = {
     clearAuthentication();
   },
 };
+
 
 /* ============================================================
    DEFAULT EXPORT

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import {
   Shield,
@@ -13,107 +13,210 @@ import fraudService from '../../services/fraudService';
 
 import '../../styles/adversarial-results.css';
 
+
+/* ============================================================
+   ADMIN ADVERSARIAL RESULTS
+   Real Django API Integration
+   ============================================================ */
+
 export const AdversarialResults = () => {
   const [advData, setAdvData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState('');
 
-  /* =========================================================
-     FETCH ADVERSARIAL DATA
-     ========================================================= */
 
-  const fetchData = async (isRefresh = false) => {
+  /* ==========================================================
+     NORMALIZE BACKEND RESPONSE
+     ========================================================== */
+
+  const normalizeResponse = (response) => {
+    if (!response) {
+      return {
+        robustnessScore: null,
+        scenarios: [],
+      };
+    }
+
+    const source =
+      response?.data ||
+      response;
+
+    let scenarios =
+      source?.scenarios ||
+      source?.results ||
+      source?.tests ||
+      source?.data?.scenarios ||
+      [];
+
+    if (!Array.isArray(scenarios)) {
+      scenarios = [];
+    }
+
+    const robustnessScore =
+      source?.robustnessScore ??
+      source?.robustness_score ??
+      source?.overallRobustness ??
+      source?.overall_robustness ??
+      source?.score ??
+      null;
+
+    return {
+      ...source,
+      robustnessScore,
+      scenarios,
+    };
+  };
+
+
+  /* ==========================================================
+     FORMAT ROBUSTNESS SCORE
+     ========================================================== */
+
+  const formatScore = (value) => {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ''
+    ) {
+      return 'N/A';
+    }
+
+    if (
+      typeof value === 'string' &&
+      value.includes('%')
+    ) {
+      return value;
+    }
+
+    const numericValue = Number(value);
+
+    if (Number.isNaN(numericValue)) {
+      return String(value);
+    }
+
+    const percentage =
+      numericValue <= 1
+        ? numericValue * 100
+        : numericValue;
+
+    return `${percentage.toFixed(1)}%`;
+  };
+
+
+  /* ==========================================================
+     FORMAT SCENARIO SCORE
+     ========================================================== */
+
+  const formatScenarioScore = (value) => {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ''
+    ) {
+      return 'N/A';
+    }
+
+    if (
+      typeof value === 'string' &&
+      value.includes('%')
+    ) {
+      return value;
+    }
+
+    const numericValue = Number(value);
+
+    if (Number.isNaN(numericValue)) {
+      return String(value);
+    }
+
+    const percentage =
+      numericValue <= 1
+        ? numericValue * 100
+        : numericValue;
+
+    return `${percentage.toFixed(1)}%`;
+  };
+
+
+  /* ==========================================================
+     LOAD ADVERSARIAL DATA
+     ========================================================== */
+
+  const fetchData = useCallback(async (isRefresh = false) => {
     try {
+      setError('');
+
       if (isRefresh) {
         setRefreshing(true);
       } else {
         setLoading(true);
       }
 
-      const res =
+      const response =
         await fraudService.getAdversarialTestingData();
 
       console.log(
         'Adversarial Results API response:',
-        res
+        response
       );
 
-      setAdvData(res);
+      const normalized =
+        normalizeResponse(response);
+
+      setAdvData(normalized);
+
     } catch (err) {
       console.error(
         'Failed to fetch adversarial results:',
         err
       );
 
-      /* =====================================================
-         FALLBACK DATA
-         ===================================================== */
+      setAdvData(null);
 
-      setAdvData({
-        robustnessScore: '91.2%',
-        scenarios: [
-          {
-            id: 1,
-            name: 'Intermediate Wallet Insertion',
-            description:
-              'Synthetic intermediary wallets inserted between transaction hops.',
-            robustness: '96.8%',
-            status: 'DETECTED',
-          },
-          {
-            id: 2,
-            name: 'Smurfing Pattern',
-            description:
-              'Large transactions split into multiple smaller transactions.',
-            robustness: '93.5%',
-            status: 'DETECTED',
-          },
-          {
-            id: 3,
-            name: 'Transaction Time Delay',
-            description:
-              'Transaction timing modified to reduce temporal correlations.',
-            robustness: '93.3%',
-            status: 'DETECTED',
-          },
-        ],
-      });
+      setError(
+        err?.message ||
+        'Unable to load adversarial resilience metrics from the backend.'
+      );
+
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  };
-
-
-  /* =========================================================
-     INITIAL LOAD
-     ========================================================= */
-
-  useEffect(() => {
-    fetchData();
   }, []);
 
 
-  /* =========================================================
+  /* ==========================================================
+     INITIAL LOAD
+     ========================================================== */
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+
+  /* ==========================================================
      LOADING
-     ========================================================= */
+     ========================================================== */
 
   if (loading) {
     return (
       <div className="rf-adversarial-loading">
+
         <LoadingSpinner
           label="Loading Adversarial Metrics Payload..."
         />
+
       </div>
     );
   }
 
 
-  /* =========================================================
-     ERROR / EMPTY STATE
-     ========================================================= */
+  /* ==========================================================
+     ERROR STATE
+     ========================================================== */
 
-  if (!advData) {
+  if (error) {
     return (
       <div className="rf-adversarial-error">
 
@@ -127,23 +230,77 @@ export const AdversarialResults = () => {
           </h2>
 
           <p>
-            Unable to load adversarial resilience metrics.
+            {error}
           </p>
         </div>
+
+        <button
+          type="button"
+          className="rf-adversarial-refresh"
+          onClick={() => fetchData(true)}
+          disabled={refreshing}
+        >
+
+          <RefreshCw
+            size={13}
+            className={
+              refreshing
+                ? 'rf-button-spin'
+                : ''
+            }
+          />
+
+          {refreshing
+            ? 'Refreshing'
+            : 'Retry'}
+
+        </button>
 
       </div>
     );
   }
 
 
-  const scenarios = Array.isArray(advData.scenarios)
-    ? advData.scenarios
-    : [];
+  /* ==========================================================
+     SAFE DATA
+     ========================================================== */
+
+  const scenarios =
+    Array.isArray(advData?.scenarios)
+      ? advData.scenarios
+      : [];
+
+  const robustnessScore =
+    formatScore(
+      advData?.robustnessScore
+    );
 
 
-  /* =========================================================
+  /* ==========================================================
+     DETECTION SUMMARY
+     ========================================================== */
+
+  const detectedCount =
+    scenarios.filter((scenario) => {
+      const status =
+        String(
+          scenario?.status ||
+          scenario?.result ||
+          ''
+        ).toUpperCase();
+
+      return (
+        status === 'DETECTED' ||
+        status === 'PASS' ||
+        status === 'PASSED' ||
+        status === 'SUCCESS'
+      );
+    }).length;
+
+
+  /* ==========================================================
      MAIN PAGE
-     ========================================================= */
+     ========================================================== */
 
   return (
     <div className="rf-adversarial-page">
@@ -165,8 +322,11 @@ export const AdversarialResults = () => {
             <div>
 
               <div className="rf-adversarial-kicker">
+
                 <span></span>
+
                 SECURITY VALIDATION
+
               </div>
 
               <h1>
@@ -183,7 +343,9 @@ export const AdversarialResults = () => {
           </div>
 
 
-          {/* Overall Score */}
+          {/* ==================================================
+              OVERALL SCORE
+              ================================================== */}
 
           <div className="rf-adversarial-score">
 
@@ -198,7 +360,7 @@ export const AdversarialResults = () => {
               </span>
 
               <strong>
-                {advData.robustnessScore}
+                {robustnessScore}
               </strong>
 
             </div>
@@ -235,11 +397,11 @@ export const AdversarialResults = () => {
         <div className="rf-adversarial-summary-item">
 
           <span className="rf-adversarial-summary-label">
-            DETECTION STATUS
+            DETECTED
           </span>
 
           <strong className="rf-text-green">
-            ACTIVE
+            {detectedCount}
           </strong>
 
         </div>
@@ -255,7 +417,9 @@ export const AdversarialResults = () => {
           </span>
 
           <strong className="rf-text-cyan">
-            ENABLED
+            {scenarios.length > 0
+              ? 'ENABLED'
+              : 'N/A'}
           </strong>
 
         </div>
@@ -267,6 +431,7 @@ export const AdversarialResults = () => {
           onClick={() => fetchData(true)}
           disabled={refreshing}
         >
+
           <RefreshCw
             size={13}
             className={
@@ -279,6 +444,7 @@ export const AdversarialResults = () => {
           {refreshing
             ? 'Refreshing'
             : 'Refresh Metrics'}
+
         </button>
 
       </section>
@@ -295,8 +461,11 @@ export const AdversarialResults = () => {
           <div>
 
             <div className="rf-section-kicker">
+
               <Shield size={14} />
+
               ADVERSARIAL TEST SUITE
+
             </div>
 
             <h2>
@@ -311,9 +480,15 @@ export const AdversarialResults = () => {
 
           </div>
 
+
           <span className="rf-adversarial-live">
+
             <span></span>
-            BENCHMARK COMPLETE
+
+            {scenarios.length > 0
+              ? 'BENCHMARK COMPLETE'
+              : 'NO BENCHMARK DATA'}
+
           </span>
 
         </div>
@@ -323,56 +498,102 @@ export const AdversarialResults = () => {
 
           {scenarios.length > 0 ? (
 
-            scenarios.map((scenario, index) => (
+            scenarios.map((scenario, index) => {
 
-              <div
-                key={scenario.id || index}
-                className="rf-adversarial-scenario"
-              >
+              const scenarioName =
+                scenario?.name ||
+                scenario?.scenario ||
+                scenario?.attackType ||
+                scenario?.attack_type ||
+                `Scenario ${index + 1}`;
 
-                {/* Scenario Number */}
+              const description =
+                scenario?.description ||
+                scenario?.details ||
+                scenario?.message ||
+                'Adversarial test scenario evaluated by the fraud detection pipeline.';
 
-                <div className="rf-adversarial-number">
-                  {String(index + 1).padStart(2, '0')}
-                </div>
+              const robustness =
+                scenario?.robustness ??
+                scenario?.robustnessScore ??
+                scenario?.robustness_score ??
+                scenario?.score ??
+                scenario?.accuracy ??
+                null;
+
+              const status =
+                scenario?.status ||
+                scenario?.result ||
+                scenario?.outcome ||
+                'EVALUATED';
 
 
-                {/* Scenario Information */}
+              return (
+                <div
+                  key={
+                    scenario?.id ??
+                    scenario?._id ??
+                    scenario?.scenarioId ??
+                    index
+                  }
+                  className="rf-adversarial-scenario"
+                >
 
-                <div className="rf-adversarial-scenario-info">
+                  {/* ==========================================
+                      SCENARIO NUMBER
+                      ========================================== */}
 
-                  <div className="rf-adversarial-scenario-name">
-                    {scenario.name}
+                  <div className="rf-adversarial-number">
+
+                    {String(index + 1).padStart(2, '0')}
+
                   </div>
 
-                  <div className="rf-adversarial-scenario-description">
-                    {scenario.description}
+
+                  {/* ==========================================
+                      SCENARIO INFORMATION
+                      ========================================== */}
+
+                  <div className="rf-adversarial-scenario-info">
+
+                    <div className="rf-adversarial-scenario-name">
+                      {scenarioName}
+                    </div>
+
+                    <div className="rf-adversarial-scenario-description">
+                      {description}
+                    </div>
+
+                  </div>
+
+
+                  {/* ==========================================
+                      RESULT
+                      ========================================== */}
+
+                  <div className="rf-adversarial-result">
+
+                    <div className="rf-adversarial-result-score">
+
+                      <CheckCircle2 size={14} />
+
+                      <strong>
+                        {formatScenarioScore(
+                          robustness
+                        )}
+                      </strong>
+
+                    </div>
+
+                    <span>
+                      {String(status).toUpperCase()}
+                    </span>
+
                   </div>
 
                 </div>
-
-
-                {/* Robustness */}
-
-                <div className="rf-adversarial-result">
-
-                  <div className="rf-adversarial-result-score">
-                    <CheckCircle2 size={14} />
-
-                    <strong>
-                      {scenario.robustness}
-                    </strong>
-                  </div>
-
-                  <span>
-                    {scenario.status || 'EVALUATED'}
-                  </span>
-
-                </div>
-
-              </div>
-
-            ))
+              );
+            })
 
           ) : (
 
@@ -386,8 +607,30 @@ export const AdversarialResults = () => {
 
               <p>
                 No resilience benchmark scenarios
-                are currently available.
+                are currently available from the backend.
               </p>
+
+              <button
+                type="button"
+                className="rf-adversarial-refresh"
+                onClick={() => fetchData(true)}
+                disabled={refreshing}
+              >
+
+                <RefreshCw
+                  size={13}
+                  className={
+                    refreshing
+                      ? 'rf-button-spin'
+                      : ''
+                  }
+                />
+
+                {refreshing
+                  ? 'Checking...'
+                  : 'Check Again'}
+
+              </button>
 
             </div>
 
@@ -429,5 +672,6 @@ export const AdversarialResults = () => {
     </div>
   );
 };
+
 
 export default AdversarialResults;

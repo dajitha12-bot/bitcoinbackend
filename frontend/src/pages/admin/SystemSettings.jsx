@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+
 import {
   Sliders,
   Save,
@@ -9,6 +14,7 @@ import {
   Cpu,
   CalendarClock,
   AlertTriangle,
+  RefreshCw,
 } from 'lucide-react';
 
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -16,33 +22,162 @@ import adminService from '../../services/adminService';
 
 import '../../styles/system-settings.css';
 
+
+/* ============================================================
+   ADMIN SYSTEM SETTINGS
+   Real Django API Integration
+   ============================================================ */
+
 export const SystemSettings = () => {
   const [settings, setSettings] = useState(null);
+
   const [loading, setLoading] = useState(true);
+
   const [saving, setSaving] = useState(false);
+
+  const [refreshing, setRefreshing] = useState(false);
+
   const [savedMessage, setSavedMessage] = useState('');
 
+  const [error, setError] = useState('');
+
+
   /* ==========================================================
-     LOAD SYSTEM SETTINGS
+     NORMALIZE BACKEND RESPONSE
      ========================================================== */
 
-  useEffect(() => {
-    const fetchSettings = async () => {
+  const normalizeSettings = (response) => {
+    if (!response) {
+      return null;
+    }
+
+    const source =
+      response?.data ||
+      response?.settings ||
+      response;
+
+    return {
+      ...source,
+
+      riskThreshold:
+        source?.riskThreshold ??
+        source?.risk_threshold ??
+        75,
+
+      temporalCutoffDate:
+        source?.temporalCutoffDate ??
+        source?.temporal_cutoff_date ??
+        '',
+
+      gnnEmbeddingDim:
+        source?.gnnEmbeddingDim ??
+        source?.gnn_embedding_dim ??
+        source?.embeddingDimension ??
+        source?.embedding_dimension ??
+        128,
+
+      graphHopDepth:
+        source?.graphHopDepth ??
+        source?.graph_hop_depth ??
+        source?.hopDepth ??
+        source?.hop_depth ??
+        3,
+
+      strictTemporalMode:
+        Boolean(
+          source?.strictTemporalMode ??
+          source?.strict_temporal_mode ??
+          false
+        ),
+
+      autoFlagHighRiskRings:
+        Boolean(
+          source?.autoFlagHighRiskRings ??
+          source?.auto_flag_high_risk_rings ??
+          false
+        ),
+    };
+  };
+
+
+  /* ==========================================================
+     LOAD SETTINGS
+     ========================================================== */
+
+  const fetchSettings = useCallback(
+    async (isRefresh = false) => {
       try {
-        const data = await adminService.getSystemSettings();
-        setSettings(data);
+        setError('');
+
+        if (isRefresh) {
+          setRefreshing(true);
+        } else {
+          setLoading(true);
+        }
+
+        const response =
+          await adminService.getSystemSettings();
+
+        console.log(
+          'System Settings API response:',
+          response
+        );
+
+        const normalized =
+          normalizeSettings(response);
+
+        if (!normalized) {
+          throw new Error(
+            'The backend returned an empty system configuration.'
+          );
+        }
+
+        setSettings(normalized);
+
       } catch (err) {
         console.error(
           'Failed to load system settings:',
           err
         );
+
+        setSettings(null);
+
+        setError(
+          err?.message ||
+          'Unable to retrieve RingFinder system configuration.'
+        );
+
       } finally {
         setLoading(false);
+        setRefreshing(false);
       }
-    };
+    },
+    []
+  );
 
+
+  /* ==========================================================
+     INITIAL LOAD
+     ========================================================== */
+
+  useEffect(() => {
     fetchSettings();
-  }, []);
+  }, [fetchSettings]);
+
+
+  /* ==========================================================
+     UPDATE FIELD
+     ========================================================== */
+
+  const updateSetting = (key, value) => {
+    setSettings((current) => ({
+      ...current,
+      [key]: value,
+    }));
+
+    setSavedMessage('');
+  };
+
 
   /* ==========================================================
      SAVE SETTINGS
@@ -57,8 +192,12 @@ export const SystemSettings = () => {
 
     try {
       setSaving(true);
+      setSavedMessage('');
+      setError('');
 
-      await adminService.updateSystemSettings(settings);
+      await adminService.updateSystemSettings(
+        settings
+      );
 
       setSavedMessage(
         'System Settings Updated & Persisted Successfully'
@@ -67,6 +206,7 @@ export const SystemSettings = () => {
       setTimeout(() => {
         setSavedMessage('');
       }, 3000);
+
     } catch (err) {
       console.error(
         'Failed to update system settings:',
@@ -77,13 +217,20 @@ export const SystemSettings = () => {
         'Failed to update system settings'
       );
 
+      setError(
+        err?.message ||
+        'Unable to persist system settings.'
+      );
+
       setTimeout(() => {
         setSavedMessage('');
-      }, 3000);
+      }, 4000);
+
     } finally {
       setSaving(false);
     }
   };
+
 
   /* ==========================================================
      LOADING STATE
@@ -92,15 +239,18 @@ export const SystemSettings = () => {
   if (loading) {
     return (
       <div className="rf-settings-loading">
+
         <LoadingSpinner
           label="Retrieving GNN Platform Configuration..."
         />
+
       </div>
     );
   }
 
+
   /* ==========================================================
-     SAFETY FALLBACK
+     ERROR / EMPTY STATE
      ========================================================== */
 
   if (!settings) {
@@ -116,13 +266,59 @@ export const SystemSettings = () => {
         </h2>
 
         <p>
-          The RingFinder platform configuration could
-          not be retrieved.
+          {error ||
+            'The RingFinder platform configuration could not be retrieved.'}
         </p>
+
+        <button
+          type="button"
+          className="rf-secondary-button"
+          onClick={() => fetchSettings(true)}
+          disabled={refreshing}
+          style={{
+            marginTop: '14px',
+          }}
+        >
+
+          <RefreshCw
+            size={14}
+            className={
+              refreshing
+                ? 'rf-button-spin'
+                : ''
+            }
+          />
+
+          {refreshing
+            ? 'Retrying...'
+            : 'Retry'}
+
+        </button>
 
       </div>
     );
   }
+
+
+  /* ==========================================================
+     SAFE VALUES
+     ========================================================== */
+
+  const riskThreshold =
+    Number(settings.riskThreshold) || 0;
+
+  const embeddingDimension =
+    Number(settings.gnnEmbeddingDim) || 128;
+
+  const hopDepth =
+    Number(settings.graphHopDepth) || 3;
+
+  const strictTemporalMode =
+    Boolean(settings.strictTemporalMode);
+
+  const autoFlagHighRiskRings =
+    Boolean(settings.autoFlagHighRiskRings);
+
 
   /* ==========================================================
      MAIN PAGE
@@ -148,8 +344,11 @@ export const SystemSettings = () => {
             <div>
 
               <div className="rf-settings-kicker">
+
                 <span></span>
+
                 SYSTEM CONFIGURATION
+
               </div>
 
               <h1>
@@ -165,24 +364,66 @@ export const SystemSettings = () => {
 
           </div>
 
-          <button
-            type="submit"
-            form="ringfinder-settings-form"
-            className="rf-settings-save-button"
-            disabled={saving}
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}
           >
-            {saving ? (
-              <>
-                <span className="rf-button-loader"></span>
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save size={14} />
-                Save System Settings
-              </>
-            )}
-          </button>
+
+            <button
+              type="button"
+              className="rf-secondary-button"
+              onClick={() => fetchSettings(true)}
+              disabled={refreshing || saving}
+            >
+
+              <RefreshCw
+                size={14}
+                className={
+                  refreshing
+                    ? 'rf-button-spin'
+                    : ''
+                }
+              />
+
+              {refreshing
+                ? 'Refreshing...'
+                : 'Refresh'}
+
+            </button>
+
+
+            <button
+              type="submit"
+              form="ringfinder-settings-form"
+              className="rf-settings-save-button"
+              disabled={saving}
+            >
+
+              {saving ? (
+                <>
+
+                  <span className="rf-button-loader"></span>
+
+                  Saving...
+
+                </>
+              ) : (
+                <>
+
+                  <Save size={14} />
+
+                  Save System Settings
+
+                </>
+              )}
+
+            </button>
+
+          </div>
 
         </div>
 
@@ -190,10 +431,44 @@ export const SystemSettings = () => {
 
 
       {/* ======================================================
+          ERROR MESSAGE
+          ====================================================== */}
+
+      {error && (
+
+        <div
+          style={{
+            margin: '16px 24px',
+            padding: '13px 15px',
+            border:
+              '1px solid rgba(239,68,68,0.35)',
+            background:
+              'rgba(239,68,68,0.08)',
+            color: '#fca5a5',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+          }}
+        >
+
+          <AlertTriangle size={16} />
+
+          <span>
+            {error}
+          </span>
+
+        </div>
+
+      )}
+
+
+      {/* ======================================================
           SAVE NOTIFICATION
           ====================================================== */}
 
       {savedMessage && (
+
         <div
           className={`rf-settings-notification ${
             savedMessage.startsWith('Failed')
@@ -201,12 +476,19 @@ export const SystemSettings = () => {
               : 'rf-settings-notification-success'
           }`}
         >
-          <CheckCircle2 size={16} />
+
+          {savedMessage.startsWith('Failed') ? (
+            <AlertTriangle size={16} />
+          ) : (
+            <CheckCircle2 size={16} />
+          )}
 
           <span>
             {savedMessage}
           </span>
+
         </div>
+
       )}
 
 
@@ -260,7 +542,7 @@ export const SystemSettings = () => {
                 </label>
 
                 <span className="rf-settings-value">
-                  {settings.riskThreshold}%
+                  {riskThreshold}%
                 </span>
 
               </div>
@@ -270,22 +552,25 @@ export const SystemSettings = () => {
                 type="range"
                 min="50"
                 max="95"
-                value={settings.riskThreshold}
+                value={riskThreshold}
                 onChange={(e) =>
-                  setSettings({
-                    ...settings,
-                    riskThreshold: parseInt(
+                  updateSetting(
+                    'riskThreshold',
+                    parseInt(
                       e.target.value,
                       10
-                    ),
-                  })
+                    )
+                  )
                 }
                 className="rf-settings-range"
               />
 
               <div className="rf-settings-range-labels">
+
                 <span>50%</span>
+
                 <span>95%</span>
+
               </div>
 
               <p className="rf-settings-help">
@@ -318,11 +603,10 @@ export const SystemSettings = () => {
                     settings.temporalCutoffDate || ''
                   }
                   onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      temporalCutoffDate:
-                        e.target.value,
-                    })
+                    updateSetting(
+                      'temporalCutoffDate',
+                      e.target.value
+                    )
                   }
                   className="rf-settings-input"
                 />
@@ -387,16 +671,15 @@ export const SystemSettings = () => {
 
                 <select
                   id="embedding-dim"
-                  value={settings.gnnEmbeddingDim}
+                  value={embeddingDimension}
                   onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      gnnEmbeddingDim:
-                        parseInt(
-                          e.target.value,
-                          10
-                        ),
-                    })
+                    updateSetting(
+                      'gnnEmbeddingDim',
+                      parseInt(
+                        e.target.value,
+                        10
+                      )
+                    )
                   }
                   className="rf-settings-select"
                 >
@@ -442,16 +725,15 @@ export const SystemSettings = () => {
 
                 <select
                   id="hop-depth"
-                  value={settings.graphHopDepth}
+                  value={hopDepth}
                   onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      graphHopDepth:
-                        parseInt(
-                          e.target.value,
-                          10
-                        ),
-                    })
+                    updateSetting(
+                      'graphHopDepth',
+                      parseInt(
+                        e.target.value,
+                        10
+                      )
+                    )
                   }
                   className="rf-settings-select"
                 >
@@ -518,7 +800,7 @@ export const SystemSettings = () => {
             <label
               htmlFor="strict-temporal"
               className={`rf-settings-toggle-card ${
-                settings.strictTemporalMode
+                strictTemporalMode
                   ? 'rf-settings-toggle-active'
                   : ''
               }`}
@@ -529,20 +811,19 @@ export const SystemSettings = () => {
                 <input
                   id="strict-temporal"
                   type="checkbox"
-                  checked={Boolean(
-                    settings.strictTemporalMode
-                  )}
+                  checked={strictTemporalMode}
                   onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      strictTemporalMode:
-                        e.target.checked,
-                    })
+                    updateSetting(
+                      'strictTemporalMode',
+                      e.target.checked
+                    )
                   }
                 />
 
                 <span className="rf-settings-custom-check">
+
                   <CheckCircle2 size={12} />
+
                 </span>
 
               </div>
@@ -565,10 +846,13 @@ export const SystemSettings = () => {
 
               </div>
 
+
               <span className="rf-settings-toggle-state">
-                {settings.strictTemporalMode
+
+                {strictTemporalMode
                   ? 'ENABLED'
                   : 'DISABLED'}
+
               </span>
 
             </label>
@@ -579,7 +863,7 @@ export const SystemSettings = () => {
             <label
               htmlFor="auto-flag-rings"
               className={`rf-settings-toggle-card ${
-                settings.autoFlagHighRiskRings
+                autoFlagHighRiskRings
                   ? 'rf-settings-toggle-active'
                   : ''
               }`}
@@ -590,20 +874,19 @@ export const SystemSettings = () => {
                 <input
                   id="auto-flag-rings"
                   type="checkbox"
-                  checked={Boolean(
-                    settings.autoFlagHighRiskRings
-                  )}
+                  checked={autoFlagHighRiskRings}
                   onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      autoFlagHighRiskRings:
-                        e.target.checked,
-                    })
+                    updateSetting(
+                      'autoFlagHighRiskRings',
+                      e.target.checked
+                    )
                   }
                 />
 
                 <span className="rf-settings-custom-check">
+
                   <CheckCircle2 size={12} />
+
                 </span>
 
               </div>
@@ -626,10 +909,13 @@ export const SystemSettings = () => {
 
               </div>
 
+
               <span className="rf-settings-toggle-state">
-                {settings.autoFlagHighRiskRings
+
+                {autoFlagHighRiskRings
                   ? 'ENABLED'
                   : 'DISABLED'}
+
               </span>
 
             </label>
@@ -656,8 +942,10 @@ export const SystemSettings = () => {
         </div>
 
         <div className="rf-settings-footer-text">
+
           Configuration changes are persisted through
           the RingFinder administration service.
+
         </div>
 
       </footer>
@@ -665,5 +953,6 @@ export const SystemSettings = () => {
     </div>
   );
 };
+
 
 export default SystemSettings;

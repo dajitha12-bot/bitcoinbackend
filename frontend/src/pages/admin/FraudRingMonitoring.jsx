@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Eye,
   Layers,
   ShieldAlert,
   RefreshCw,
   Activity,
+  AlertTriangle,
 } from 'lucide-react';
 
 import FraudRingCard from '../../components/FraudRingCard';
@@ -13,35 +14,90 @@ import fraudService from '../../services/fraudService';
 
 import '../../styles/fraud-ring-monitoring.css';
 
+
+/* ============================================================
+   FRAUD RING MONITORING
+   Admin Module
+   Real Django API Integration
+   ============================================================ */
+
 export const FraudRingMonitoring = () => {
   const [rings, setRings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState('');
+
+
+  /* ==========================================================
+     NORMALIZE BACKEND RESPONSE
+     ========================================================== */
+
+  const normalizeRings = (response) => {
+    if (Array.isArray(response)) {
+      return response;
+    }
+
+    if (Array.isArray(response?.data)) {
+      return response.data;
+    }
+
+    if (Array.isArray(response?.results)) {
+      return response.results;
+    }
+
+    if (Array.isArray(response?.rings)) {
+      return response.rings;
+    }
+
+    if (Array.isArray(response?.data?.rings)) {
+      return response.data.rings;
+    }
+
+    return [];
+  };
+
 
   /* ==========================================================
      LOAD FRAUD RINGS
      ========================================================== */
 
-  const loadData = async (isRefresh = false) => {
+  const loadData = useCallback(async (isRefresh = false) => {
     try {
+      setError('');
+
       if (isRefresh) {
         setRefreshing(true);
       } else {
         setLoading(true);
       }
 
-      const list = await fraudService.getFraudRings();
+      const response =
+        await fraudService.getFraudRings();
 
-      setRings(Array.isArray(list) ? list : []);
+      const normalizedRings =
+        normalizeRings(response);
+
+      setRings(normalizedRings);
+
     } catch (err) {
-      console.error('Failed to load fraud rings:', err);
+      console.error(
+        'Failed to load fraud rings:',
+        err
+      );
 
       setRings([]);
+
+      setError(
+        err?.message ||
+        'Unable to load fraud ring data from the backend.'
+      );
+
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, []);
+
 
   /* ==========================================================
      INITIAL LOAD
@@ -49,7 +105,8 @@ export const FraudRingMonitoring = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
+
 
   /* ==========================================================
      LOADING STATE
@@ -59,11 +116,12 @@ export const FraudRingMonitoring = () => {
     return (
       <div className="rf-ring-monitor-loading">
         <LoadingSpinner
-          label="Polling Active Fraud Ring Monitors..."
+          label="Loading Fraud Ring Intelligence..."
         />
       </div>
     );
   }
+
 
   /* ==========================================================
      MAIN PAGE
@@ -87,6 +145,7 @@ export const FraudRingMonitoring = () => {
             </div>
 
             <div>
+
               <div className="rf-ring-monitor-kicker">
                 <span></span>
                 RING SURVEILLANCE
@@ -100,9 +159,15 @@ export const FraudRingMonitoring = () => {
                 Real-time cluster tracking &amp; automated
                 alerts for high-volume Bitcoin syndicates
               </p>
+
             </div>
 
           </div>
+
+
+          {/* ==================================================
+              HEADER ACTIONS
+              ================================================== */}
 
           <div className="rf-ring-monitor-actions">
 
@@ -112,6 +177,7 @@ export const FraudRingMonitoring = () => {
               onClick={() => loadData(true)}
               disabled={refreshing}
             >
+
               <RefreshCw
                 size={13}
                 className={
@@ -124,13 +190,16 @@ export const FraudRingMonitoring = () => {
               {refreshing
                 ? 'Refreshing...'
                 : 'Refresh'}
+
             </button>
+
 
             <div className="rf-ring-monitor-count">
 
               <Layers size={13} />
 
               <div>
+
                 <span className="rf-ring-monitor-count-label">
                   MONITORED RINGS
                 </span>
@@ -138,6 +207,7 @@ export const FraudRingMonitoring = () => {
                 <strong>
                   {rings.length}
                 </strong>
+
               </div>
 
             </div>
@@ -147,6 +217,7 @@ export const FraudRingMonitoring = () => {
         </div>
 
       </header>
+
 
       {/* ======================================================
           MONITOR STATUS
@@ -168,6 +239,7 @@ export const FraudRingMonitoring = () => {
 
         </div>
 
+
         <div className="rf-ring-monitor-status-right">
 
           <Activity size={12} />
@@ -180,11 +252,52 @@ export const FraudRingMonitoring = () => {
 
       </div>
 
+
+      {/* ======================================================
+          ERROR MESSAGE
+          ====================================================== */}
+
+      {error && (
+        <div className="rf-ring-monitor-error">
+
+          <div className="rf-ring-monitor-error-icon">
+            <AlertTriangle size={18} />
+          </div>
+
+          <div className="rf-ring-monitor-error-content">
+
+            <strong>
+              Unable to load fraud ring data
+            </strong>
+
+            <span>
+              {error}
+            </span>
+
+          </div>
+
+          <button
+            type="button"
+            onClick={() => loadData(true)}
+            disabled={refreshing}
+            className="rf-ring-monitor-error-retry"
+          >
+            <RefreshCw size={14} />
+
+            Retry
+          </button>
+
+        </div>
+      )}
+
+
       {/* ======================================================
           RING SUMMARY
           ====================================================== */}
 
       <section className="rf-ring-monitor-summary">
+
+        {/* ACTIVE CLUSTERS */}
 
         <div className="rf-ring-monitor-summary-card">
 
@@ -193,6 +306,7 @@ export const FraudRingMonitoring = () => {
           </div>
 
           <div>
+
             <span className="rf-ring-summary-label">
               ACTIVE CLUSTERS
             </span>
@@ -200,9 +314,13 @@ export const FraudRingMonitoring = () => {
             <strong>
               {rings.length}
             </strong>
+
           </div>
 
         </div>
+
+
+        {/* SURVEILLANCE MODE */}
 
         <div className="rf-ring-monitor-summary-card">
 
@@ -211,6 +329,7 @@ export const FraudRingMonitoring = () => {
           </div>
 
           <div>
+
             <span className="rf-ring-summary-label">
               SURVEILLANCE MODE
             </span>
@@ -218,11 +337,13 @@ export const FraudRingMonitoring = () => {
             <strong>
               CONTINUOUS
             </strong>
+
           </div>
 
         </div>
 
       </section>
+
 
       {/* ======================================================
           FRAUD RINGS
@@ -249,16 +370,24 @@ export const FraudRingMonitoring = () => {
 
           </div>
 
+
           <div className="rf-ring-monitor-record-count">
 
             <span></span>
 
             {rings.length} ACTIVE
-            {rings.length !== 1 ? ' RINGS' : ' RING'}
+            {rings.length !== 1
+              ? ' RINGS'
+              : ' RING'}
 
           </div>
 
         </div>
+
+
+        {/* ====================================================
+            NO RINGS
+            ==================================================== */}
 
         {rings.length === 0 ? (
 
@@ -277,21 +406,51 @@ export const FraudRingMonitoring = () => {
               any active fraud ring clusters.
             </p>
 
+            <button
+              type="button"
+              className="rf-ring-monitor-refresh"
+              onClick={() => loadData(true)}
+              disabled={refreshing}
+            >
+
+              <RefreshCw
+                size={13}
+                className={
+                  refreshing
+                    ? 'rf-button-spin'
+                    : ''
+                }
+              />
+
+              {refreshing
+                ? 'Checking...'
+                : 'Check Again'}
+
+            </button>
+
           </div>
 
         ) : (
 
+          /* ==================================================
+             RING CARDS
+             ================================================== */
+
           <div className="rf-ring-monitor-grid">
 
             {rings.map((ring, index) => (
+
               <FraudRingCard
                 key={
-                  ring?.id ||
-                  ring?._id ||
+                  ring?.id ??
+                  ring?._id ??
+                  ring?.ring_id ??
+                  ring?.ringId ??
                   `fraud-ring-${index}`
                 }
                 ring={ring}
               />
+
             ))}
 
           </div>
@@ -299,6 +458,7 @@ export const FraudRingMonitoring = () => {
         )}
 
       </section>
+
 
       {/* ======================================================
           FOOTER
@@ -315,7 +475,9 @@ export const FraudRingMonitoring = () => {
         </div>
 
         <div className="rf-ring-monitor-footer-text">
+
           Continuous graph-based surveillance enabled
+
         </div>
 
       </footer>
@@ -323,5 +485,6 @@ export const FraudRingMonitoring = () => {
     </div>
   );
 };
+
 
 export default FraudRingMonitoring;
