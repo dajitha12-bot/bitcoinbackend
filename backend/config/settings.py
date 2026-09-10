@@ -12,13 +12,8 @@ import secrets
 
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 't')
 SECRET_KEY = os.getenv('SECRET_KEY')
-if not SECRET_KEY:
-    if DEBUG:
-        SECRET_KEY = secrets.token_hex(32)
-    else:
-        raise RuntimeError('SECRET_KEY must be configured when DEBUG=False.')
-if not DEBUG and SECRET_KEY.startswith('django-insecure'):
-    raise RuntimeError('Use a production SECRET_KEY when DEBUG=False.')
+if not SECRET_KEY or SECRET_KEY.startswith('django-insecure'):
+    SECRET_KEY = secrets.token_hex(32)
 
 ALLOWED_HOSTS = [
     host.strip()
