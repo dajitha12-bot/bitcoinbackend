@@ -85,6 +85,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Local uploads and downloaded datasets
+media/
+sample_csv/
+
 # IDEs
 .idea/
 .vscode/

@@ -36,10 +36,10 @@ class DatasetListCreateView(APIView):
             try:
                 if dataset.file.path.endswith('.csv'):
                     df = pd.read_csv(dataset.file.path, nrows=5)
-                    # Check basic columns
-                    required_cols = ['sender_wallet', 'receiver_wallet', 'amount']
-                    missing = [c for c in required_cols if c not in df.columns]
-                    if missing:
+                    is_elliptic_edge_list = {'txId1', 'txId2'}.issubset(df.columns)
+                    required_cols = {'sender_wallet', 'receiver_wallet', 'amount'}
+                    missing = sorted(required_cols.difference(df.columns))
+                    if missing and not is_elliptic_edge_list:
                         dataset.status = Dataset.Status.FAILED
                         dataset.save()
                         return Response({
@@ -47,8 +47,14 @@ class DatasetListCreateView(APIView):
                             "message": f"CSV missing required columns: {', '.join(missing)}",
                             "data": DatasetSerializer(dataset).data
                         }, status=status.HTTP_400_BAD_REQUEST)
-            except Exception as e:
-                pass
+            except Exception as error:
+                dataset.status = Dataset.Status.FAILED
+                dataset.save()
+                return Response({
+                    "success": False,
+                    "message": f"Unable to inspect CSV: {error}",
+                    "data": DatasetSerializer(dataset).data
+                }, status=status.HTTP_400_BAD_REQUEST)
 
             return Response({
                 "success": True,
@@ -99,6 +105,7 @@ class DatasetImportView(APIView):
 
             df = pd.read_csv(dataset.file.path)
             transactions_to_create = []
+            skipped_rows = 0
             min_date = None
             max_date = None
 
@@ -145,7 +152,8 @@ class DatasetImportView(APIView):
                         dataset=dataset
                     ))
                 except Exception:
-                    continue  # Handle malformed rows gracefully
+                    skipped_rows += 1
+                    continue
 
             if transactions_to_create:
                 BitcoinTransaction.objects.bulk_create(transactions_to_create, ignore_conflicts=True)
@@ -160,7 +168,9 @@ class DatasetImportView(APIView):
 
             return Response({
                 "success": True,
-                "message": f"Successfully imported {len(transactions_to_create)} transactions.",
+                "message": f"Successfully imported {len(transactions_to_create)} transactions; skipped {skipped_rows} invalid rows.",
+                "imported_rows": len(transactions_to_create),
+                "skipped_rows": skipped_rows,
                 "data": DatasetSerializer(dataset).data
             }, status=status.HTTP_200_OK)
 

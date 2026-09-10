@@ -412,6 +412,12 @@ export const AnalystDashboard = () => {
 
   useEffect(() => {
     loadDashboardData();
+
+    const liveUpdateTimer = window.setInterval(() => {
+      loadDashboardData(true);
+    }, 30000);
+
+    return () => window.clearInterval(liveUpdateTimer);
   }, []);
 
   /* ========================================================

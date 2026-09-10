@@ -52,10 +52,10 @@ export const Login = () => {
 
   const fillDemo = (role) => {
     if (role === 'admin') {
-      setEmail('admin@ringfinder.ai');
+      setEmail('admin@ringfinder.com');
       setPassword('admin123');
     } else {
-      setEmail('analyst@ringfinder.ai');
+      setEmail('analyst@ringfinder.com');
       setPassword('analyst123');
     }
 
@@ -183,7 +183,7 @@ export const Login = () => {
                 onChange={(event) =>
                   setEmail(event.target.value)
                 }
-                placeholder="analyst@ringfinder.ai"
+                placeholder="analyst@ringfinder.com"
                 autoComplete="email"
               />
 

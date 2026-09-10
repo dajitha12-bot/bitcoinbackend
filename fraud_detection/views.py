@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
+from django.utils import timezone
+from transactions.models import BitcoinTransaction
 
 from fraud_detection.models import (
     WalletRisk, FraudRing, FraudResult, AnalysisRun,
@@ -49,6 +51,31 @@ class AnalyzeFraudView(APIView):
         summary = execute_full_fraud_analysis(dataset_id=dataset_id, user=request.user)
         log_activity(request.user, "FRAUD_ANALYSIS_EXECUTED", f"Ran fraud analysis run #{summary.get('analysis_id')}", request)
         return Response(summary, status=status.HTTP_200_OK)
+
+class AnalystDashboardStatsView(APIView):
+    permission_classes = [IsAdminOrApprovedAnalyst]
+
+    def get(self, request):
+        latest_run = AnalysisRun.objects.order_by('-completed_at', '-started_at').first()
+        latest_validation = TemporalValidationResult.objects.order_by('-created_at').first()
+        suspicious_results = FraudResult.objects.filter(
+            prediction=FraudResult.Prediction.SUSPICIOUS
+        ).order_by('-analyzed_at')
+
+        return Response({
+            'total_transactions': latest_run.total_transactions if latest_run else BitcoinTransaction.objects.count(),
+            'suspicious_transactions': latest_run.suspicious_transactions if latest_run else suspicious_results.count(),
+            'fraud_rings_detected': latest_run.fraud_rings_found if latest_run else FraudRing.objects.count(),
+            'high_risk_wallets': WalletRisk.objects.filter(
+                risk_level__in=['HIGH', 'CRITICAL']
+            ).count(),
+            'model_precision': latest_run.precision if latest_run else (latest_validation.precision if latest_validation else None),
+            'model_recall': latest_run.recall if latest_run else (latest_validation.recall if latest_validation else None),
+            'f1_score': latest_run.f1_score if latest_run else (latest_validation.f1_score if latest_validation else None),
+            'recent_detections': FraudResultSerializer(suspicious_results[:5], many=True).data,
+            'source': 'DJANGO_ANALYST_DASHBOARD_STATS',
+            'generated_at': timezone.now().isoformat(),
+        }, status=status.HTTP_200_OK)
 
 class FraudResultsListView(APIView):
     permission_classes = [IsAdminOrApprovedAnalyst]
@@ -183,23 +210,23 @@ class ModelPerformanceView(APIView):
         latest_run = AnalysisRun.objects.filter(status='COMPLETED').order_by('-completed_at').first()
         if latest_run:
             data = {
-                "accuracy": latest_run.model_accuracy or 0.91,
-                "precision": latest_run.precision or 0.89,
-                "recall": latest_run.recall or 0.87,
-                "f1_score": latest_run.f1_score or 0.88,
-                "roc_auc": latest_run.roc_auc or 0.93,
-                "confusion_matrix": [[8800, 200], [130, 870]],
-                "total_predictions": latest_run.total_transactions or 10000
+                "accuracy": latest_run.model_accuracy,
+                "precision": latest_run.precision,
+                "recall": latest_run.recall,
+                "f1_score": latest_run.f1_score,
+                "roc_auc": latest_run.roc_auc,
+                "confusion_matrix": None,
+                "total_predictions": latest_run.total_transactions
             }
         else:
             data = {
-                "accuracy": 0.91,
-                "precision": 0.89,
-                "recall": 0.87,
-                "f1_score": 0.88,
-                "roc_auc": 0.93,
-                "confusion_matrix": [[8800, 200], [130, 870]],
-                "total_predictions": 10000
+                "accuracy": None,
+                "precision": None,
+                "recall": None,
+                "f1_score": None,
+                "roc_auc": None,
+                "confusion_matrix": None,
+                "total_predictions": 0
             }
         return Response(data, status=status.HTTP_200_OK)
 
@@ -219,7 +246,13 @@ class LiveMempoolFetchView(APIView):
 
     def post(self, request):
         from fraud_detection.services.mempool_service import fetch_live_mempool_transactions
-        limit = int(request.data.get('limit', 20))
+        try:
+            limit = min(max(int(request.data.get('limit', 20)), 1), 100)
+        except (TypeError, ValueError):
+            return Response({
+                'success': False,
+                'message': 'limit must be an integer between 1 and 100.',
+            }, status=status.HTTP_400_BAD_REQUEST)
         res = fetch_live_mempool_transactions(limit=limit, user=request.user)
         if res.get('success'):
             log_activity(request.user, "MEMPOOL_LIVE_FETCH", f"Fetched {res.get('count')} live mempool transactions", request)

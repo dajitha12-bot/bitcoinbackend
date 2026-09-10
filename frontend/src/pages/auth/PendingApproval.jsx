@@ -208,7 +208,7 @@ export const PendingApproval = () => {
           <div className="rf-pending-help-text">
             Contact system admin at{' '}
             <span className="rf-pending-contact">
-              admin@ringfinder.ai
+              admin@ringfinder.com
             </span>
           </div>
 

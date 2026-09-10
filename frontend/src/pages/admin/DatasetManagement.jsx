@@ -9,6 +9,8 @@ import {
   X,
   FileText,
   HardDrive,
+  Eye,
+  Play,
 } from 'lucide-react';
 
 import DataTable from '../../components/DataTable';
@@ -99,11 +101,7 @@ export const DatasetManagement = () => {
       return;
     }
 
-    const allowedExtensions = [
-      '.csv',
-      '.graphml',
-      '.gpickle',
-    ];
+    const allowedExtensions = ['.csv'];
 
     const fileName = file.name.toLowerCase();
 
@@ -113,7 +111,7 @@ export const DatasetManagement = () => {
 
     if (!isAllowed) {
       showNotification(
-        'Unsupported file type. Use CSV, GraphML, or GPickle.'
+        'Unsupported file type. Use a CSV file.'
       );
 
       event.target.value = '';
@@ -169,13 +167,11 @@ export const DatasetManagement = () => {
        * when the backend upload endpoint is enabled.
        */
 
-      const formData = new FormData();
-
-      formData.append('name', datasetName);
-      formData.append('file', selectedFile);
-
       const result =
-        await adminService.addDataset(formData);
+        await adminService.addDataset({
+          name: datasetName,
+          file: selectedFile,
+        });
 
       if (result?.success === false) {
         throw new Error(
@@ -218,6 +214,38 @@ export const DatasetManagement = () => {
     setShowUploadModal(false);
     setNewDsName('');
     setSelectedFile(null);
+  };
+
+  const handleImport = async (dataset) => {
+    try {
+      setRefreshing(true);
+      const result = await adminService.importDataset(dataset.id);
+
+      showNotification(
+        result?.message || 'Dataset imported successfully.'
+      );
+      await loadDatasets(true);
+    } catch (error) {
+      showNotification(
+        error?.message || 'Unable to import dataset.'
+      );
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const handlePreview = async (dataset) => {
+    try {
+      const result = await adminService.previewDataset(dataset.id);
+      const previewRows = result?.preview || result?.data?.preview || [];
+      showNotification(
+        `Preview loaded: ${previewRows.length} rows available.`
+      );
+    } catch (error) {
+      showNotification(
+        error?.message || 'Unable to preview dataset.'
+      );
+    }
   };
 
   /* =========================================================
@@ -474,6 +502,43 @@ export const DatasetManagement = () => {
 
         </div>
       ),
+    },
+
+    {
+      header: 'Actions',
+      id: 'actions',
+
+      cell: (row) => {
+        const status = String(row?.status || '').toUpperCase();
+        const canImport = status !== 'IMPORTED' && status !== 'PROCESSING';
+
+        return (
+          <div className="rf-dataset-actions">
+            {canImport && (
+              <button
+                type="button"
+                className="rf-dataset-action-button rf-dataset-action-primary"
+                onClick={() => handleImport(row)}
+                disabled={refreshing}
+                title="Import dataset"
+              >
+                <Play size={13} />
+                Import
+              </button>
+            )}
+            <button
+              type="button"
+              className="rf-dataset-action-button"
+              onClick={() => handlePreview(row)}
+              disabled={refreshing}
+              title="Preview dataset"
+            >
+              <Eye size={13} />
+              Preview
+            </button>
+          </div>
+        );
+      },
     },
   ];
 

@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import { FloatingChatbot } from '../components/FloatingChatbot';
 
 export const AdminLayout = () => {
   return (
@@ -33,6 +34,8 @@ export const AdminLayout = () => {
         <main className="page-container">
           <Outlet />
         </main>
+
+        <FloatingChatbot />
 
       </div>
 

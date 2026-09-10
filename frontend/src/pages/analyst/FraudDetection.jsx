@@ -18,7 +18,7 @@ import '../../styles/fraud-detection.css';
 
 export const FraudDetection = () => {
   const [selectedDataset, setSelectedDataset] =
-    useState('ds_elliptic_2026');
+    useState('');
 
   const [riskFilter, setRiskFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -410,16 +410,8 @@ export const FraudDetection = () => {
               className="rf-fraud-select"
               disabled={analyzing}
             >
-              <option value="ds_elliptic_2026">
-                Elliptic Bitcoin Dataset
-              </option>
-
-              <option value="ds_darknet_2025">
-                Darknet Mixer Subgraph
-              </option>
-
-              <option value="ds_ransomware_2026">
-                Ransomware Transaction Corpus
+              <option value="">
+                All Imported Transactions
               </option>
             </select>
 

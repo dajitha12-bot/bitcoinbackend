@@ -13,11 +13,13 @@ from fraud_detection.views import (
     ModelPerformanceView,
     ModelPerformanceHistoryView,
     LiveMempoolFetchView
+    , AnalystDashboardStatsView
 )
 
 urlpatterns = [
     path('network/', NetworkGraphView.as_view(), name='fraud_network'),
     path('analyze/', AnalyzeFraudView.as_view(), name='fraud_analyze'),
+    path('dashboard-stats/', AnalystDashboardStatsView.as_view(), name='analyst_dashboard_stats'),
     path('results/', FraudResultsListView.as_view(), name='fraud_results'),
     path('results/<int:pk>/', FraudResultDetailView.as_view(), name='fraud_result_detail'),
     path('wallets/', WalletRiskListView.as_view(), name='wallet_risks'),

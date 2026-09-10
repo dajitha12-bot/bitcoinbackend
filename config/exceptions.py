@@ -1,6 +1,7 @@
 from rest_framework.views import exception_handler
 from rest_framework.response import Response
 from rest_framework import status
+from django.conf import settings
 
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
@@ -13,10 +14,12 @@ def custom_exception_handler(exc, context):
         }
         response.data = custom_data
     else:
-        response = Response({
+        response_data = {
             'success': False,
-            'message': 'An unexpected server error occurred.',
-            'errors': str(exc)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            'message': 'An unexpected server error occurred.'
+        }
+        if settings.DEBUG:
+            response_data['errors'] = str(exc)
+        response = Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return response

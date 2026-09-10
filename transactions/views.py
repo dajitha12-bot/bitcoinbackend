@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from transactions.models import BitcoinTransaction
+from fraud_detection.models import FraudResult
 from transactions.serializers import BitcoinTransactionSerializer
 from accounts.permissions import IsAdminOrApprovedAnalyst, IsAdminUserRole
 from accounts.views import log_activity
@@ -28,6 +29,24 @@ class TransactionListView(APIView):
         tx_hash = request.query_params.get('transaction_hash') or request.query_params.get('hash')
         if tx_hash:
             queryset = queryset.filter(transaction_hash__icontains=tx_hash)
+
+        search = request.query_params.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(transaction_hash__icontains=search) |
+                Q(sender_wallet__icontains=search) |
+                Q(receiver_wallet__icontains=search)
+            )
+
+        risk_level = request.query_params.get('risk_level')
+        if risk_level:
+            risky_wallets = FraudResult.objects.filter(
+                risk_level__iexact=risk_level
+            ).values('wallet_address')
+            queryset = queryset.filter(
+                Q(sender_wallet__in=risky_wallets) |
+                Q(receiver_wallet__in=risky_wallets)
+            )
 
         min_amount = request.query_params.get('min_amount')
         if min_amount:

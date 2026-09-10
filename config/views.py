@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from django.db import connection
+from django.utils import timezone
 
 class RootApiView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -45,3 +47,24 @@ class RootApiView(APIView):
                 "analyst": "analyst@ringfinder.com / analyst123"
             }
         }, status=status.HTTP_200_OK)
+
+
+class HealthView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        database_status = 'OK'
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT 1')
+                cursor.fetchone()
+        except Exception:
+            database_status = 'ERROR'
+
+        overall_status = 'OK' if database_status == 'OK' else 'DEGRADED'
+        return Response({
+            'status': overall_status,
+            'service': 'ringfinder-api',
+            'database': database_status,
+            'timestamp': timezone.now().isoformat(),
+        }, status=status.HTTP_200_OK if overall_status == 'OK' else status.HTTP_503_SERVICE_UNAVAILABLE)
