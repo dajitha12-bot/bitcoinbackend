@@ -88,6 +88,8 @@ venv.bak/
 # Local uploads and downloaded datasets
 media/
 sample_csv/
+node_modules/
+frontend/dist/
 
 # IDEs
 .idea/
