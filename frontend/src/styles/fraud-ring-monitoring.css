@@ -1,0 +1,718 @@
+/* ============================================================
+   RINGFINDER — FRAUD RING MONITORING
+   Page-specific stylesheet
+   ============================================================ */
+
+
+/* ============================================================
+   01. PAGE CONTAINER
+   ============================================================ */
+
+.rf-ring-monitor-page {
+  width: 100%;
+  min-width: 0;
+  color: #e5edf7;
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+  animation: rf-ring-monitor-enter 0.35s ease;
+}
+
+
+/* ============================================================
+   02. INITIAL LOADING
+   ============================================================ */
+
+.rf-ring-monitor-loading {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+
+/* ============================================================
+   03. PAGE HEADER
+   ============================================================ */
+
+.rf-ring-monitor-header {
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(15, 28, 46, 0.96),
+      rgba(8, 15, 27, 0.98)
+    );
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.rf-ring-monitor-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+
+/* ============================================================
+   04. TITLE GROUP
+   ============================================================ */
+
+.rf-ring-monitor-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.rf-ring-monitor-title-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  border-radius: 10px;
+  box-shadow: 0 0 22px rgba(0, 229, 255, 0.08);
+}
+
+.rf-ring-monitor-title-group h1 {
+  margin: 4px 0 6px;
+  color: #f4f8fc;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.rf-ring-monitor-title-group p {
+  max-width: 720px;
+  margin: 0;
+  color: #8190a5;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   05. HEADER KICKER
+   ============================================================ */
+
+.rf-ring-monitor-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #00e5ff;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.rf-ring-monitor-kicker span {
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+  background: #00e5ff;
+  border-radius: 50%;
+  box-shadow: 0 0 9px rgba(0, 229, 255, 0.7);
+}
+
+
+/* ============================================================
+   06. HEADER ACTIONS
+   ============================================================ */
+
+.rf-ring-monitor-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.rf-ring-monitor-refresh {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 13px;
+  color: #a9b6c8;
+  background: #0b1421;
+  border: 1px solid #263750;
+  border-radius: 8px;
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rf-ring-monitor-refresh:hover:not(:disabled) {
+  color: #ffffff;
+  background: #101d2e;
+  border-color: #3b4f6a;
+  transform: translateY(-1px);
+}
+
+.rf-ring-monitor-refresh:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.rf-ring-monitor-refresh:focus-visible {
+  outline: 2px solid #00e5ff;
+  outline-offset: 2px;
+}
+
+
+/* ============================================================
+   07. MONITORED RING COUNT
+   ============================================================ */
+
+.rf-ring-monitor-count {
+  min-width: 112px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.045);
+  border: 1px solid rgba(0, 229, 255, 0.16);
+  border-radius: 8px;
+}
+
+.rf-ring-monitor-count > svg {
+  flex-shrink: 0;
+}
+
+.rf-ring-monitor-count > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rf-ring-monitor-count-label {
+  color: #718197;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-ring-monitor-count strong {
+  color: #eaf8fb;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 15px;
+  line-height: 1;
+}
+
+
+/* ============================================================
+   08. MONITOR STATUS BAR
+   ============================================================ */
+
+.rf-ring-monitor-status {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 0 16px;
+  background: #0a121e;
+  border: 1px solid #1b2a3d;
+  border-radius: 9px;
+}
+
+.rf-ring-monitor-status-left,
+.rf-ring-monitor-status-right {
+  display: flex;
+  align-items: center;
+}
+
+.rf-ring-monitor-status-left {
+  gap: 9px;
+  min-width: 0;
+}
+
+.rf-ring-monitor-live-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+  animation: rf-ring-monitor-pulse 1.8s ease-in-out infinite;
+}
+
+.rf-ring-monitor-status-label {
+  color: #aebbc9;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-ring-monitor-active {
+  padding: 4px 7px;
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  border-radius: 5px;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-ring-monitor-status-right {
+  gap: 7px;
+  color: #64758a;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+
+/* ============================================================
+   09. RING SUMMARY
+   ============================================================ */
+
+.rf-ring-monitor-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.rf-ring-monitor-summary-card {
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 17px;
+  background: #0b1421;
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.rf-ring-monitor-summary-card:hover {
+  background: #0d1726;
+  border-color: #29415c;
+  transform: translateY(-1px);
+}
+
+.rf-ring-summary-icon {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.16);
+  border-radius: 9px;
+}
+
+.rf-ring-summary-icon-alert {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.18);
+}
+
+.rf-ring-monitor-summary-card > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rf-ring-summary-label {
+  color: #718197;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.rf-ring-monitor-summary-card strong {
+  color: #edf4fa;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   10. FRAUD RING SECTION
+   ============================================================ */
+
+.rf-ring-monitor-section {
+  width: 100%;
+  overflow: hidden;
+  background: #0b1421;
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+.rf-ring-monitor-section-header {
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px;
+  border-bottom: 1px solid #1b2a3d;
+}
+
+.rf-ring-monitor-section-kicker {
+  margin-bottom: 5px;
+  color: #00e5ff;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.rf-ring-monitor-section-header h2 {
+  margin: 0 0 5px;
+  color: #eaf1f8;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.rf-ring-monitor-section-header p {
+  margin: 0;
+  color: #718197;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.rf-ring-monitor-record-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding: 7px 10px;
+  color: #8291a5;
+  background: #08111d;
+  border: 1px solid #1d2b40;
+  border-radius: 7px;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-ring-monitor-record-count span {
+  width: 5px;
+  height: 5px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+}
+
+
+/* ============================================================
+   11. FRAUD RING GRID
+   ============================================================ */
+
+.rf-ring-monitor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+
+/* ============================================================
+   12. EMPTY STATE
+   ============================================================ */
+
+.rf-ring-monitor-empty {
+  min-height: 270px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.rf-ring-monitor-empty-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  color: #64748b;
+  background: rgba(100, 116, 139, 0.08);
+  border: 1px solid rgba(100, 116, 139, 0.16);
+  border-radius: 12px;
+}
+
+.rf-ring-monitor-empty h3 {
+  margin: 0 0 7px;
+  color: #d8e1eb;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.rf-ring-monitor-empty p {
+  max-width: 450px;
+  margin: 0;
+  color: #69798e;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+
+/* ============================================================
+   13. FOOTER
+   ============================================================ */
+
+.rf-ring-monitor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 14px;
+  padding: 10px 3px;
+}
+
+.rf-ring-monitor-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #65758a;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-ring-monitor-footer-status span {
+  width: 5px;
+  height: 5px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 7px rgba(34, 197, 94, 0.7);
+}
+
+.rf-ring-monitor-footer-text {
+  color: #526176;
+  font-size: 10px;
+  text-align: right;
+}
+
+
+/* ============================================================
+   14. REFRESH ANIMATION
+   ============================================================ */
+
+.rf-button-spin {
+  animation: rf-ring-monitor-spin 0.9s linear infinite;
+}
+
+
+/* ============================================================
+   15. PAGE ANIMATIONS
+   ============================================================ */
+
+@keyframes rf-ring-monitor-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rf-ring-monitor-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rf-ring-monitor-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.45;
+    transform: scale(0.78);
+  }
+}
+
+
+/* ============================================================
+   16. LARGE TABLET
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .rf-ring-monitor-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* ============================================================
+   17. TABLET
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .rf-ring-monitor-header-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-ring-monitor-actions {
+    width: 100%;
+  }
+
+  .rf-ring-monitor-refresh {
+    flex: 1;
+  }
+
+  .rf-ring-monitor-count {
+    flex: 1;
+  }
+
+  .rf-ring-monitor-status {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 11px 14px;
+  }
+
+  .rf-ring-monitor-status-right {
+    padding-left: 16px;
+  }
+}
+
+
+/* ============================================================
+   18. MOBILE
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .rf-ring-monitor-header {
+    padding: 17px;
+  }
+
+  .rf-ring-monitor-title-group {
+    gap: 11px;
+  }
+
+  .rf-ring-monitor-title-icon {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .rf-ring-monitor-title-group h1 {
+    font-size: 19px;
+  }
+
+  .rf-ring-monitor-title-group p {
+    font-size: 11px;
+  }
+
+  .rf-ring-monitor-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rf-ring-monitor-refresh,
+  .rf-ring-monitor-count {
+    width: 100%;
+    flex: none;
+  }
+
+  .rf-ring-monitor-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-ring-monitor-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .rf-ring-monitor-record-count {
+    align-self: flex-start;
+  }
+
+  .rf-ring-monitor-grid {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .rf-ring-monitor-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-ring-monitor-footer-text {
+    text-align: left;
+  }
+}
+
+
+/* ============================================================
+   19. VERY SMALL SCREENS
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .rf-ring-monitor-status-label {
+    font-size: 8px;
+  }
+
+  .rf-ring-monitor-active {
+    font-size: 8px;
+  }
+
+  .rf-ring-monitor-status-right {
+    font-size: 8px;
+  }
+
+  .rf-ring-monitor-section-header h2 {
+    font-size: 14px;
+  }
+
+  .rf-ring-monitor-section-header p {
+    font-size: 11px;
+  }
+
+  .rf-ring-summary-label {
+    font-size: 8px;
+  }
+}

@@ -1,0 +1,804 @@
+/* ============================================================
+   RINGFINDER — NETWORK GRAPH
+   ============================================================ */
+
+.rf-network-graph {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+
+  gap: 14px;
+
+  color: #dbe5f2;
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+}
+
+
+/* ============================================================
+   GRAPH CANVAS
+   ============================================================ */
+
+.rf-network-canvas {
+  min-width: 0;
+  min-height: 600px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+
+/* ============================================================
+   TOOLBAR
+   ============================================================ */
+
+.rf-network-toolbar {
+  min-height: 52px;
+
+  padding: 9px 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  background: #101a2a;
+
+  border-bottom: 1px solid #1d2b40;
+}
+
+.rf-network-toolbar-left,
+.rf-network-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rf-network-toolbar-left {
+  min-width: 0;
+}
+
+.rf-network-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #dce5f1;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.rf-network-live-dot {
+  width: 6px;
+  height: 6px;
+
+  flex: 0 0 6px;
+
+  border-radius: 50%;
+
+  background: #00e5ff;
+
+  box-shadow:
+    0 0 8px rgba(0, 229, 255, 0.8);
+}
+
+.rf-network-count {
+  color: #586880;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   FILTER
+   ============================================================ */
+
+.rf-network-filter {
+  min-height: 30px;
+
+  padding: 0 9px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #263750;
+  border-radius: 6px;
+
+  background: #0b1320;
+
+  color: #8190a7;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rf-network-filter:hover {
+  color: #00e5ff;
+  border-color: rgba(0, 229, 255, 0.3);
+}
+
+.rf-network-filter-active {
+  color: #f87171;
+
+  background: rgba(239, 68, 68, 0.08);
+
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.rf-network-filter-active:hover {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+
+/* ============================================================
+   ZOOM
+   ============================================================ */
+
+.rf-network-zoom {
+  min-height: 30px;
+
+  display: flex;
+  align-items: center;
+
+  border: 1px solid #263750;
+  border-radius: 6px;
+
+  overflow: hidden;
+
+  background: #0b1320;
+}
+
+.rf-network-zoom button {
+  width: 29px;
+  height: 29px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background: transparent;
+
+  color: #8190a7;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.rf-network-zoom button:hover {
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.06);
+}
+
+.rf-network-zoom span {
+  min-width: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #718098;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+
+  border-left: 1px solid #1d2b40;
+  border-right: 1px solid #1d2b40;
+}
+
+
+/* ============================================================
+   SVG AREA
+   ============================================================ */
+
+.rf-network-svg-wrapper {
+  min-height: 0;
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  padding: 12px;
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(0, 229, 255, 0.035),
+      transparent 48%
+    ),
+    #080e18;
+
+  position: relative;
+}
+
+.rf-network-svg-wrapper::before {
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      rgba(71, 85, 105, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(71, 85, 105, 0.06) 1px,
+      transparent 1px
+    );
+
+  background-size: 30px 30px;
+}
+
+.rf-network-svg {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+
+  display: block;
+
+  overflow: visible;
+
+  transform-origin: center;
+
+  transition: transform 0.25s ease;
+
+  position: relative;
+  z-index: 1;
+}
+
+
+/* ============================================================
+   GRAPH ELEMENTS
+   ============================================================ */
+
+.rf-network-edge {
+  cursor: pointer;
+}
+
+.rf-network-edge-line {
+  transition:
+    stroke-width 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.rf-network-edge:hover .rf-network-edge-line {
+  stroke-width: 3;
+  opacity: 0.95;
+}
+
+.rf-network-node {
+  cursor: pointer;
+}
+
+.rf-network-node-circle {
+  transition:
+    r 0.15s ease,
+    stroke-width 0.15s ease;
+}
+
+.rf-network-node:hover .rf-network-node-circle {
+  stroke: #ffffff;
+  stroke-width: 3;
+}
+
+.rf-network-node-glow {
+  opacity: 0.8;
+}
+
+.rf-network-node-label {
+  pointer-events: none;
+  user-select: none;
+}
+
+
+/* ============================================================
+   LEGEND
+   ============================================================ */
+
+.rf-network-legend {
+  min-height: 43px;
+
+  padding: 9px 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  background: #0b1320;
+
+  border-top: 1px solid #1d2b40;
+}
+
+.rf-network-legend-items {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 13px;
+}
+
+.rf-network-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #697890;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+}
+
+.rf-legend-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  display: inline-block;
+}
+
+.rf-legend-red {
+  background: #ef4444;
+  box-shadow: 0 0 7px rgba(239, 68, 68, 0.5);
+}
+
+.rf-legend-amber {
+  background: #f59e0b;
+  box-shadow: 0 0 7px rgba(245, 158, 11, 0.5);
+}
+
+.rf-legend-green {
+  background: #10b981;
+  box-shadow: 0 0 7px rgba(16, 185, 129, 0.45);
+}
+
+.rf-network-legend-help {
+  flex-shrink: 0;
+
+  color: #4e5d74;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+}
+
+
+/* ============================================================
+   INSPECTOR
+   ============================================================ */
+
+.rf-network-inspector {
+  min-width: 0;
+  min-height: 600px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+.rf-inspector-content {
+  min-width: 0;
+  flex: 1;
+
+  padding: 15px;
+}
+
+.rf-inspector-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding-bottom: 12px;
+
+  color: #00e5ff;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  border-bottom: 1px solid #1d2b40;
+}
+
+.rf-inspector-section {
+  padding-top: 14px;
+}
+
+
+/* ============================================================
+   INSPECTOR ADDRESS
+   ============================================================ */
+
+.rf-inspector-address {
+  padding: 11px;
+
+  background: #101a2a;
+
+  border: 1px solid #1d2b40;
+  border-radius: 8px;
+}
+
+.rf-inspector-address-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+}
+
+.rf-inspector-address-header > span,
+.rf-inspector-label {
+  color: #64738b;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rf-inspector-address p {
+  margin: 8px 0 0;
+
+  color: #cbd6e5;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.rf-inspector-hash {
+  color: #94a3b8 !important;
+}
+
+
+/* ============================================================
+   INSPECTOR STATS
+   ============================================================ */
+
+.rf-inspector-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 8px;
+
+  margin-top: 10px;
+}
+
+.rf-inspector-stat {
+  min-width: 0;
+
+  padding: 10px;
+
+  background: rgba(16, 26, 42, 0.75);
+
+  border: 1px solid #1d2b40;
+  border-radius: 7px;
+}
+
+.rf-inspector-stat span {
+  display: block;
+
+  color: #5e6d84;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 7px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rf-inspector-stat strong {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #d9e3ef;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   FRAUD RING
+   ============================================================ */
+
+.rf-inspector-fraud {
+  margin-top: 10px;
+  padding: 11px;
+
+  background: rgba(239, 68, 68, 0.055);
+
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+}
+
+.rf-inspector-fraud-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #ef4444;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.rf-inspector-fraud p {
+  margin: 7px 0 0;
+
+  color: #fca5a5;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   TRANSACTION DETAILS
+   ============================================================ */
+
+.rf-transaction-details {
+  margin-top: 10px;
+
+  background: #101a2a;
+
+  border: 1px solid #1d2b40;
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+.rf-transaction-row {
+  min-height: 43px;
+
+  padding: 9px 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  border-bottom: 1px solid rgba(29, 43, 64, 0.7);
+}
+
+.rf-transaction-row:last-child {
+  border-bottom: none;
+}
+
+.rf-transaction-row span {
+  color: #63728a;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+}
+
+.rf-transaction-row strong {
+  max-width: 150px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #b9c6d8;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+}
+
+.rf-value-green {
+  color: #22c55e !important;
+}
+
+
+/* ============================================================
+   EMPTY INSPECTOR
+   ============================================================ */
+
+.rf-inspector-empty {
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 25px;
+
+  text-align: center;
+
+  color: #33445b;
+}
+
+.rf-inspector-empty svg {
+  color: #33445b;
+}
+
+.rf-inspector-empty p {
+  max-width: 210px;
+
+  margin: 14px 0 0;
+
+  color: #5b6a80;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  line-height: 1.7;
+}
+
+
+/* ============================================================
+   INSPECTOR FOOTER
+   ============================================================ */
+
+.rf-inspector-footer {
+  padding: 11px;
+
+  border-top: 1px solid #1d2b40;
+  background: #0b1320;
+}
+
+.rf-inspector-clear {
+  width: 100%;
+  height: 32px;
+
+  border: 1px solid #263750;
+  border-radius: 6px;
+
+  background: #101a2a;
+
+  color: #718098;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.rf-inspector-clear:hover {
+  color: #00e5ff;
+
+  border-color: rgba(0, 229, 255, 0.3);
+
+  background: #142033;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .rf-network-graph {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-network-inspector {
+    min-height: auto;
+  }
+
+  .rf-inspector-empty {
+    min-height: 180px;
+  }
+}
+
+@media (max-width: 700px) {
+  .rf-network-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-network-toolbar-left,
+  .rf-network-toolbar-right {
+    width: 100%;
+  }
+
+  .rf-network-toolbar-right {
+    justify-content: space-between;
+  }
+
+  .rf-network-canvas {
+    min-height: 480px;
+  }
+
+  .rf-network-legend {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-network-legend-help {
+    display: none;
+  }
+
+  .rf-inspector-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .rf-network-toolbar-right {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rf-network-filter {
+    width: 100%;
+  }
+
+  .rf-network-zoom {
+    align-self: flex-end;
+  }
+
+  .rf-network-svg-wrapper {
+    padding: 5px;
+  }
+}

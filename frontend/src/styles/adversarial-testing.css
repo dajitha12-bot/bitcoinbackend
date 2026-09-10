@@ -1,0 +1,790 @@
+/* ==========================================================
+   ADVERSARIAL TESTING
+   RingFinder Analyst Dashboard
+   ========================================================== */
+
+
+/* ==========================================================
+   1. PAGE CONTAINER
+   ========================================================== */
+
+.rf-adversarial-page {
+  width: 100%;
+  min-width: 0;
+  padding: 4px 0 28px;
+  color: #e2e8f0;
+  animation: rfAdversarialPageEnter 0.35s ease-out;
+}
+
+
+/* ==========================================================
+   2. LOADING STATE
+   ========================================================== */
+
+.rf-adversarial-loading {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+
+/* ==========================================================
+   3. ERROR STATE
+   ========================================================== */
+
+.rf-adversarial-error {
+  width: 100%;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  background: #121826;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+}
+
+.rf-adversarial-error-icon {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 11px;
+}
+
+.rf-adversarial-error h2 {
+  margin: 0 0 8px;
+  color: #f87171;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.rf-adversarial-error p {
+  margin: 0;
+  color: #64748b;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 10px;
+}
+
+
+/* ==========================================================
+   4. MAIN BANNER
+   ========================================================== */
+
+.rf-adversarial-banner {
+  width: 100%;
+  min-height: 116px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 22px;
+  margin-bottom: 20px;
+  background:
+    linear-gradient(
+      110deg,
+      rgba(69, 40, 5, 0.45),
+      rgba(13, 21, 35, 0.98) 48%,
+      rgba(8, 13, 23, 0.98)
+    );
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 14px;
+  box-shadow:
+    0 14px 35px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+  position: relative;
+}
+
+.rf-adversarial-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: #f59e0b;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.5);
+}
+
+.rf-adversarial-banner-content {
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+
+/* ==========================================================
+   5. BANNER TOP
+   ========================================================== */
+
+.rf-adversarial-banner-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.rf-adversarial-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 23px;
+  padding: 4px 8px;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 5px;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.rf-adversarial-score {
+  color: #64748b;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+/* ==========================================================
+   6. BANNER TYPOGRAPHY
+   ========================================================== */
+
+.rf-adversarial-banner h1 {
+  margin: 0 0 5px;
+  color: #f1f5f9;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.rf-adversarial-banner p {
+  max-width: 720px;
+  margin: 0;
+  color: #94a3b8;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+
+/* ==========================================================
+   7. SYSTEM STATUS
+   ========================================================== */
+
+.rf-adversarial-system-status {
+  flex: 0 0 auto;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  padding: 12px 14px;
+  background: rgba(8, 13, 23, 0.78);
+  border: 1px solid #1d2b40;
+  border-radius: 9px;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  text-align: right;
+}
+
+.rf-adversarial-system-label {
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.rf-adversarial-system-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #34d399;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.rf-adversarial-system-value svg {
+  color: #22c55e;
+}
+
+
+/* ==========================================================
+   8. SCENARIO SECTION
+   ========================================================== */
+
+.rf-adversarial-scenarios {
+  width: 100%;
+}
+
+.rf-adversarial-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 13px;
+  color: #fbbf24;
+}
+
+.rf-adversarial-section-heading h2 {
+  margin: 0;
+  color: #94a3b8;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================
+   9. SCENARIO LIST
+   ========================================================== */
+
+.rf-adversarial-scenario-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+
+/* ==========================================================
+   10. SCENARIO CARD
+   ========================================================== */
+
+.rf-adversarial-card {
+  width: 100%;
+  padding: 17px;
+  background: #121826;
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rf-adversarial-card:hover {
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.18),
+    0 0 24px rgba(245, 158, 11, 0.025);
+  transform: translateY(-1px);
+}
+
+
+/* ==========================================================
+   11. SCENARIO CARD HEADER
+   ========================================================== */
+
+.rf-adversarial-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 13px;
+  margin-bottom: 13px;
+  border-bottom: 1px solid rgba(29, 43, 64, 0.8);
+}
+
+.rf-adversarial-card-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.rf-adversarial-scenario-icon {
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 9px;
+}
+
+.rf-adversarial-card-title h3 {
+  margin: 0 0 4px;
+  color: #f1f5f9;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.rf-adversarial-card-title p {
+  max-width: 680px;
+  margin: 0;
+  color: #64748b;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+
+/* ==========================================================
+   12. CARD ACTIONS
+   ========================================================== */
+
+.rf-adversarial-card-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.rf-adversarial-impact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.rf-impact-low {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.rf-impact-medium {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.rf-impact-high {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+
+/* ==========================================================
+   13. RETEST BUTTON
+   ========================================================== */
+
+.rf-adversarial-retest {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 10px;
+  color: #94a3b8;
+  background: #101a2a;
+  border: 1px solid #263750;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rf-adversarial-retest:hover:not(:disabled) {
+  color: #fbbf24;
+  background: #172235;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.rf-adversarial-retest:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* ==========================================================
+   14. SCORE GRID
+   ========================================================== */
+
+.rf-adversarial-score-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+}
+
+
+/* ==========================================================
+   15. SCORE CARD
+   ========================================================== */
+
+.rf-adversarial-score-card {
+  min-width: 0;
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 11px 12px;
+  background: rgba(8, 13, 23, 0.62);
+  border: 1px solid #1d2b40;
+  border-radius: 8px;
+}
+
+.rf-adversarial-score-card > span,
+.rf-adversarial-score-card div > span {
+  display: block;
+  margin-bottom: 6px;
+  color: #475569;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.rf-adversarial-score-card > strong,
+.rf-adversarial-score-card div > strong {
+  color: #cbd5e1;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+
+/* ==========================================================
+   16. SCORE COLORS
+   ========================================================== */
+
+.rf-adversarial-score-amber {
+  color: #fbbf24 !important;
+}
+
+.rf-adversarial-score-green {
+  color: #34d399 !important;
+}
+
+.rf-adversarial-score-cyan {
+  color: #22d3ee !important;
+}
+
+
+/* ==========================================================
+   17. DETECTION STATUS
+   ========================================================== */
+
+.rf-adversarial-detection {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rf-adversarial-detection > div {
+  min-width: 0;
+}
+
+.rf-adversarial-check {
+  flex: 0 0 auto;
+  color: #22c55e;
+}
+
+
+/* ==========================================================
+   18. RETEST SPINNER
+   ========================================================== */
+
+.rf-adversarial-spin {
+  animation: rfAdversarialSpin 0.9s linear infinite;
+}
+
+
+/* ==========================================================
+   19. RETAINED FEATURES
+   ========================================================== */
+
+.rf-adversarial-features {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 13px;
+}
+
+.rf-adversarial-features-label {
+  flex: 0 0 auto;
+  padding-top: 3px;
+  color: #64748b;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rf-adversarial-feature-list {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.rf-adversarial-feature {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 7px;
+  color: #94a3b8;
+  background: #101a2a;
+  border: 1px solid #263750;
+  border-radius: 4px;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 8px;
+  line-height: 1.3;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rf-adversarial-feature:hover {
+  color: #cbd5e1;
+  border-color: #344762;
+}
+
+
+/* ==========================================================
+   20. FOOTER
+   ========================================================== */
+
+.rf-adversarial-footer {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  padding: 0 4px;
+}
+
+.rf-adversarial-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #475569;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-adversarial-footer-status span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 7px rgba(34, 197, 94, 0.65);
+}
+
+.rf-adversarial-footer-text {
+  color: #334155;
+  font-family: var(--rf-mono, "JetBrains Mono", "Consolas", monospace);
+  font-size: 8px;
+  text-align: right;
+}
+
+
+/* ==========================================================
+   21. PAGE ANIMATIONS
+   ========================================================== */
+
+@keyframes rfAdversarialPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rfAdversarialSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ==========================================================
+   22. LARGE TABLET
+   ========================================================== */
+
+@media (max-width: 1050px) {
+  .rf-adversarial-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-adversarial-system-status {
+    width: 100%;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .rf-adversarial-score-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* ==========================================================
+   23. TABLET
+   ========================================================== */
+
+@media (max-width: 800px) {
+  .rf-adversarial-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-adversarial-card-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .rf-adversarial-card-title {
+    width: 100%;
+  }
+
+  .rf-adversarial-features {
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .rf-adversarial-features-label {
+    padding-top: 0;
+  }
+}
+
+
+/* ==========================================================
+   24. MOBILE
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .rf-adversarial-page {
+    padding-bottom: 20px;
+  }
+
+  .rf-adversarial-banner {
+    padding: 16px;
+    border-radius: 11px;
+  }
+
+  .rf-adversarial-banner h1 {
+    font-size: 17px;
+  }
+
+  .rf-adversarial-banner p {
+    font-size: 9px;
+  }
+
+  .rf-adversarial-system-status {
+    padding: 10px 12px;
+  }
+
+  .rf-adversarial-card {
+    padding: 14px;
+  }
+
+  .rf-adversarial-card-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rf-adversarial-impact,
+  .rf-adversarial-retest {
+    width: 100%;
+  }
+
+  .rf-adversarial-score-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-adversarial-score-card {
+    min-height: 62px;
+  }
+
+  .rf-adversarial-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-adversarial-footer-text {
+    text-align: left;
+  }
+}
+
+
+/* ==========================================================
+   25. VERY SMALL SCREENS
+   ========================================================== */
+
+@media (max-width: 420px) {
+  .rf-adversarial-banner-top {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .rf-adversarial-banner h1 {
+    font-size: 15px;
+  }
+
+  .rf-adversarial-section-heading h2 {
+    font-size: 9px;
+  }
+
+  .rf-adversarial-card-title {
+    align-items: flex-start;
+  }
+
+  .rf-adversarial-scenario-icon {
+    width: 35px;
+    height: 35px;
+    flex-basis: 35px;
+  }
+
+  .rf-adversarial-card-title h3 {
+    font-size: 12px;
+  }
+
+  .rf-adversarial-card-title p {
+    font-size: 8px;
+  }
+
+  .rf-adversarial-feature {
+    font-size: 7px;
+  }
+}

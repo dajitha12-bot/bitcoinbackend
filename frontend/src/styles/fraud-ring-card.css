@@ -1,0 +1,378 @@
+/* ============================================================
+   RINGFINDER — FRAUD RING CARD
+   ============================================================ */
+
+.rf-ring-card {
+  width: 100%;
+  min-width: 0;
+  padding: 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #121826;
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rf-ring-card:hover {
+  border-color: rgba(0, 229, 255, 0.38);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.rf-ring-header {
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.rf-ring-identity {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.rf-ring-icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ef4444;
+
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 9px;
+}
+
+.rf-ring-title-area {
+  min-width: 0;
+}
+
+.rf-ring-title-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  min-width: 0;
+}
+
+.rf-ring-id {
+  color: #00e5ff;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.rf-ring-name {
+  margin: 4px 0 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #edf3fb;
+
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  transition: color 0.2s ease;
+}
+
+.rf-ring-card:hover .rf-ring-name {
+  color: #67e8f9;
+}
+
+
+/* ============================================================
+   RISK SCORE
+   ============================================================ */
+
+.rf-ring-risk-score {
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.rf-ring-risk-score span {
+  color: #596980;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.rf-ring-risk-score strong {
+  margin-top: 3px;
+
+  color: #ef4444;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+
+/* ============================================================
+   PRIMARY PATTERN
+   ============================================================ */
+
+.rf-ring-pattern {
+  width: 100%;
+  min-width: 0;
+
+  margin-top: 14px;
+  padding: 8px 10px;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  background: rgba(8, 13, 23, 0.58);
+  border: 1px solid #1d2b40;
+  border-radius: 6px;
+
+  color: #a5b2c5;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+}
+
+.rf-ring-pattern svg {
+  flex-shrink: 0;
+  color: #f59e0b;
+}
+
+.rf-ring-pattern span {
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   STATISTICS
+   ============================================================ */
+
+.rf-ring-stats {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 8px;
+
+  margin-top: 14px;
+  padding-top: 12px;
+
+  border-top: 1px solid rgba(29, 43, 64, 0.7);
+}
+
+.rf-ring-stat {
+  min-width: 0;
+  padding: 9px 6px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(8, 13, 23, 0.38);
+  border: 1px solid rgba(29, 43, 64, 0.65);
+  border-radius: 7px;
+}
+
+.rf-ring-stat-label {
+  color: #65748b;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+.rf-ring-stat-value {
+  min-width: 0;
+
+  margin-top: 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  color: #dce5f1;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rf-ring-stat-value svg {
+  color: #00e5ff;
+}
+
+.rf-ring-volume {
+  max-width: 100%;
+
+  margin-top: 5px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #22c55e;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.rf-ring-footer {
+  width: 100%;
+
+  margin-top: 14px;
+  padding-top: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  color: #718098;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+
+  border-top: 1px solid rgba(29, 43, 64, 0.7);
+}
+
+.rf-ring-confidence {
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-ring-confidence strong {
+  color: #d5dfec;
+}
+
+.rf-ring-view-button {
+  flex-shrink: 0;
+
+  padding: 4px 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  border: none;
+  background: transparent;
+
+  color: #00e5ff;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rf-ring-view-button:hover {
+  color: #67e8f9;
+  transform: translateX(2px);
+}
+
+.rf-ring-view-button svg {
+  transition: transform 0.2s ease;
+}
+
+.rf-ring-view-button:hover svg {
+  transform: translateX(2px);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 600px) {
+  .rf-ring-card {
+    padding: 15px;
+  }
+
+  .rf-ring-header {
+    gap: 10px;
+  }
+
+  .rf-ring-icon {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .rf-ring-name {
+    font-size: 12px;
+  }
+
+  .rf-ring-risk-score strong {
+    font-size: 16px;
+  }
+
+  .rf-ring-stat-label {
+    font-size: 6px;
+  }
+
+  .rf-ring-stat-value,
+  .rf-ring-volume {
+    font-size: 9px;
+  }
+}

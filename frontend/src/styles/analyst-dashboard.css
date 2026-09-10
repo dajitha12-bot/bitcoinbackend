@@ -1,0 +1,1499 @@
+/* ==========================================================
+   ANALYST DASHBOARD
+   RingFinder Fraud Analyst Portal
+   ========================================================== */
+
+
+/* ==========================================================
+   1. PAGE CONTAINER
+   ========================================================== */
+
+.rf-analyst-dashboard {
+  width: 100%;
+  min-width: 0;
+  padding: 4px 0 30px;
+  color: #e2e8f0;
+  animation: rfDashboardPageEnter 0.35s ease-out;
+}
+
+
+/* ==========================================================
+   2. TOP BANNER
+   ========================================================== */
+
+.rf-dashboard-banner {
+  position: relative;
+  width: 100%;
+  min-height: 130px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+  padding: 22px 24px;
+  margin-bottom: 18px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(0, 229, 255, 0.07),
+      transparent 32%
+    ),
+    linear-gradient(
+      115deg,
+      #0c1827 0%,
+      #0d1523 52%,
+      #101827 100%
+    );
+
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.rf-dashboard-banner::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 3px;
+  height: 100%;
+
+  background: #00e5ff;
+
+  box-shadow:
+    0 0 18px rgba(0, 229, 255, 0.5);
+}
+
+.rf-dashboard-banner::after {
+  content: "";
+
+  position: absolute;
+  right: -80px;
+  top: -100px;
+
+  width: 240px;
+  height: 240px;
+
+  border: 1px solid rgba(0, 229, 255, 0.07);
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 35px rgba(0, 229, 255, 0.015),
+    0 0 0 70px rgba(0, 229, 255, 0.01);
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================
+   3. BANNER CONTENT
+   ========================================================== */
+
+.rf-dashboard-banner-content {
+  position: relative;
+  z-index: 1;
+
+  min-width: 0;
+}
+
+
+/* ==========================================================
+   4. BANNER META
+   ========================================================== */
+
+.rf-dashboard-banner-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+
+/* ==========================================================
+   5. LIVE DEPLOYMENT BADGE
+   ========================================================== */
+
+.rf-dashboard-live-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  min-height: 23px;
+
+  padding: 4px 9px;
+
+  color: #67e8f9;
+
+  background: rgba(0, 229, 255, 0.07);
+
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 5px;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+}
+
+
+/* ==========================================================
+   6. LIVE STATUS DOT
+   ========================================================== */
+
+.rf-dashboard-live-dot {
+  width: 6px;
+  height: 6px;
+
+  flex: 0 0 6px;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 8px rgba(34, 197, 94, 0.8);
+
+  animation:
+    rfDashboardPulse 2s ease-in-out infinite;
+}
+
+
+/* ==========================================================
+   7. DATASET LABEL
+   ========================================================== */
+
+.rf-dashboard-dataset {
+  color: #64748b;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+/* ==========================================================
+   8. DASHBOARD TITLE
+   ========================================================== */
+
+.rf-dashboard-title {
+  position: relative;
+  z-index: 1;
+
+  margin: 0 0 6px;
+
+  color: #f1f5f9;
+
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 750;
+
+  letter-spacing: -0.025em;
+}
+
+
+/* ==========================================================
+   9. DASHBOARD DESCRIPTION
+   ========================================================== */
+
+.rf-dashboard-description {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin: 0;
+
+  color: #64748b;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.rf-dashboard-description span {
+  color: #334155;
+}
+
+
+/* ==========================================================
+   10. PRIMARY ACTION BUTTON
+   ========================================================== */
+
+.rf-dashboard-primary-button {
+  position: relative;
+  z-index: 2;
+
+  flex: 0 0 auto;
+
+  min-height: 39px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 15px;
+
+  color: #001014;
+
+  background:
+    linear-gradient(
+      135deg,
+      #22d3ee,
+      #00e5ff
+    );
+
+  border: 1px solid rgba(103, 232, 249, 0.6);
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.02em;
+
+  box-shadow:
+    0 5px 18px rgba(0, 229, 255, 0.12);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.rf-dashboard-primary-button:hover {
+  filter: brightness(1.05);
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 24px rgba(0, 229, 255, 0.2);
+}
+
+.rf-dashboard-primary-button:active {
+  transform: translateY(0);
+}
+
+
+/* ==========================================================
+   11. STATISTICS GRID
+   ========================================================== */
+
+.rf-dashboard-stats {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+}
+
+
+/* ==========================================================
+   12. MODEL PERFORMANCE GRID
+   ========================================================== */
+
+.rf-dashboard-performance {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+}
+
+
+/* ==========================================================
+   13. PERFORMANCE CARD
+   ========================================================== */
+
+.rf-dashboard-performance-card {
+  position: relative;
+
+  min-height: 94px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 16px 17px;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 11px;
+
+  overflow: hidden;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rf-dashboard-performance-card:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.14);
+}
+
+.rf-dashboard-performance-card::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 2px;
+  height: 100%;
+}
+
+
+/* ==========================================================
+   14. CYAN PERFORMANCE
+   ========================================================== */
+
+.rf-performance-cyan::before {
+  background: #00e5ff;
+
+  box-shadow:
+    0 0 12px rgba(0, 229, 255, 0.4);
+}
+
+.rf-performance-cyan:hover {
+  border-color: rgba(0, 229, 255, 0.25);
+}
+
+
+/* ==========================================================
+   15. EMERALD PERFORMANCE
+   ========================================================== */
+
+.rf-performance-emerald::before {
+  background: #22c55e;
+
+  box-shadow:
+    0 0 12px rgba(34, 197, 94, 0.35);
+}
+
+.rf-performance-emerald:hover {
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+
+/* ==========================================================
+   16. PURPLE PERFORMANCE
+   ========================================================== */
+
+.rf-performance-purple::before {
+  background: #8b5cf6;
+
+  box-shadow:
+    0 0 12px rgba(139, 92, 246, 0.35);
+}
+
+.rf-performance-purple:hover {
+  border-color: rgba(139, 92, 246, 0.25);
+}
+
+
+/* ==========================================================
+   17. PERFORMANCE LABEL
+   ========================================================== */
+
+.rf-performance-label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #64748b;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================
+   18. PERFORMANCE VALUE
+   ========================================================== */
+
+.rf-performance-value {
+  display: block;
+
+  color: #e2e8f0;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 750;
+}
+
+
+/* ==========================================================
+   19. PERFORMANCE TAG
+   ========================================================== */
+
+.rf-performance-tag {
+  flex: 0 0 auto;
+
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 22px;
+
+  padding: 3px 7px;
+
+  color: #64748b;
+
+  background: #101a2a;
+
+  border: 1px solid #263750;
+  border-radius: 5px;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   20. MODULE SECTION
+   ========================================================== */
+
+.rf-dashboard-modules {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+
+/* ==========================================================
+   21. SECTION HEADING
+   ========================================================== */
+
+.rf-dashboard-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 12px;
+}
+
+.rf-section-eyebrow {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #475569;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.13em;
+}
+
+.rf-dashboard-section-heading h3 {
+  margin: 0;
+
+  color: #cbd5e1;
+
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.rf-module-count {
+  color: #475569;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+
+/* ==========================================================
+   22. MODULE GRID
+   ========================================================== */
+
+.rf-dashboard-module-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 11px;
+}
+
+
+/* ==========================================================
+   23. MODULE CARD
+   ========================================================== */
+
+.rf-dashboard-module-card {
+  position: relative;
+
+  min-width: 0;
+  min-height: 155px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 15px;
+
+  color: #e2e8f0;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 11px;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  overflow: hidden;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rf-dashboard-module-card::after {
+  content: "";
+
+  position: absolute;
+
+  right: -30px;
+  bottom: -45px;
+
+  width: 100px;
+  height: 100px;
+
+  border-radius: 50%;
+
+  opacity: 0.035;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rf-dashboard-module-card:hover {
+  transform: translateY(-2px);
+
+  background: #101a2a;
+
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.16);
+}
+
+.rf-dashboard-module-card:hover::after {
+  opacity: 0.07;
+
+  transform: scale(1.2);
+}
+
+
+/* ==========================================================
+   24. CYAN MODULE
+   ========================================================== */
+
+.rf-module-cyan .rf-module-icon {
+  color: #22d3ee;
+
+  background: rgba(0, 229, 255, 0.07);
+
+  border-color: rgba(0, 229, 255, 0.18);
+}
+
+.rf-module-cyan:hover {
+  border-color: rgba(0, 229, 255, 0.32);
+}
+
+.rf-module-cyan::after {
+  background: #00e5ff;
+}
+
+
+/* ==========================================================
+   25. PURPLE MODULE
+   ========================================================== */
+
+.rf-module-purple .rf-module-icon {
+  color: #a78bfa;
+
+  background: rgba(139, 92, 246, 0.08);
+
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.rf-module-purple:hover {
+  border-color: rgba(139, 92, 246, 0.32);
+}
+
+.rf-module-purple::after {
+  background: #8b5cf6;
+}
+
+
+/* ==========================================================
+   26. EMERALD MODULE
+   ========================================================== */
+
+.rf-module-emerald .rf-module-icon {
+  color: #34d399;
+
+  background: rgba(34, 197, 94, 0.07);
+
+  border-color: rgba(34, 197, 94, 0.18);
+}
+
+.rf-module-emerald:hover {
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.rf-module-emerald::after {
+  background: #22c55e;
+}
+
+
+/* ==========================================================
+   27. AMBER MODULE
+   ========================================================== */
+
+.rf-module-amber .rf-module-icon {
+  color: #fbbf24;
+
+  background: rgba(245, 158, 11, 0.07);
+
+  border-color: rgba(245, 158, 11, 0.18);
+}
+
+.rf-module-amber:hover {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.rf-module-amber::after {
+  background: #f59e0b;
+}
+
+
+/* ==========================================================
+   28. MODULE TOP
+   ========================================================== */
+
+.rf-module-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.rf-module-icon {
+  width: 38px;
+  height: 38px;
+
+  flex: 0 0 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid;
+  border-radius: 9px;
+}
+
+.rf-module-arrow {
+  color: #334155;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rf-dashboard-module-card:hover .rf-module-arrow {
+  color: #94a3b8;
+
+  transform: translateX(3px);
+}
+
+
+/* ==========================================================
+   29. MODULE TITLE
+   ========================================================== */
+
+.rf-dashboard-module-card h4 {
+  position: relative;
+  z-index: 1;
+
+  margin: 0 0 7px;
+
+  color: #e2e8f0;
+
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+
+/* ==========================================================
+   30. MODULE DESCRIPTION
+   ========================================================== */
+
+.rf-dashboard-module-card p {
+  position: relative;
+  z-index: 1;
+
+  margin: 0;
+
+  color: #64748b;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  line-height: 1.65;
+}
+
+
+/* ==========================================================
+   31. RECENT DETECTIONS
+   ========================================================== */
+
+.rf-dashboard-recent {
+  width: 100%;
+
+  overflow: hidden;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.14);
+}
+
+
+/* ==========================================================
+   32. RECENT DETECTIONS HEADER
+   ========================================================== */
+
+.rf-dashboard-recent-heading {
+  min-height: 68px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding: 14px 17px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(16, 26, 42, 0.96),
+      rgba(13, 21, 35, 0.96)
+    );
+
+  border-bottom: 1px solid #1d2b40;
+}
+
+.rf-dashboard-recent-heading h3 {
+  margin: 0;
+
+  color: #cbd5e1;
+
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+
+/* ==========================================================
+   33. VIEW ALL BUTTON
+   ========================================================== */
+
+.rf-dashboard-view-all {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 31px;
+
+  padding: 0 10px;
+
+  color: #64748b;
+
+  background: #101a2a;
+
+  border: 1px solid #263750;
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.rf-dashboard-view-all:hover {
+  color: #00e5ff;
+
+  background: #142033;
+
+  border-color: rgba(0, 229, 255, 0.3);
+}
+
+
+/* ==========================================================
+   34. HASH CELL
+   ========================================================== */
+
+.rf-dashboard-hash-cell {
+  min-width: 145px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.rf-dashboard-hash {
+  display: block;
+
+  color: #22d3ee;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  white-space: nowrap;
+}
+
+.rf-dashboard-timestamp {
+  display: block;
+
+  color: #475569;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+
+  line-height: 1.4;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   35. WALLET ADDRESS
+   ========================================================== */
+
+.rf-dashboard-wallet {
+  display: block;
+
+  max-width: 190px;
+
+  overflow: hidden;
+
+  color: #94a3b8;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+
+  line-height: 1.5;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   36. TRANSACTION AMOUNT
+   ========================================================== */
+
+.rf-dashboard-amount {
+  color: #34d399;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   37. FRAUD PROBABILITY
+   ========================================================== */
+
+.rf-dashboard-probability {
+  min-width: 105px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.rf-dashboard-progress {
+  position: relative;
+
+  width: 68px;
+  height: 5px;
+
+  overflow: hidden;
+
+  background: #172235;
+
+  border-radius: 999px;
+}
+
+.rf-dashboard-progress-fill {
+  height: 100%;
+
+  min-width: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #00b8d4,
+      #00e5ff
+    );
+
+  border-radius: inherit;
+
+  transition: width 0.35s ease;
+}
+
+.rf-dashboard-probability-value {
+  color: #94a3b8;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   38. LOADING STATE
+   ========================================================== */
+
+.rf-dashboard-loading {
+  width: 100%;
+  min-height: 320px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+}
+
+
+/* ==========================================================
+   39. ERROR STATE
+   ========================================================== */
+
+.rf-dashboard-error {
+  width: 100%;
+  min-height: 220px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 28px;
+
+  background: #0d1523;
+
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  border-radius: 12px;
+}
+
+.rf-dashboard-error-icon {
+  width: 46px;
+  height: 46px;
+
+  flex: 0 0 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f87171;
+
+  background: rgba(239, 68, 68, 0.08);
+
+  border: 1px solid rgba(239, 68, 68, 0.2);
+
+  border-radius: 10px;
+}
+
+.rf-dashboard-error h2 {
+  margin: 0 0 6px;
+
+  color: #f87171;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.rf-dashboard-error p {
+  margin: 0 0 14px;
+
+  color: #64748b;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 9px;
+}
+
+
+/* ==========================================================
+   40. REFRESH STATUS
+   ========================================================== */
+
+.rf-dashboard-refresh-status {
+  position: fixed;
+
+  right: 24px;
+  bottom: 20px;
+
+  z-index: 100;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 8px 11px;
+
+  color: #67e8f9;
+
+  background: #0d1523;
+
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  border-radius: 6px;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.25);
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.rf-dashboard-refresh-icon {
+  animation:
+    rfDashboardRotate 1s linear infinite;
+}
+
+
+/* ==========================================================
+   41. PAGE ANIMATION
+   ========================================================== */
+
+@keyframes rfDashboardPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ==========================================================
+   42. LIVE DOT ANIMATION
+   ========================================================== */
+
+@keyframes rfDashboardPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+
+/* ==========================================================
+   43. REFRESH ANIMATION
+   ========================================================== */
+
+@keyframes rfDashboardRotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ==========================================================
+   44. LARGE TABLET
+   ========================================================== */
+
+@media (max-width: 1100px) {
+  .rf-dashboard-stats {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .rf-dashboard-module-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* ==========================================================
+   45. TABLET
+   ========================================================== */
+
+@media (max-width: 850px) {
+  .rf-dashboard-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-dashboard-primary-button {
+    width: 100%;
+  }
+
+  .rf-dashboard-performance {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .rf-dashboard-performance-card {
+    min-height: 88px;
+
+    padding: 13px;
+  }
+
+  .rf-performance-value {
+    font-size: 19px;
+  }
+
+  .rf-performance-tag {
+    display: none;
+  }
+
+  .rf-dashboard-recent-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-dashboard-view-all {
+    align-self: flex-start;
+  }
+}
+
+
+/* ==========================================================
+   46. SMALL TABLET
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .rf-dashboard-performance {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-dashboard-performance-card {
+    min-height: 76px;
+  }
+
+  .rf-performance-tag {
+    display: inline-flex;
+  }
+
+  .rf-dashboard-title {
+    font-size: 19px;
+  }
+}
+
+
+/* ==========================================================
+   47. MOBILE
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .rf-analyst-dashboard {
+    padding-bottom: 20px;
+  }
+
+  .rf-dashboard-banner {
+    padding: 17px;
+
+    border-radius: 11px;
+  }
+
+  .rf-dashboard-banner-meta {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 6px;
+  }
+
+  .rf-dashboard-title {
+    font-size: 17px;
+  }
+
+  .rf-dashboard-description {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 4px;
+  }
+
+  .rf-dashboard-description span {
+    display: none;
+  }
+
+  .rf-dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-dashboard-module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-dashboard-module-card {
+    min-height: 135px;
+  }
+
+  .rf-dashboard-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-module-count {
+    align-self: flex-start;
+  }
+
+  .rf-dashboard-recent {
+    border-radius: 10px;
+  }
+
+  .rf-dashboard-recent-heading {
+    padding: 13px;
+  }
+
+  .rf-dashboard-refresh-status {
+    right: 12px;
+    bottom: 12px;
+
+    max-width: calc(100vw - 24px);
+  }
+}
+
+
+/* ==========================================================
+   48. VERY SMALL SCREENS
+   ========================================================== */
+
+@media (max-width: 420px) {
+  .rf-dashboard-banner {
+    padding: 14px;
+  }
+
+  .rf-dashboard-title {
+    font-size: 15px;
+  }
+
+  .rf-dashboard-dataset {
+    font-size: 8px;
+  }
+
+  .rf-dashboard-description {
+    font-size: 8px;
+  }
+
+  .rf-dashboard-primary-button {
+    min-height: 37px;
+
+    font-size: 8px;
+  }
+
+  .rf-dashboard-module-card {
+    min-height: 125px;
+
+    padding: 13px;
+  }
+
+  .rf-dashboard-module-card h4 {
+    font-size: 11px;
+  }
+
+  .rf-dashboard-module-card p {
+    font-size: 7px;
+  }
+
+  .rf-dashboard-recent-heading h3 {
+    font-size: 13px;
+  }
+
+  .rf-dashboard-error {
+    align-items: flex-start;
+    flex-direction: column;
+
+    padding: 20px;
+  }
+}

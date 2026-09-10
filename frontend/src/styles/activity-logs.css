@@ -1,0 +1,466 @@
+/* ============================================================
+   RINGFINDER — ACTIVITY LOGS
+   ============================================================ */
+
+.rf-activity-page {
+  width: 100%;
+  min-width: 0;
+}
+
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+
+.rf-audit-header {
+  margin-bottom: 16px;
+}
+
+.rf-audit-header .rf-page-header-content {
+  gap: 20px;
+}
+
+.rf-audit-header .rf-page-heading {
+  min-width: 0;
+  flex: 1;
+}
+
+.rf-audit-header .rf-page-title {
+  margin: 0;
+  color: #f8fafc;
+  font-family: var(--rf-font, Inter, sans-serif);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.rf-audit-header .rf-page-subtitle {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-family: var(--rf-font, Inter, sans-serif);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.rf-audit-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.rf-audit-actions button {
+  min-height: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  padding: 0 12px;
+
+  border-radius: 6px;
+
+  font-family: var(--rf-font, Inter, sans-serif);
+  font-size: 9px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rf-audit-actions button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.rf-audit-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.rf-secondary-button {
+  color: #94a3b8;
+
+  background: #101a2a;
+
+  border: 1px solid #263750;
+}
+
+.rf-secondary-button:hover:not(:disabled) {
+  color: #dbeafe;
+  background: #142033;
+  border-color: #36506e;
+}
+
+.rf-primary-button {
+  color: #00151a;
+
+  background: #00e5ff;
+
+  border: 1px solid #00e5ff;
+}
+
+.rf-primary-button:hover:not(:disabled) {
+  background: #67e8f9;
+  border-color: #67e8f9;
+}
+
+
+/* ============================================================
+   AUDIT STATUS
+   ============================================================ */
+
+.rf-audit-status {
+  min-height: 68px;
+
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 18px;
+  padding: 12px 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0d1725,
+      #0b1421
+    );
+
+  border: 1px solid #1d2b40;
+  border-radius: 9px;
+}
+
+.rf-audit-status-item {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0;
+}
+
+.rf-audit-status-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  min-width: 0;
+}
+
+.rf-audit-status-label {
+  color: #526277;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 7px;
+  font-weight: 750;
+
+  letter-spacing: 0.12em;
+}
+
+.rf-audit-status-copy strong {
+  color: #dbeafe;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 750;
+
+  letter-spacing: 0.04em;
+}
+
+.rf-audit-status-dot {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 9px rgba(34, 197, 94, 0.7);
+}
+
+.rf-audit-status-icon {
+  width: 27px;
+  height: 27px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #67e8f9;
+
+  background: rgba(0, 229, 255, 0.07);
+
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 6px;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.rf-audit-divider {
+  width: 1px;
+  height: 32px;
+
+  margin: 0 22px;
+
+  background: #1d2b40;
+}
+
+
+/* ============================================================
+   TABLE SECTION
+   ============================================================ */
+
+.rf-audit-table-section {
+  min-width: 0;
+
+  padding: 18px;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 10px;
+}
+
+.rf-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 15px;
+}
+
+.rf-section-heading h3 {
+  margin: 0;
+
+  color: #e2e8f0;
+
+  font-family: var(--rf-font, Inter, sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rf-section-heading p {
+  margin: 4px 0 0;
+
+  color: #526277;
+
+  font-family: var(--rf-font, Inter, sans-serif);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.rf-live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 4px 7px;
+
+  color: #4ade80;
+
+  background: rgba(34, 197, 94, 0.06);
+
+  border: 1px solid rgba(34, 197, 94, 0.17);
+  border-radius: 5px;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 7px;
+  font-weight: 750;
+
+  letter-spacing: 0.08em;
+}
+
+.rf-live-indicator > span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 7px rgba(34, 197, 94, 0.75);
+}
+
+
+/* ============================================================
+   LOG TABLE CELLS
+   ============================================================ */
+
+.rf-log-timestamp {
+  color: #64748b;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+
+  white-space: nowrap;
+}
+
+.rf-log-user {
+  color: #67e8f9;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.rf-log-action {
+  display: inline-block;
+
+  padding: 3px 6px;
+
+  color: #c4b5fd;
+
+  background: rgba(139, 92, 246, 0.07);
+
+  border: 1px solid rgba(139, 92, 246, 0.18);
+  border-radius: 4px;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: 0.03em;
+}
+
+.rf-log-details {
+  display: block;
+
+  max-width: 520px;
+
+  overflow: hidden;
+
+  color: #94a3b8;
+
+  font-family: var(--rf-font, Inter, sans-serif);
+  font-size: 9px;
+  line-height: 1.45;
+
+  text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+
+.rf-audit-loading {
+  min-height: 300px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+}
+
+
+/* ============================================================
+   REFRESH ANIMATION
+   ============================================================ */
+
+.rf-button-spin {
+  animation: rf-activity-spin 0.9s linear infinite;
+}
+
+@keyframes rf-activity-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .rf-audit-header .rf-page-header-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-audit-actions {
+    width: 100%;
+  }
+
+  .rf-audit-actions button {
+    flex: 1;
+  }
+
+  .rf-audit-status {
+    align-items: stretch;
+  }
+
+  .rf-audit-divider {
+    margin: 0 14px;
+  }
+}
+
+@media (max-width: 650px) {
+  .rf-audit-status {
+    flex-direction: column;
+    gap: 12px;
+
+    padding: 14px;
+  }
+
+  .rf-audit-divider {
+    width: 100%;
+    height: 1px;
+
+    margin: 0;
+  }
+
+  .rf-audit-status-item {
+    flex: none;
+  }
+
+  .rf-audit-table-section {
+    padding: 12px;
+  }
+
+  .rf-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-live-indicator {
+    align-self: flex-start;
+  }
+
+  .rf-audit-actions {
+    flex-direction: column;
+  }
+
+  .rf-audit-actions button {
+    width: 100%;
+  }
+}

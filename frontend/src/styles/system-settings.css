@@ -1,0 +1,836 @@
+/* ============================================================
+   RINGFINDER — SYSTEM SETTINGS
+   Page-specific stylesheet
+   ============================================================ */
+
+
+/* ============================================================
+   01. PAGE CONTAINER
+   ============================================================ */
+
+.rf-settings-page {
+  width: 100%;
+  min-width: 0;
+  color: #e5edf7;
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+  animation: rf-settings-enter 0.35s ease;
+}
+
+
+/* ============================================================
+   02. LOADING STATE
+   ============================================================ */
+
+.rf-settings-loading {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+
+/* ============================================================
+   03. ERROR STATE
+   ============================================================ */
+
+.rf-settings-error {
+  min-height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px 20px;
+  text-align: center;
+  background: #0b1421;
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+}
+
+.rf-settings-error-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 12px;
+}
+
+.rf-settings-error h2 {
+  margin: 0 0 7px;
+  color: #e6edf5;
+  font-size: 17px;
+}
+
+.rf-settings-error p {
+  max-width: 430px;
+  margin: 0;
+  color: #718197;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   04. PAGE HEADER
+   ============================================================ */
+
+.rf-settings-header {
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(15, 28, 46, 0.96),
+      rgba(8, 15, 27, 0.98)
+    );
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.rf-settings-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+
+/* ============================================================
+   05. TITLE GROUP
+   ============================================================ */
+
+.rf-settings-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.rf-settings-title-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  border-radius: 10px;
+  box-shadow: 0 0 22px rgba(0, 229, 255, 0.08);
+}
+
+.rf-settings-title-group h1 {
+  margin: 4px 0 6px;
+  color: #f4f8fc;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.rf-settings-title-group p {
+  margin: 0;
+  color: #8190a5;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   06. PAGE KICKER
+   ============================================================ */
+
+.rf-settings-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #00e5ff;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.rf-settings-kicker span {
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+  background: #00e5ff;
+  border-radius: 50%;
+  box-shadow: 0 0 9px rgba(0, 229, 255, 0.7);
+}
+
+
+/* ============================================================
+   07. SAVE BUTTON
+   ============================================================ */
+
+.rf-settings-save-button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 0 15px;
+  color: #061018;
+  background: #00e5ff;
+  border: 1px solid #00e5ff;
+  border-radius: 8px;
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 229, 255, 0.12);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rf-settings-save-button:hover:not(:disabled) {
+  background: #28ebff;
+  border-color: #28ebff;
+  transform: translateY(-1px);
+  box-shadow: 0 9px 25px rgba(0, 229, 255, 0.2);
+}
+
+.rf-settings-save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rf-settings-save-button:focus-visible {
+  outline: 2px solid #00e5ff;
+  outline-offset: 2px;
+}
+
+.rf-button-loader {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(6, 16, 24, 0.3);
+  border-top-color: #061018;
+  border-radius: 50%;
+  animation: rf-settings-spin 0.75s linear infinite;
+}
+
+
+/* ============================================================
+   08. SAVE NOTIFICATION
+   ============================================================ */
+
+.rf-settings-notification {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 18px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+  font-weight: 600;
+  animation: rf-settings-notification-enter 0.25s ease;
+}
+
+.rf-settings-notification-success {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.07);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.rf-settings-notification-success svg {
+  color: #22c55e;
+}
+
+.rf-settings-notification-error {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.07);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.rf-settings-notification-error svg {
+  color: #ef4444;
+}
+
+
+/* ============================================================
+   09. SETTINGS FORM
+   ============================================================ */
+
+.rf-settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+
+/* ============================================================
+   10. SETTINGS PANEL
+   ============================================================ */
+
+.rf-settings-panel {
+  width: 100%;
+  padding: 20px;
+  background: #0b1421;
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+
+/* ============================================================
+   11. PANEL HEADER
+   ============================================================ */
+
+.rf-settings-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 20px;
+}
+
+.rf-settings-panel-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  border-radius: 8px;
+}
+
+.rf-settings-panel-icon-cyan {
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.08);
+  border-color: rgba(0, 229, 255, 0.18);
+}
+
+.rf-settings-panel-icon-green {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.18);
+}
+
+.rf-settings-panel-kicker {
+  margin-bottom: 3px;
+  color: #617287;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.rf-settings-panel-header h2 {
+  margin: 0;
+  color: #dfe8f1;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   12. STANDARD SETTINGS FIELDS
+   ============================================================ */
+
+.rf-settings-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.rf-settings-field {
+  min-width: 0;
+}
+
+.rf-settings-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.rf-settings-label-row label,
+.rf-settings-label {
+  display: block;
+  color: #aebccc;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.rf-settings-value {
+  color: #00e5ff;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   13. RANGE SLIDER
+   ============================================================ */
+
+.rf-settings-range {
+  width: 100%;
+  height: 5px;
+  display: block;
+  margin: 13px 0 8px;
+  appearance: none;
+  background: #1b2a3d;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.rf-settings-range::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  appearance: none;
+  background: #00e5ff;
+  border: 3px solid #07111d;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+}
+
+.rf-settings-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: #00e5ff;
+  border: 3px solid #07111d;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+}
+
+.rf-settings-range:focus-visible {
+  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
+}
+
+.rf-settings-range-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #56667a;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+}
+
+
+/* ============================================================
+   14. INPUT / SELECT WRAPPERS
+   ============================================================ */
+
+.rf-settings-input-wrapper,
+.rf-settings-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 9px;
+}
+
+.rf-settings-input-wrapper svg,
+.rf-settings-select-wrapper svg {
+  position: absolute;
+  left: 11px;
+  z-index: 1;
+  flex-shrink: 0;
+  color: #607186;
+  pointer-events: none;
+}
+
+.rf-settings-input,
+.rf-settings-select {
+  width: 100%;
+  min-height: 40px;
+  color: #dce6ef;
+  background: #08111d;
+  border: 1px solid #263750;
+  border-radius: 8px;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.rf-settings-input {
+  padding: 0 12px 0 34px;
+}
+
+.rf-settings-select {
+  padding: 0 34px;
+  appearance: auto;
+}
+
+.rf-settings-input:focus,
+.rf-settings-select:focus {
+  background: #0a1523;
+  border-color: rgba(0, 229, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.06);
+}
+
+.rf-settings-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+  cursor: pointer;
+}
+
+
+/* ============================================================
+   15. FIELD HELP TEXT
+   ============================================================ */
+
+.rf-settings-help {
+  margin: 9px 0 0;
+  color: #5e6e82;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   16. SECURITY PANEL
+   ============================================================ */
+
+.rf-settings-security-panel {
+  border-color: #1c3040;
+}
+
+.rf-settings-security-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+
+/* ============================================================
+   17. SECURITY TOGGLE CARD
+   ============================================================ */
+
+.rf-settings-toggle-card {
+  min-height: 92px;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px;
+  background: #08111d;
+  border: 1px solid #1d2b40;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rf-settings-toggle-card:hover {
+  background: #0b1725;
+  border-color: #2b4058;
+  transform: translateY(-1px);
+}
+
+.rf-settings-toggle-active {
+  background: rgba(34, 197, 94, 0.035);
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.rf-settings-checkbox-wrapper {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.rf-settings-checkbox-wrapper input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.rf-settings-custom-check {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  background: #101c2b;
+  border: 1px solid #31445c;
+  border-radius: 5px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.rf-settings-checkbox-wrapper input:checked + .rf-settings-custom-check {
+  color: #061018;
+  background: #22c55e;
+  border-color: #22c55e;
+}
+
+.rf-settings-checkbox-wrapper input:focus-visible + .rf-settings-custom-check {
+  outline: 2px solid #00e5ff;
+  outline-offset: 2px;
+}
+
+
+/* ============================================================
+   18. TOGGLE CONTENT
+   ============================================================ */
+
+.rf-settings-toggle-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.rf-settings-toggle-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+  color: #dbe5ee;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.rf-settings-toggle-title svg {
+  flex-shrink: 0;
+  color: #22c55e;
+}
+
+.rf-settings-toggle-card:not(.rf-settings-toggle-active)
+  .rf-settings-toggle-title svg {
+  color: #64748b;
+}
+
+.rf-settings-toggle-description {
+  display: block;
+  color: #647489;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.rf-settings-toggle-state {
+  flex-shrink: 0;
+  padding: 4px 6px;
+  color: #647489;
+  background: rgba(100, 116, 139, 0.07);
+  border: 1px solid rgba(100, 116, 139, 0.14);
+  border-radius: 4px;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.rf-settings-toggle-active .rf-settings-toggle-state {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.07);
+  border-color: rgba(34, 197, 94, 0.18);
+}
+
+
+/* ============================================================
+   19. FOOTER
+   ============================================================ */
+
+.rf-settings-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 14px;
+  padding: 10px 3px;
+}
+
+.rf-settings-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #65758a;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-settings-footer-status span {
+  width: 5px;
+  height: 5px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 7px rgba(34, 197, 94, 0.7);
+}
+
+.rf-settings-footer-text {
+  color: #526176;
+  font-size: 10px;
+  text-align: right;
+}
+
+
+/* ============================================================
+   20. ANIMATIONS
+   ============================================================ */
+
+@keyframes rf-settings-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rf-settings-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rf-settings-notification-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ============================================================
+   21. LARGE TABLET
+   ============================================================ */
+
+@media (max-width: 1000px) {
+  .rf-settings-fields {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .rf-settings-security-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============================================================
+   22. TABLET
+   ============================================================ */
+
+@media (max-width: 800px) {
+  .rf-settings-header-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-settings-save-button {
+    width: 100%;
+  }
+}
+
+
+/* ============================================================
+   23. MOBILE
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .rf-settings-header {
+    padding: 17px;
+  }
+
+  .rf-settings-title-group {
+    gap: 11px;
+  }
+
+  .rf-settings-title-icon {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .rf-settings-title-group h1 {
+    font-size: 19px;
+  }
+
+  .rf-settings-title-group p {
+    font-size: 10px;
+  }
+
+  .rf-settings-panel {
+    padding: 16px;
+  }
+
+  .rf-settings-panel-header {
+    margin-bottom: 16px;
+  }
+
+  .rf-settings-toggle-card {
+    padding: 12px;
+  }
+
+  .rf-settings-toggle-state {
+    display: none;
+  }
+
+  .rf-settings-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-settings-footer-text {
+    text-align: left;
+  }
+}
+
+
+/* ============================================================
+   24. VERY SMALL SCREENS
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .rf-settings-kicker {
+    font-size: 8px;
+  }
+
+  .rf-settings-title-group h1 {
+    font-size: 17px;
+  }
+
+  .rf-settings-panel-header h2 {
+    font-size: 13px;
+  }
+
+  .rf-settings-toggle-title {
+    font-size: 10px;
+  }
+
+  .rf-settings-help {
+    font-size: 9px;
+  }
+}

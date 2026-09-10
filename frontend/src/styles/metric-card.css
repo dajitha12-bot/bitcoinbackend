@@ -1,0 +1,276 @@
+/* ============================================================
+   RINGFINDER — METRIC CARD
+   ============================================================ */
+
+.rf-metric-card {
+  width: 100%;
+  min-width: 0;
+  min-height: 128px;
+
+  position: relative;
+
+  padding: 17px 18px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  overflow: hidden;
+
+  background: #0d1523;
+  border: 1px solid #1d2b40;
+  border-radius: 11px;
+
+  box-shadow:
+    0 7px 20px rgba(0, 0, 0, 0.14);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+/* ============================================================
+   TOP ACCENT
+   ============================================================ */
+
+.rf-metric-card::before {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 3px;
+  height: 100%;
+
+  background: #00e5ff;
+
+  box-shadow:
+    0 0 14px rgba(0, 229, 255, 0.45);
+}
+
+.rf-metric-card::after {
+  content: '';
+
+  position: absolute;
+
+  width: 150px;
+  height: 150px;
+
+  right: -85px;
+  top: -85px;
+
+  border-radius: 50%;
+
+  background: rgba(0, 229, 255, 0.035);
+
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   HOVER
+   ============================================================ */
+
+.rf-metric-card:hover {
+  transform: translateY(-1px);
+
+  border-color: #2b3c55;
+
+  box-shadow:
+    0 11px 26px rgba(0, 0, 0, 0.2);
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.rf-metric-header {
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.rf-metric-title {
+  min-width: 0;
+
+  color: #7d8ca3;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.rf-metric-benchmark {
+  flex-shrink: 0;
+
+  padding: 3px 6px;
+
+  color: #687890;
+
+  background: rgba(38, 55, 80, 0.35);
+
+  border: 1px solid rgba(38, 55, 80, 0.7);
+  border-radius: 4px;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 7px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   VALUE
+   ============================================================ */
+
+.rf-metric-value {
+  margin-top: 13px;
+
+  color: #f1f6fc;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 27px;
+  line-height: 1;
+  font-weight: 800;
+
+  letter-spacing: -0.04em;
+}
+
+
+/* ============================================================
+   DESCRIPTION
+   ============================================================ */
+
+.rf-metric-description {
+  margin: 8px 0 0;
+
+  color: #596980;
+
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+
+/* ============================================================
+   CYAN
+   ============================================================ */
+
+.rf-metric-cyan {
+  border-color: rgba(0, 229, 255, 0.2);
+}
+
+.rf-metric-cyan::before {
+  background: #00e5ff;
+
+  box-shadow:
+    0 0 15px rgba(0, 229, 255, 0.5);
+}
+
+.rf-metric-cyan .rf-metric-value {
+  color: #00e5ff;
+}
+
+.rf-metric-cyan:hover {
+  border-color: rgba(0, 229, 255, 0.38);
+}
+
+
+/* ============================================================
+   EMERALD
+   ============================================================ */
+
+.rf-metric-emerald {
+  border-color: rgba(34, 197, 94, 0.18);
+}
+
+.rf-metric-emerald::before {
+  background: #22c55e;
+
+  box-shadow:
+    0 0 15px rgba(34, 197, 94, 0.4);
+}
+
+.rf-metric-emerald .rf-metric-value {
+  color: #22c55e;
+}
+
+.rf-metric-emerald:hover {
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+
+/* ============================================================
+   PURPLE
+   ============================================================ */
+
+.rf-metric-purple {
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.rf-metric-purple::before {
+  background: #8b5cf6;
+
+  box-shadow:
+    0 0 15px rgba(139, 92, 246, 0.42);
+}
+
+.rf-metric-purple .rf-metric-value {
+  color: #a78bfa;
+}
+
+.rf-metric-purple:hover {
+  border-color: rgba(139, 92, 246, 0.38);
+}
+
+
+/* ============================================================
+   AMBER
+   ============================================================ */
+
+.rf-metric-amber {
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.rf-metric-amber::before {
+  background: #f59e0b;
+
+  box-shadow:
+    0 0 15px rgba(245, 158, 11, 0.4);
+}
+
+.rf-metric-amber .rf-metric-value {
+  color: #f59e0b;
+}
+
+.rf-metric-amber:hover {
+  border-color: rgba(245, 158, 11, 0.38);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .rf-metric-card {
+    min-height: 115px;
+    padding: 15px 16px;
+  }
+
+  .rf-metric-value {
+    font-size: 23px;
+  }
+}

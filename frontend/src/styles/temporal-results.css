@@ -1,0 +1,834 @@
+/* ============================================================
+   RINGFINDER — TEMPORAL RESULTS
+   Page-specific stylesheet
+   ============================================================ */
+
+.rf-temporal-page {
+  width: 100%;
+  min-width: 0;
+  color: #e6edf7;
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+  box-sizing: border-box;
+}
+
+.rf-temporal-page *,
+.rf-temporal-page *::before,
+.rf-temporal-page *::after {
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+
+.rf-temporal-loading {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.rf-temporal-header {
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 22px 24px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(13, 21, 35, 0.98),
+      rgba(8, 14, 25, 0.98)
+    );
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rf-temporal-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: #00e5ff;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.55);
+}
+
+.rf-temporal-header::after {
+  content: '';
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  right: -130px;
+  top: -160px;
+  border-radius: 50%;
+  background: rgba(0, 229, 255, 0.055);
+  pointer-events: none;
+}
+
+.rf-temporal-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.rf-temporal-title-group {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.rf-temporal-title-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 229, 255, 0.28);
+  border-radius: 11px;
+  background: rgba(0, 229, 255, 0.07);
+  color: #00e5ff;
+}
+
+.rf-temporal-title-content {
+  min-width: 0;
+}
+
+.rf-temporal-kicker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+  color: #00e5ff;
+  font-family: var(--rf-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.rf-temporal-kicker-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00e5ff;
+  box-shadow: 0 0 9px rgba(0, 229, 255, 0.8);
+}
+
+.rf-temporal-title-content h1 {
+  margin: 0;
+  color: #f4f8ff;
+  font-size: 23px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.rf-temporal-title-content p {
+  margin: 6px 0 0;
+  color: #8190a7;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.rf-temporal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.rf-temporal-refresh {
+  height: 36px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #263750;
+  border-radius: 8px;
+  background: #101a2a;
+  color: #aebbd0;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rf-temporal-refresh:hover:not(:disabled) {
+  border-color: rgba(0, 229, 255, 0.45);
+  background: #142033;
+  color: #00e5ff;
+}
+
+.rf-temporal-refresh:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.rf-temporal-spin {
+  animation: rfTemporalSpin 0.9s linear infinite;
+}
+
+@keyframes rfTemporalSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ============================================================
+   LEAKAGE STATUS
+   ============================================================ */
+
+.rf-temporal-leakage {
+  min-height: 36px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.045);
+}
+
+.rf-temporal-leakage-icon {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.09);
+}
+
+.rf-temporal-leakage-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rf-temporal-leakage-content span {
+  color: #6f8098;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.rf-temporal-leakage-content strong {
+  color: #22c55e;
+  font-family: var(--rf-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   STATUS BAR
+   ============================================================ */
+
+.rf-temporal-status-bar {
+  min-height: 36px;
+  padding: 0 14px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid #1d2b40;
+  border-radius: 8px;
+  background: #0b1320;
+}
+
+.rf-temporal-status-left,
+.rf-temporal-status-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rf-temporal-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+}
+
+.rf-temporal-status-label,
+.rf-temporal-status-right {
+  color: #7f8da4;
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-temporal-status-active {
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: rgba(34, 197, 94, 0.09);
+  color: #22c55e;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.rf-temporal-status-right {
+  color: #66758d;
+}
+
+.rf-temporal-status-right svg {
+  color: #00e5ff;
+}
+
+.rf-temporal-status-right strong {
+  color: #aebbd0;
+}
+
+
+/* ============================================================
+   METRICS
+   ============================================================ */
+
+.rf-temporal-metrics {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+
+/* ============================================================
+   PERFORMANCE
+   ============================================================ */
+
+.rf-temporal-performance {
+  width: 100%;
+  padding: 18px;
+  margin-bottom: 14px;
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+  background: #0d1523;
+}
+
+.rf-temporal-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.rf-temporal-section-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  color: #a78bfa;
+}
+
+.rf-temporal-section-heading span {
+  display: block;
+  margin-bottom: 3px;
+  color: #687891;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.rf-temporal-section-heading h2 {
+  margin: 0;
+  color: #e7edf7;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.rf-temporal-performance-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.rf-temporal-performance-card {
+  min-height: 92px;
+  padding: 14px;
+  border: 1px solid #1d2b40;
+  border-radius: 9px;
+  background: #101a2a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rf-temporal-performance-card span {
+  color: #66758d;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.rf-temporal-performance-card strong {
+  margin-top: 7px;
+  color: #f3f7fd;
+  font-family: var(--rf-mono, monospace);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.rf-temporal-performance-card small {
+  margin-top: 6px;
+  color: #63728a;
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   AUDIT CARD
+   ============================================================ */
+
+.rf-temporal-audit {
+  width: 100%;
+  padding: 20px;
+  margin-bottom: 14px;
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13, 21, 35, 1),
+      rgba(9, 15, 26, 1)
+    );
+}
+
+.rf-temporal-audit-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-bottom: 24px;
+}
+
+.rf-temporal-audit-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(0, 229, 255, 0.07);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  color: #00e5ff;
+}
+
+.rf-temporal-audit-heading {
+  min-width: 0;
+}
+
+.rf-temporal-audit-heading > span {
+  display: block;
+  color: #00e5ff;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.rf-temporal-audit-heading h2 {
+  margin: 5px 0 4px;
+  color: #e8eef8;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.rf-temporal-audit-heading p {
+  margin: 0;
+  color: #6e7d94;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+
+.rf-temporal-timeline {
+  width: 100%;
+  min-height: 120px;
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1fr)
+    70px
+    minmax(105px, 130px)
+    70px
+    minmax(180px, 1fr);
+  align-items: center;
+  gap: 0;
+}
+
+.rf-temporal-period {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid #1d2b40;
+  border-radius: 9px;
+  background: #101a2a;
+}
+
+.rf-temporal-period-marker {
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+}
+
+.rf-temporal-marker-training {
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+}
+
+.rf-temporal-marker-test {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.rf-temporal-period-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rf-temporal-period-label {
+  color: #697890;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.rf-temporal-period-content strong {
+  margin-top: 4px;
+  color: #e6edf7;
+  font-family: var(--rf-mono, monospace);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rf-temporal-period-detail {
+  margin-top: 3px;
+  color: #64738b;
+  font-size: 9px;
+}
+
+.rf-temporal-connector {
+  height: 2px;
+  position: relative;
+  background: #263750;
+}
+
+.rf-temporal-connector span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #52627a;
+}
+
+.rf-temporal-boundary {
+  min-height: 95px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.rf-temporal-boundary-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      #00e5ff 20%,
+      #00e5ff 80%,
+      transparent
+    );
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
+.rf-temporal-boundary-badge {
+  position: relative;
+  z-index: 2;
+  padding: 7px 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(0, 229, 255, 0.32);
+  border-radius: 6px;
+  background: #0b1320;
+  color: #00e5ff;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.08);
+}
+
+
+/* ============================================================
+   INTEGRITY
+   ============================================================ */
+
+.rf-temporal-integrity {
+  width: 100%;
+  min-height: 74px;
+  padding: 13px 15px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  border-radius: 10px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(34, 197, 94, 0.055),
+      rgba(13, 21, 35, 0.85)
+    );
+}
+
+.rf-temporal-integrity-icon {
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.09);
+  color: #22c55e;
+}
+
+.rf-temporal-integrity-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.rf-temporal-integrity-title {
+  color: #22c55e;
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.rf-temporal-integrity-content p {
+  margin: 4px 0 0;
+  color: #718098;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.rf-temporal-integrity-badge {
+  flex-shrink: 0;
+  padding: 6px 9px;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 5px;
+  background: rgba(34, 197, 94, 0.07);
+  color: #22c55e;
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.rf-temporal-footer {
+  width: 100%;
+  min-height: 34px;
+  padding: 0 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rf-temporal-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #52627a;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-temporal-footer-status span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 7px rgba(34, 197, 94, 0.7);
+}
+
+.rf-temporal-footer-text {
+  color: #46556c;
+  font-size: 8px;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  .rf-temporal-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rf-temporal-performance-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rf-temporal-timeline {
+    grid-template-columns:
+      minmax(150px, 1fr)
+      40px
+      100px
+      40px
+      minmax(150px, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .rf-temporal-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rf-temporal-header-actions {
+    width: 100%;
+  }
+
+  .rf-temporal-status-bar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 10px 12px;
+  }
+
+  .rf-temporal-timeline {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .rf-temporal-period {
+    width: 100%;
+  }
+
+  .rf-temporal-connector {
+    width: 2px;
+    height: 28px;
+    margin-left: 27px;
+  }
+
+  .rf-temporal-boundary {
+    min-height: 42px;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .rf-temporal-boundary-line {
+    top: 0;
+    bottom: 0;
+    left: 27px;
+  }
+
+  .rf-temporal-boundary-badge {
+    margin-left: 12px;
+  }
+}
+
+@media (max-width: 650px) {
+  .rf-temporal-header {
+    padding: 18px;
+  }
+
+  .rf-temporal-title-content h1 {
+    font-size: 19px;
+  }
+
+  .rf-temporal-header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rf-temporal-refresh,
+  .rf-temporal-leakage {
+    width: 100%;
+  }
+
+  .rf-temporal-metrics,
+  .rf-temporal-performance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-temporal-audit,
+  .rf-temporal-performance {
+    padding: 15px;
+  }
+
+  .rf-temporal-integrity {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .rf-temporal-integrity-badge {
+    margin-left: 47px;
+  }
+
+  .rf-temporal-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-bottom: 10px;
+  }
+}

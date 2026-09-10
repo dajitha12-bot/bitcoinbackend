@@ -1,0 +1,722 @@
+/* =========================================================
+   RINGFINDER
+   ANALYST MANAGEMENT
+   ========================================================= */
+
+.rf-analyst-management-page {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  color: #e8f0fb;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.rf-analyst-management-header {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 18px;
+  padding: 24px 26px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(16, 26, 42, 0.98),
+      rgba(8, 14, 25, 0.98)
+    );
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+}
+
+.rf-analyst-management-header::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #00e5ff,
+    #3b82f6,
+    #8b5cf6,
+    transparent
+  );
+}
+
+.rf-analyst-management-header::after {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  right: -130px;
+  top: -180px;
+  border-radius: 50%;
+  background: rgba(0, 229, 255, 0.045);
+  pointer-events: none;
+}
+
+.rf-analyst-management-header-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.rf-analyst-management-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  min-width: 0;
+}
+
+.rf-analyst-management-icon {
+  width: 45px;
+  height: 45px;
+  flex: 0 0 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 11px;
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.08);
+}
+
+.rf-analyst-management-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  color: #00e5ff;
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+}
+
+.rf-analyst-management-kicker span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00e5ff;
+  box-shadow: 0 0 9px rgba(0, 229, 255, 0.8);
+}
+
+.rf-analyst-management-title-group h1 {
+  margin: 0;
+  color: #f3f7fd;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.rf-analyst-management-title-group p {
+  margin: 7px 0 0;
+  color: #7788a1;
+  font-size: 12px;
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.rf-analyst-search {
+  width: 280px;
+  min-width: 220px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 11px;
+  color: #60738d;
+  background: #080f1c;
+  border: 1px solid #263750;
+  border-radius: 8px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rf-analyst-search:focus-within {
+  border-color: rgba(0, 229, 255, 0.45);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.06);
+}
+
+.rf-analyst-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: #dbe7f5;
+  background: transparent;
+  font-family: var(--rf-font, Inter, sans-serif);
+  font-size: 12px;
+}
+
+.rf-analyst-search input::placeholder {
+  color: #53657d;
+}
+
+.rf-analyst-search-clear {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  border: 0;
+  color: #74859b;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.rf-analyst-search-clear:hover {
+  color: #00e5ff;
+}
+
+/* =========================================================
+   STATUS BAR
+   ========================================================= */
+
+.rf-analyst-status-bar {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding: 8px 12px 8px 15px;
+  background: #0d1523;
+  border: 1px solid #1d2b40;
+  border-radius: 9px;
+}
+
+.rf-analyst-status-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.rf-analyst-online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 9px rgba(34, 197, 94, 0.8);
+}
+
+.rf-analyst-status-label {
+  color: #9aabc0;
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+}
+
+.rf-analyst-status-count,
+.rf-analyst-filter-active {
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.rf-analyst-status-count {
+  color: #73849c;
+  background: #101a2a;
+  border: 1px solid #263750;
+}
+
+.rf-analyst-filter-active {
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.07);
+  border: 1px solid rgba(0, 229, 255, 0.18);
+}
+
+.rf-analyst-refresh {
+  height: 31px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  color: #a4b3c7;
+  background: #101a2a;
+  border: 1px solid #263750;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rf-analyst-refresh:hover:not(:disabled) {
+  color: #00e5ff;
+  border-color: rgba(0, 229, 255, 0.4);
+  background: rgba(0, 229, 255, 0.05);
+}
+
+.rf-analyst-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   NOTIFICATION
+   ========================================================= */
+
+.rf-analyst-notification {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 11px 14px;
+  color: #c8f8d7;
+  background: rgba(34, 197, 94, 0.07);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 8px;
+  font-size: 11px;
+  animation: rfAnalystNotification 0.25s ease;
+}
+
+.rf-analyst-notification-icon {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.09);
+  border-radius: 6px;
+}
+
+@keyframes rfAnalystNotification {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.rf-analyst-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 18px;
+}
+
+.rf-analyst-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  padding: 14px;
+  background: #0d1523;
+  border: 1px solid #1d2b40;
+  border-radius: 9px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rf-analyst-summary-card:hover {
+  transform: translateY(-2px);
+  border-color: #2b405d;
+}
+
+.rf-analyst-summary-icon {
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.07);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 8px;
+}
+
+.rf-summary-approved {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.07);
+  border-color: rgba(34, 197, 94, 0.16);
+}
+
+.rf-summary-pending {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.07);
+  border-color: rgba(245, 158, 11, 0.16);
+}
+
+.rf-summary-rejected {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.07);
+  border-color: rgba(239, 68, 68, 0.16);
+}
+
+.rf-analyst-summary-card div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rf-analyst-summary-card span {
+  color: #64768e;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+.rf-analyst-summary-card strong {
+  color: #eef5fd;
+  font-family: var(--rf-mono, monospace);
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* =========================================================
+   TABLE SECTION
+   ========================================================= */
+
+.rf-analyst-table-section {
+  overflow: hidden;
+  background: #0d1523;
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+}
+
+.rf-analyst-table-header {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 16px 18px;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 32, 51, 0.7),
+    rgba(13, 21, 35, 0.7)
+  );
+  border-bottom: 1px solid #1d2b40;
+}
+
+.rf-analyst-table-kicker {
+  margin-bottom: 4px;
+  color: #00e5ff;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.rf-analyst-table-header h2 {
+  margin: 0;
+  color: #eaf2fc;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.rf-analyst-table-header p {
+  margin: 4px 0 0;
+  color: #62748c;
+  font-size: 10px;
+}
+
+.rf-analyst-table-total {
+  padding: 5px 8px;
+  color: #74869e;
+  background: #101a2a;
+  border: 1px solid #263750;
+  border-radius: 5px;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   TABLE CELLS
+   ========================================================= */
+
+.rf-analyst-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.rf-analyst-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00e5ff;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0, 229, 255, 0.12),
+      rgba(59, 130, 246, 0.08)
+    );
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 9px;
+  font-family: var(--rf-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rf-analyst-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.rf-analyst-name {
+  overflow: hidden;
+  color: #dce7f4;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-analyst-id {
+  overflow: hidden;
+  color: #566982;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-analyst-email {
+  color: #91a3ba;
+  font-size: 11px;
+}
+
+.rf-analyst-organization {
+  color: #8a9cb2;
+  font-size: 11px;
+}
+
+.rf-analyst-date {
+  color: #71839b;
+  font-family: var(--rf-mono, monospace);
+  font-size: 9px;
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.rf-analyst-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.rf-analyst-approve-button,
+.rf-analyst-reject-button {
+  min-height: 27px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 9px;
+  border-radius: 5px;
+  font-size: 9px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rf-analyst-approve-button {
+  color: #66e99a;
+  background: rgba(34, 197, 94, 0.07);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.rf-analyst-approve-button:hover:not(:disabled) {
+  color: #9affbd;
+  background: rgba(34, 197, 94, 0.13);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.rf-analyst-reject-button {
+  color: #f28b8b;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.18);
+}
+
+.rf-analyst-reject-button:hover:not(:disabled) {
+  color: #ffaaaa;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.38);
+}
+
+.rf-analyst-approve-button:disabled,
+.rf-analyst-reject-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.rf-analyst-management-loading {
+  min-height: 65vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.rf-analyst-management-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 13px 2px;
+  border-top: 1px solid #18253a;
+}
+
+.rf-analyst-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #5d718a;
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.rf-analyst-footer-status span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 7px rgba(34, 197, 94, 0.7);
+}
+
+.rf-analyst-footer-text {
+  color: #4f6078;
+  font-size: 9px;
+}
+
+/* =========================================================
+   SPINNER
+   ========================================================= */
+
+.rf-button-spin {
+  animation: rfAnalystSpin 0.9s linear infinite;
+}
+
+@keyframes rfAnalystSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .rf-analyst-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rf-analyst-management-header-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-analyst-search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 800px) {
+  .rf-analyst-table-section {
+    overflow-x: auto;
+  }
+
+  .rf-analyst-table-header {
+    min-width: 650px;
+  }
+
+  .rf-analyst-status-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-analyst-refresh {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .rf-analyst-management-header {
+    padding: 19px;
+  }
+
+  .rf-analyst-management-title-group h1 {
+    font-size: 19px;
+  }
+
+  .rf-analyst-management-title-group p {
+    line-height: 1.5;
+  }
+
+  .rf-analyst-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-analyst-footer-text {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .rf-analyst-management-title-group {
+    gap: 10px;
+  }
+
+  .rf-analyst-management-icon {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .rf-analyst-management-title-group h1 {
+    font-size: 17px;
+  }
+
+  .rf-analyst-status-left {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,917 @@
+/* ============================================================
+   RINGFINDER — APPROVAL CARD
+   ============================================================ */
+
+
+/* ============================================================
+   01. APPROVAL GRID
+   ============================================================ */
+
+.rf-approval-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(360px, 1fr)
+    );
+  gap: 16px;
+  width: 100%;
+}
+
+
+/* ============================================================
+   02. APPROVAL CARD
+   ============================================================ */
+
+.rf-approval-card {
+  position: relative;
+
+  width: 100%;
+  max-width: 620px;
+
+  padding: 20px;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      #111b2b 0%,
+      #0d1523 55%,
+      #0b1320 100%
+    );
+
+  border: 1px solid #263750;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+/* ============================================================
+   03. TOP ACCENT
+   ============================================================ */
+
+.rf-approval-card::before {
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #8b5cf6,
+      #00e5ff,
+      transparent
+    );
+
+  opacity: 0.8;
+}
+
+
+/* ============================================================
+   04. CARD HOVER
+   ============================================================ */
+
+.rf-approval-card:hover {
+  transform: translateY(-2px);
+
+  border-color: #354b68;
+
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.24);
+}
+
+
+/* ============================================================
+   05. HEADER
+   ============================================================ */
+
+.rf-approval-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 14px;
+
+  padding-bottom: 17px;
+
+  border-bottom: 1px solid #1d2b40;
+}
+
+
+/* ============================================================
+   06. AVATAR
+   ============================================================ */
+
+.rf-approval-avatar {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #c4b5fd;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(139, 92, 246, 0.18),
+      rgba(139, 92, 246, 0.07)
+    );
+
+  border:
+    1px solid
+    rgba(139, 92, 246, 0.32);
+
+  border-radius: 11px;
+
+  font-family: var(--rf-mono);
+
+  font-size: 14px;
+
+  font-weight: 850;
+
+  letter-spacing: 0.8px;
+
+  box-shadow:
+    0 0 20px
+    rgba(139, 92, 246, 0.07);
+}
+
+
+/* ============================================================
+   07. IDENTITY
+   ============================================================ */
+
+.rf-approval-identity {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  gap: 7px;
+}
+
+
+/* ============================================================
+   08. USER ID
+   ============================================================ */
+
+.rf-approval-user-id {
+  max-width: 100%;
+
+  overflow: hidden;
+
+  color: #e2e8f0;
+
+  font-family: var(--rf-mono);
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   09. STATUS
+   ============================================================ */
+
+.rf-approval-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  color: #fcd34d;
+
+  font-family: var(--rf-mono);
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.8px;
+}
+
+
+/* ============================================================
+   10. STATUS DOT
+   ============================================================ */
+
+.rf-approval-status-dot {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  background: #f59e0b;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 9px
+    rgba(245, 158, 11, 0.65);
+}
+
+
+/* ============================================================
+   11. NAME SECTION
+   ============================================================ */
+
+.rf-approval-name-section {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  margin-top: 18px;
+}
+
+
+/* ============================================================
+   12. NAME ICON
+   ============================================================ */
+
+.rf-approval-name-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #cbd5e1;
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  border: 1px solid #27364d;
+
+  border-radius: 8px;
+}
+
+
+/* ============================================================
+   13. NAME CONTENT
+   ============================================================ */
+
+.rf-approval-name-content {
+  min-width: 0;
+
+  flex: 1;
+}
+
+
+/* ============================================================
+   14. SECTION LABEL
+   ============================================================ */
+
+.rf-approval-section-label {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #64748b;
+
+  font-family: var(--rf-mono);
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.1px;
+}
+
+
+/* ============================================================
+   15. NAME
+   ============================================================ */
+
+.rf-approval-name-content h3 {
+  margin: 0;
+
+  overflow: hidden;
+
+  color: #f1f5f9;
+
+  font-size: 17px;
+
+  font-weight: 750;
+
+  line-height: 1.25;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   16. DETAILS CONTAINER
+   ============================================================ */
+
+.rf-approval-details {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0;
+
+  margin-top: 19px;
+
+  padding-top: 16px;
+
+  border-top: 1px solid #1d2b40;
+}
+
+
+/* ============================================================
+   17. DETAIL ROW
+   ============================================================ */
+
+.rf-approval-detail {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  min-width: 0;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid
+    rgba(29, 43, 64, 0.65);
+}
+
+
+/* ============================================================
+   18. LAST DETAIL ROW
+   ============================================================ */
+
+.rf-approval-detail:last-child {
+  border-bottom: none;
+}
+
+
+/* ============================================================
+   19. DETAIL ICON
+   ============================================================ */
+
+.rf-approval-detail-icon {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #64748b;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  border: 1px solid #1d2b40;
+
+  border-radius: 7px;
+}
+
+
+/* ============================================================
+   20. DETAIL CONTENT
+   ============================================================ */
+
+.rf-approval-detail-content {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+/* ============================================================
+   21. DETAIL LABEL
+   ============================================================ */
+
+.rf-approval-detail-label {
+  display: block;
+
+  color: #475569;
+
+  font-family: var(--rf-mono);
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.9px;
+
+  line-height: 1;
+}
+
+
+/* ============================================================
+   22. DETAIL VALUE
+   ============================================================ */
+
+.rf-approval-detail-content strong {
+  display: block;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  color: #cbd5e1;
+
+  font-family: var(--rf-mono);
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  line-height: 1.35;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   23. ACTION CONTAINER
+   ============================================================ */
+
+.rf-approval-actions {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  gap: 10px;
+
+  margin-top: 17px;
+}
+
+
+/* ============================================================
+   24. BASE ACTION BUTTON
+   ============================================================ */
+
+.rf-approve-button,
+.rf-reject-button {
+  appearance: none;
+
+  -webkit-appearance: none;
+
+  width: 100%;
+
+  min-height: 40px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 9px 13px;
+
+  border-radius: 8px;
+
+  font-family: var(--rf-mono);
+
+  font-size: 9px;
+
+  font-weight: 850;
+
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  outline: none;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease;
+}
+
+
+/* ============================================================
+   25. APPROVE BUTTON
+   ============================================================ */
+
+.rf-approve-button {
+  color: #86efac;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.11),
+      rgba(34, 197, 94, 0.045)
+    );
+
+  border:
+    1px solid
+    rgba(34, 197, 94, 0.3);
+}
+
+
+/* ============================================================
+   26. APPROVE HOVER
+   ============================================================ */
+
+.rf-approve-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  color: #bbf7d0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.17),
+      rgba(34, 197, 94, 0.07)
+    );
+
+  border-color:
+    rgba(34, 197, 94, 0.48);
+
+  box-shadow:
+    0 7px 18px
+    rgba(34, 197, 94, 0.09);
+}
+
+
+/* ============================================================
+   27. REJECT BUTTON
+   ============================================================ */
+
+.rf-reject-button {
+  color: #fca5a5;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.09),
+      rgba(239, 68, 68, 0.035)
+    );
+
+  border:
+    1px solid
+    rgba(239, 68, 68, 0.28);
+}
+
+
+/* ============================================================
+   28. REJECT HOVER
+   ============================================================ */
+
+.rf-reject-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  color: #fecaca;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.15),
+      rgba(239, 68, 68, 0.055)
+    );
+
+  border-color:
+    rgba(239, 68, 68, 0.46);
+
+  box-shadow:
+    0 7px 18px
+    rgba(239, 68, 68, 0.08);
+}
+
+
+/* ============================================================
+   29. DISABLED BUTTON
+   ============================================================ */
+
+.rf-approve-button:disabled,
+.rf-reject-button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+
+/* ============================================================
+   30. SPINNER
+   ============================================================ */
+
+.rf-approval-spinner {
+  animation:
+    rf-approval-spin 0.8s
+    linear infinite;
+}
+
+
+/* ============================================================
+   31. STATE MESSAGE
+   ============================================================ */
+
+.rf-approval-state-message {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 16px;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  font-family: var(--rf-mono);
+
+  font-size: 8px;
+
+  font-weight: 750;
+}
+
+
+/* ============================================================
+   32. APPROVED STATE
+   ============================================================ */
+
+.rf-approval-approved {
+  color: #86efac;
+
+  background:
+    rgba(34, 197, 94, 0.06);
+
+  border:
+    1px solid
+    rgba(34, 197, 94, 0.18);
+}
+
+
+/* ============================================================
+   33. REJECTED STATE
+   ============================================================ */
+
+.rf-approval-rejected {
+  color: #fca5a5;
+
+  background:
+    rgba(239, 68, 68, 0.05);
+
+  border:
+    1px solid
+    rgba(239, 68, 68, 0.18);
+}
+
+
+/* ============================================================
+   34. FOOTER
+   ============================================================ */
+
+.rf-approval-footer {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-top: 18px;
+
+  padding-top: 13px;
+
+  border-top: 1px solid #1d2b40;
+}
+
+
+/* ============================================================
+   35. FOOTER STATUS
+   ============================================================ */
+
+.rf-approval-footer-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  min-width: 0;
+
+  color: #64748b;
+
+  font-family: var(--rf-mono);
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.7px;
+}
+
+
+/* ============================================================
+   36. FOOTER DOT
+   ============================================================ */
+
+.rf-approval-footer-dot {
+  width: 6px;
+  height: 6px;
+
+  flex-shrink: 0;
+
+  background: #22c55e;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 9px
+    rgba(34, 197, 94, 0.75);
+}
+
+
+/* ============================================================
+   37. FOOTER CODE
+   ============================================================ */
+
+.rf-approval-footer-code {
+  flex-shrink: 0;
+
+  color: #334155;
+
+  font-family: var(--rf-mono);
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.6px;
+}
+
+
+/* ============================================================
+   38. ANIMATION
+   ============================================================ */
+
+@keyframes rf-approval-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ============================================================
+   39. TABLET
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .rf-approval-grid {
+    grid-template-columns:
+      minmax(320px, 1fr);
+  }
+
+  .rf-approval-card {
+    max-width: 100%;
+  }
+}
+
+
+/* ============================================================
+   40. MOBILE
+   ============================================================ */
+
+@media (max-width: 600px) {
+  .rf-approval-grid {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+  }
+
+  .rf-approval-card {
+    padding: 16px;
+  }
+
+  .rf-approval-header {
+    gap: 10px;
+  }
+
+  .rf-approval-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .rf-approval-user-id {
+    font-size: 9px;
+  }
+
+  .rf-approval-name-content h3 {
+    font-size: 15px;
+  }
+
+  .rf-approval-actions {
+    grid-template-columns: 1fr;
+
+    gap: 8px;
+  }
+
+  .rf-approval-footer {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+}
+
+
+/* ============================================================
+   41. SMALL MOBILE
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .rf-approval-card {
+    padding: 14px;
+  }
+
+  .rf-approval-detail-content strong {
+    font-size: 8px;
+  }
+
+  .rf-approve-button,
+  .rf-reject-button {
+    min-height: 38px;
+
+    font-size: 8px;
+  }
+}
+
+
+/* ============================================================
+   42. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-approval-card,
+  .rf-approve-button,
+  .rf-reject-button {
+    transition: none;
+  }
+
+  .rf-approval-spinner {
+    animation: none;
+  }
+}

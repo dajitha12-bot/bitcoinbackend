@@ -1,0 +1,201 @@
+/* ============================================================
+   RINGFINDER — RISK BADGE
+   ============================================================ */
+
+.rf-risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  width: fit-content;
+  max-width: 100%;
+
+  padding: 4px 7px;
+
+  border: 1px solid transparent;
+  border-radius: 999px;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 700;
+
+  line-height: 1;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   STATUS DOT
+   ============================================================ */
+
+.rf-risk-badge-dot {
+  width: 5px;
+  height: 5px;
+
+  flex: 0 0 5px;
+
+  border-radius: 50%;
+}
+
+
+/* ============================================================
+   LABEL
+   ============================================================ */
+
+.rf-risk-badge-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  letter-spacing: 0.05em;
+}
+
+.rf-risk-badge-score {
+  opacity: 0.8;
+}
+
+
+/* ============================================================
+   HIGH / CRITICAL
+   ============================================================ */
+
+.rf-risk-badge-high {
+  color: #f87171;
+
+  background: rgba(239, 68, 68, 0.09);
+
+  border-color: rgba(239, 68, 68, 0.28);
+}
+
+.rf-risk-badge-high .rf-risk-badge-dot {
+  background: #ef4444;
+
+  box-shadow:
+    0 0 7px rgba(239, 68, 68, 0.7);
+}
+
+
+/* ============================================================
+   MEDIUM / MONITORING
+   ============================================================ */
+
+.rf-risk-badge-medium {
+  color: #fbbf24;
+
+  background: rgba(245, 158, 11, 0.09);
+
+  border-color: rgba(245, 158, 11, 0.28);
+}
+
+.rf-risk-badge-medium .rf-risk-badge-dot {
+  background: #f59e0b;
+
+  box-shadow:
+    0 0 7px rgba(245, 158, 11, 0.65);
+}
+
+
+/* ============================================================
+   LOW / APPROVED / SAFE
+   ============================================================ */
+
+.rf-risk-badge-low {
+  color: #4ade80;
+
+  background: rgba(34, 197, 94, 0.08);
+
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.rf-risk-badge-low .rf-risk-badge-dot {
+  background: #22c55e;
+
+  box-shadow:
+    0 0 7px rgba(34, 197, 94, 0.65);
+}
+
+
+/* ============================================================
+   ACTIVE INVESTIGATION / PENDING
+   ============================================================ */
+
+.rf-risk-badge-active {
+  color: #67e8f9;
+
+  background: rgba(0, 229, 255, 0.07);
+
+  border-color: rgba(0, 229, 255, 0.25);
+}
+
+.rf-risk-badge-active .rf-risk-badge-dot {
+  background: #00e5ff;
+
+  box-shadow:
+    0 0 7px rgba(0, 229, 255, 0.7);
+}
+
+
+/* ============================================================
+   UNKNOWN / DEFAULT
+   ============================================================ */
+
+.rf-risk-badge-default {
+  color: #94a3b8;
+
+  background: rgba(100, 116, 139, 0.08);
+
+  border-color: rgba(100, 116, 139, 0.25);
+}
+
+.rf-risk-badge-default .rf-risk-badge-dot {
+  background: #64748b;
+}
+
+
+/* ============================================================
+   HOVER
+   ============================================================ */
+
+.rf-risk-badge {
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rf-risk-badge-high:hover {
+  background: rgba(239, 68, 68, 0.14);
+}
+
+.rf-risk-badge-medium:hover {
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.rf-risk-badge-low:hover {
+  background: rgba(34, 197, 94, 0.13);
+}
+
+.rf-risk-badge-active:hover {
+  background: rgba(0, 229, 255, 0.12);
+}
+
+.rf-risk-badge-default:hover {
+  background: rgba(100, 116, 139, 0.13);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 600px) {
+  .rf-risk-badge {
+    padding: 3px 6px;
+    font-size: 7px;
+  }
+
+  .rf-risk-badge-dot {
+    width: 4px;
+    height: 4px;
+    flex-basis: 4px;
+  }
+}

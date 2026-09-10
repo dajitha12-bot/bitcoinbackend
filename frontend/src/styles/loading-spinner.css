@@ -1,0 +1,299 @@
+/* ============================================================
+   RINGFINDER — LOADING SPINNER
+   ============================================================ */
+
+.rf-loading-container {
+  width: 100%;
+  min-height: 320px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 32px;
+
+  color: #dbe5f2;
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+}
+
+
+/* ============================================================
+   SPINNER WRAPPER
+   ============================================================ */
+
+.rf-loading-spinner-wrapper {
+  width: 82px;
+  height: 82px;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ============================================================
+   OUTER RING
+   ============================================================ */
+
+.rf-loading-ring {
+  position: absolute;
+
+  width: 76px;
+  height: 76px;
+
+  border-radius: 50%;
+
+  border: 2px solid rgba(0, 229, 255, 0.12);
+  border-top-color: #00e5ff;
+  border-right-color: rgba(0, 229, 255, 0.45);
+
+  animation: rfLoadingSpin 1.15s linear infinite;
+
+  box-shadow:
+    0 0 12px rgba(0, 229, 255, 0.15),
+    inset 0 0 12px rgba(0, 229, 255, 0.04);
+}
+
+
+/* ============================================================
+   INNER RING
+   ============================================================ */
+
+.rf-loading-ring::before {
+  content: '';
+
+  position: absolute;
+
+  inset: 8px;
+
+  border-radius: 50%;
+
+  border: 1px dashed rgba(59, 130, 246, 0.38);
+
+  animation: rfLoadingReverseSpin 2s linear infinite;
+}
+
+
+/* ============================================================
+   CPU ICON
+   ============================================================ */
+
+.rf-loading-cpu {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #00e5ff;
+
+  background: #0d1523;
+
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 9px;
+
+  box-shadow:
+    0 0 16px rgba(0, 229, 255, 0.13),
+    inset 0 0 10px rgba(0, 229, 255, 0.04);
+
+  animation: rfLoadingCpuPulse 1.8s ease-in-out infinite;
+
+  z-index: 2;
+}
+
+
+/* ============================================================
+   LOADING LABEL
+   ============================================================ */
+
+.rf-loading-label {
+  margin-top: 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #b9c6d8;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+
+/* ============================================================
+   STATUS DOT
+   ============================================================ */
+
+.rf-loading-dot {
+  width: 6px;
+  height: 6px;
+
+  flex: 0 0 6px;
+
+  border-radius: 50%;
+
+  background: #00e5ff;
+
+  box-shadow:
+    0 0 6px rgba(0, 229, 255, 0.75),
+    0 0 12px rgba(0, 229, 255, 0.3);
+
+  animation: rfLoadingDotPulse 1.2s ease-in-out infinite;
+}
+
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+
+.rf-loading-progress {
+  width: 220px;
+  height: 3px;
+
+  margin-top: 13px;
+
+  overflow: hidden;
+
+  background: #172236;
+
+  border-radius: 999px;
+}
+
+
+.rf-loading-progress span {
+  display: block;
+
+  width: 45%;
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #00e5ff;
+
+  box-shadow:
+    0 0 8px rgba(0, 229, 255, 0.6);
+
+  animation: rfLoadingProgress 1.5s ease-in-out infinite;
+}
+
+
+/* ============================================================
+   SUBTEXT
+   ============================================================ */
+
+.rf-loading-subtext {
+  margin-top: 10px;
+
+  color: #52627a;
+
+  font-family: var(--rf-mono, monospace);
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.1em;
+
+  text-align: center;
+}
+
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes rfLoadingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+@keyframes rfLoadingReverseSpin {
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+
+@keyframes rfLoadingCpuPulse {
+  0%,
+  100% {
+    transform: scale(1);
+
+    box-shadow:
+      0 0 16px rgba(0, 229, 255, 0.13),
+      inset 0 0 10px rgba(0, 229, 255, 0.04);
+  }
+
+  50% {
+    transform: scale(1.04);
+
+    box-shadow:
+      0 0 24px rgba(0, 229, 255, 0.25),
+      inset 0 0 14px rgba(0, 229, 255, 0.08);
+  }
+}
+
+
+@keyframes rfLoadingDotPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+
+@keyframes rfLoadingProgress {
+  0% {
+    transform: translateX(-130%);
+  }
+
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 600px) {
+  .rf-loading-container {
+    min-height: 260px;
+    padding: 24px;
+  }
+
+  .rf-loading-label {
+    font-size: 10px;
+  }
+
+  .rf-loading-progress {
+    width: 180px;
+  }
+
+  .rf-loading-subtext {
+    font-size: 7px;
+  }
+}

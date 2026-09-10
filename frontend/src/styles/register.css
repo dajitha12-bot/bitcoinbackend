@@ -1,0 +1,835 @@
+/* ============================================================
+   RINGFINDER SENTINEL
+   ANALYST REGISTRATION PAGE
+   ============================================================ */
+
+
+/* ============================================================
+   01. PAGE CONTAINER
+   ============================================================ */
+
+.rf-register-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 20px;
+
+  background:
+    radial-gradient(
+      circle at 50% 15%,
+      rgba(0, 229, 255, 0.06),
+      transparent 32%
+    ),
+    #050911;
+
+  color: #e8f1fb;
+
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+
+  isolation: isolate;
+}
+
+
+/* ============================================================
+   02. BACKGROUND GRID
+   ============================================================ */
+
+.rf-register-grid {
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      rgba(0, 229, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 229, 255, 0.035) 1px,
+      transparent 1px
+    );
+
+  background-size: 42px 42px;
+
+  opacity: 0.45;
+
+  pointer-events: none;
+
+  z-index: -3;
+}
+
+
+/* ============================================================
+   03. BACKGROUND GLOWS
+   ============================================================ */
+
+.rf-register-glow {
+  position: absolute;
+
+  width: 460px;
+  height: 460px;
+
+  border-radius: 50%;
+
+  filter: blur(90px);
+
+  opacity: 0.12;
+
+  pointer-events: none;
+
+  z-index: -2;
+}
+
+.rf-register-glow-one {
+  top: -180px;
+  left: -140px;
+
+  background: #00e5ff;
+}
+
+.rf-register-glow-two {
+  right: -180px;
+  bottom: -180px;
+
+  background: #3b82f6;
+}
+
+
+/* ============================================================
+   04. REGISTRATION CARD
+   ============================================================ */
+
+.rf-register-card {
+  position: relative;
+
+  width: min(100%, 470px);
+
+  padding: 38px 38px 26px;
+
+  border: 1px solid #1d2b40;
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(17, 28, 45, 0.98),
+      rgba(8, 15, 27, 0.98)
+    );
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.015);
+
+  backdrop-filter: blur(18px);
+
+  z-index: 1;
+
+  animation: rf-register-card-enter 0.55s ease both;
+}
+
+
+/* ============================================================
+   05. TOP ACCENT
+   ============================================================ */
+
+.rf-register-accent {
+  position: absolute;
+
+  top: 0;
+  left: 14%;
+
+  width: 72%;
+  height: 2px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #00e5ff,
+    transparent
+  );
+
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.65);
+
+  border-radius: 0 0 10px 10px;
+}
+
+
+/* ============================================================
+   06. BRAND CONTAINER
+   ============================================================ */
+
+.rf-register-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  margin-bottom: 28px;
+}
+
+
+/* ============================================================
+   07. LOGO
+   ============================================================ */
+
+.rf-register-logo {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 17px;
+
+  border: 1px solid rgba(0, 229, 255, 0.3);
+
+  border-radius: 14px;
+
+  color: #00e5ff;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(0, 229, 255, 0.12),
+      rgba(59, 130, 246, 0.05)
+    );
+
+  box-shadow:
+    0 0 28px rgba(0, 229, 255, 0.08),
+    inset 0 0 18px rgba(0, 229, 255, 0.04);
+}
+
+
+/* ============================================================
+   08. TITLE
+   ============================================================ */
+
+.rf-register-title {
+  margin: 0;
+
+  color: #f5f9ff;
+
+  font-size: 25px;
+  font-weight: 700;
+
+  letter-spacing: -0.025em;
+
+  line-height: 1.2;
+}
+
+
+/* ============================================================
+   09. SUBTITLE
+   ============================================================ */
+
+.rf-register-subtitle {
+  margin: 8px 0 14px;
+
+  color: #8fa2b8;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  letter-spacing: 0.02em;
+}
+
+
+/* ============================================================
+   10. SECURITY STATUS
+   ============================================================ */
+
+.rf-register-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 7px 11px;
+
+  border: 1px solid rgba(34, 197, 94, 0.18);
+
+  border-radius: 999px;
+
+  color: #8ed6a4;
+
+  background: rgba(34, 197, 94, 0.055);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+
+/* ============================================================
+   11. STATUS DOT
+   ============================================================ */
+
+.rf-register-status-dot {
+  width: 6px;
+  height: 6px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 8px rgba(34, 197, 94, 0.8);
+
+  animation: rf-register-status-pulse 2s ease-in-out infinite;
+}
+
+
+/* ============================================================
+   12. ERROR MESSAGE
+   ============================================================ */
+
+.rf-register-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  margin-bottom: 20px;
+
+  padding: 12px 13px;
+
+  border: 1px solid rgba(239, 68, 68, 0.25);
+
+  border-radius: 10px;
+
+  color: #fca5a5;
+
+  background: rgba(239, 68, 68, 0.07);
+
+  font-size: 12px;
+
+  line-height: 1.5;
+
+  animation: rf-register-error-enter 0.25s ease both;
+}
+
+.rf-register-error svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  color: #ef4444;
+}
+
+
+/* ============================================================
+   13. FORM
+   ============================================================ */
+
+.rf-register-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 17px;
+}
+
+
+/* ============================================================
+   14. FORM FIELD
+   ============================================================ */
+
+.rf-register-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.rf-register-field label {
+  color: #aebed0;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 0.04em;
+
+  text-transform: uppercase;
+}
+
+
+/* ============================================================
+   15. INPUT WRAPPER
+   ============================================================ */
+
+.rf-register-input-wrapper {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+}
+
+
+/* ============================================================
+   16. INPUT ICON
+   ============================================================ */
+
+.rf-register-input-icon {
+  position: absolute;
+  left: 13px;
+
+  color: #61758d;
+
+  pointer-events: none;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* ============================================================
+   17. INPUT
+   ============================================================ */
+
+.rf-register-input-wrapper input {
+  width: 100%;
+  min-height: 45px;
+
+  padding: 0 13px 0 40px;
+
+  border: 1px solid #24354b;
+
+  border-radius: 9px;
+
+  outline: none;
+
+  color: #eaf2fb;
+
+  background: #0a1321;
+
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+
+  font-size: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rf-register-input-wrapper input::placeholder {
+  color: #50647b;
+}
+
+.rf-register-input-wrapper input:hover {
+  border-color: #30455f;
+}
+
+.rf-register-input-wrapper input:focus {
+  border-color: rgba(0, 229, 255, 0.65);
+
+  background: #0b1626;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 229, 255, 0.08),
+    0 0 20px rgba(0, 229, 255, 0.04);
+}
+
+.rf-register-input-wrapper:focus-within
+.rf-register-input-icon {
+  color: #00e5ff;
+
+  transform: scale(1.05);
+}
+
+
+/* ============================================================
+   18. SUBMIT BUTTON
+   ============================================================ */
+
+.rf-register-submit {
+  width: 100%;
+  min-height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  margin-top: 5px;
+
+  padding: 0 18px;
+
+  border: 1px solid rgba(0, 229, 255, 0.35);
+
+  border-radius: 9px;
+
+  color: #031017;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00e5ff,
+      #22c9e8
+    );
+
+  font-family: var(--rf-font, Inter, system-ui, sans-serif);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 0.02em;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 24px rgba(0, 229, 255, 0.12);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.rf-register-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  filter: brightness(1.06);
+
+  box-shadow:
+    0 12px 30px rgba(0, 229, 255, 0.2);
+}
+
+.rf-register-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.rf-register-submit:focus-visible {
+  outline: 2px solid rgba(0, 229, 255, 0.7);
+  outline-offset: 3px;
+}
+
+.rf-register-submit:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   19. LOADING SPINNER
+   ============================================================ */
+
+.rf-register-spinner {
+  width: 15px;
+  height: 15px;
+
+  border: 2px solid rgba(3, 16, 23, 0.25);
+
+  border-top-color: #031017;
+
+  border-radius: 50%;
+
+  animation: rf-register-spin 0.75s linear infinite;
+}
+
+
+/* ============================================================
+   20. LOGIN LINK
+   ============================================================ */
+
+.rf-register-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  margin-top: 23px;
+
+  color: #70849a;
+
+  font-size: 12px;
+}
+
+.rf-register-login a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  color: #00d9f5;
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    gap 0.2s ease;
+}
+
+.rf-register-login a:hover {
+  color: #65edff;
+
+  gap: 7px;
+}
+
+.rf-register-login a:focus-visible {
+  outline: 2px solid rgba(0, 229, 255, 0.55);
+  outline-offset: 3px;
+
+  border-radius: 3px;
+}
+
+
+/* ============================================================
+   21. FOOTER
+   ============================================================ */
+
+.rf-register-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-top: 24px;
+  padding-top: 18px;
+
+  border-top: 1px solid #192638;
+
+  color: #52667d;
+
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.12em;
+
+  text-align: center;
+}
+
+
+/* ============================================================
+   22. CARD HOVER
+   ============================================================ */
+
+.rf-register-card::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  border: 1px solid rgba(255, 255, 255, 0.02);
+
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   23. ANIMATIONS
+   ============================================================ */
+
+@keyframes rf-register-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes rf-register-status-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    box-shadow:
+      0 0 5px rgba(34, 197, 94, 0.45);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow:
+      0 0 10px rgba(34, 197, 94, 0.9);
+  }
+}
+
+@keyframes rf-register-error-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rf-register-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ============================================================
+   24. LARGE TABLET
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .rf-register-page {
+    padding: 30px 18px;
+  }
+
+  .rf-register-card {
+    width: min(100%, 460px);
+  }
+}
+
+
+/* ============================================================
+   25. TABLET
+   ============================================================ */
+
+@media (max-width: 650px) {
+  .rf-register-page {
+    align-items: flex-start;
+
+    padding: 28px 15px;
+  }
+
+  .rf-register-card {
+    padding: 32px 26px 23px;
+
+    border-radius: 15px;
+  }
+
+  .rf-register-title {
+    font-size: 23px;
+  }
+
+  .rf-register-form {
+    gap: 15px;
+  }
+}
+
+
+/* ============================================================
+   26. MOBILE
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .rf-register-page {
+    padding: 18px 10px;
+  }
+
+  .rf-register-card {
+    padding: 28px 20px 20px;
+
+    border-radius: 13px;
+  }
+
+  .rf-register-logo {
+    width: 52px;
+    height: 52px;
+
+    margin-bottom: 14px;
+  }
+
+  .rf-register-title {
+    font-size: 21px;
+  }
+
+  .rf-register-subtitle {
+    font-size: 12px;
+  }
+
+  .rf-register-status {
+    font-size: 9px;
+  }
+
+  .rf-register-input-wrapper input {
+    min-height: 44px;
+
+    font-size: 12px;
+  }
+
+  .rf-register-submit {
+    min-height: 45px;
+
+    font-size: 11px;
+  }
+
+  .rf-register-login {
+    flex-direction: column;
+
+    gap: 6px;
+  }
+
+  .rf-register-footer {
+    font-size: 7px;
+
+    gap: 6px;
+  }
+}
+
+
+/* ============================================================
+   27. VERY SMALL SCREENS
+   ============================================================ */
+
+@media (max-width: 360px) {
+  .rf-register-page {
+    padding: 12px 7px;
+  }
+
+  .rf-register-card {
+    padding: 24px 15px 18px;
+  }
+
+  .rf-register-title {
+    font-size: 19px;
+  }
+
+  .rf-register-field label {
+    font-size: 10px;
+  }
+
+  .rf-register-input-wrapper input {
+    padding-left: 37px;
+  }
+}
+
+
+/* ============================================================
+   28. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-register-card,
+  .rf-register-error,
+  .rf-register-status-dot,
+  .rf-register-spinner {
+    animation: none;
+  }
+
+  .rf-register-submit,
+  .rf-register-input-wrapper input,
+  .rf-register-login a,
+  .rf-register-input-icon {
+    transition: none;
+  }
+}

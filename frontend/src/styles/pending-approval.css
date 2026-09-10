@@ -1,0 +1,514 @@
+/* =========================================================
+   PENDING APPROVAL
+   RingFinder Sentinel — Analyst Access Control
+   ========================================================= */
+
+
+/* =========================================================
+   1. PAGE CONTAINER
+   ========================================================= */
+
+.rf-pending-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 30px 20px;
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(245, 158, 11, 0.045),
+      transparent 32%
+    ),
+    #050911;
+  color: #e6edf7;
+}
+
+
+/* =========================================================
+   2. BACKGROUND GRID
+   ========================================================= */
+
+.rf-pending-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image:
+    linear-gradient(
+      rgba(245, 158, 11, 0.018) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(245, 158, 11, 0.018) 1px,
+      transparent 1px
+    );
+  background-size: 42px 42px;
+  mask-image: linear-gradient(
+    to bottom,
+    black,
+    rgba(0, 0, 0, 0.15)
+  );
+}
+
+
+/* =========================================================
+   3. BACKGROUND GLOWS
+   ========================================================= */
+
+.rf-pending-glow {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.rf-pending-glow-one {
+  top: 7%;
+  left: 15%;
+  width: 260px;
+  height: 260px;
+  background: rgba(245, 158, 11, 0.045);
+}
+
+.rf-pending-glow-two {
+  right: 12%;
+  bottom: 5%;
+  width: 310px;
+  height: 310px;
+  background: rgba(0, 229, 255, 0.025);
+}
+
+
+/* =========================================================
+   4. MAIN CARD
+   ========================================================= */
+
+.rf-pending-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 570px;
+  overflow: hidden;
+  padding: 35px 37px 23px;
+  border: 1px solid #263246;
+  border-radius: 17px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(16, 26, 42, 0.98),
+      rgba(8, 14, 24, 0.99)
+    );
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(245, 158, 11, 0.02);
+  text-align: center;
+  animation: rf-pending-card-entry 450ms ease both;
+}
+
+
+/* =========================================================
+   5. TOP ACCENT
+   ========================================================= */
+
+.rf-pending-accent {
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #f59e0b,
+    transparent
+  );
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
+}
+
+
+/* =========================================================
+   6. STATUS ICON
+   ========================================================= */
+
+.rf-pending-icon {
+  width: 67px;
+  height: 67px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(245, 158, 11, 0.1),
+      rgba(245, 158, 11, 0.025)
+    );
+  color: #f5b942;
+  box-shadow:
+    0 0 25px rgba(245, 158, 11, 0.05),
+    inset 0 0 18px rgba(245, 158, 11, 0.025);
+}
+
+
+/* =========================================================
+   7. HEADING
+   ========================================================= */
+
+.rf-pending-heading {
+  margin-bottom: 22px;
+}
+
+.rf-pending-kicker {
+  display: block;
+  margin-bottom: 6px;
+  color: #6c7888;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.rf-pending-title {
+  margin: 0;
+  color: #f1f6fb;
+  font-size: 23px;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+.rf-pending-description {
+  max-width: 465px;
+  margin: 9px auto 0;
+  color: #7c8b9e;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.rf-pending-email {
+  color: #c4d0de;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   8. STATUS BOX
+   ========================================================= */
+
+.rf-pending-status-box {
+  padding: 17px 18px;
+  border: 1px solid #202f43;
+  border-radius: 10px;
+  background: #0a111d;
+  text-align: left;
+}
+
+.rf-pending-status-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-bottom: 12px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid #192638;
+  color: #66788e;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-pending-status-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+
+/* =========================================================
+   9. STATUS ROW
+   ========================================================= */
+
+.rf-pending-status-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 0;
+  color: #8594a7;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.rf-pending-status-row + .rf-pending-status-row {
+  border-top: 1px solid rgba(29, 43, 64, 0.6);
+}
+
+.rf-pending-check {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #22c55e;
+}
+
+.rf-pending-clock {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #f59e0b;
+}
+
+
+/* =========================================================
+   10. ACTIONS
+   ========================================================= */
+
+.rf-pending-actions {
+  display: grid;
+  grid-template-columns: 1fr 0.55fr;
+  gap: 9px;
+  margin-top: 19px;
+}
+
+.rf-pending-primary-button,
+.rf-pending-secondary-button {
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.rf-pending-primary-button {
+  border: 1px solid rgba(245, 158, 11, 0.38);
+  background: rgba(245, 158, 11, 0.08);
+  color: #f4c05c;
+}
+
+.rf-pending-primary-button:hover {
+  border-color: rgba(245, 158, 11, 0.65);
+  background: rgba(245, 158, 11, 0.13);
+  color: #ffd778;
+  box-shadow: 0 0 22px rgba(245, 158, 11, 0.06);
+  transform: translateY(-1px);
+}
+
+.rf-pending-secondary-button {
+  border: 1px solid #263750;
+  background: #0d1523;
+  color: #8c9caf;
+}
+
+.rf-pending-secondary-button:hover {
+  border-color: #3a4d67;
+  background: #111c2b;
+  color: #c4cfdd;
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   11. HELP SECTION
+   ========================================================= */
+
+.rf-pending-help {
+  margin-top: 18px;
+  padding: 13px 15px;
+  border: 1px solid #1c2a3d;
+  border-radius: 8px;
+  background: rgba(13, 21, 35, 0.65);
+}
+
+.rf-pending-help-title {
+  margin-bottom: 4px;
+  color: #9aa9ba;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.rf-pending-help-text {
+  color: #596b80;
+  font-size: 9px;
+}
+
+.rf-pending-contact {
+  color: #00cfe8;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   12. FOOTER
+   ========================================================= */
+
+.rf-pending-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 18px;
+  color: #3f5065;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 7px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+}
+
+.rf-pending-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rf-pending-footer-brand svg {
+  color: #4d6077;
+}
+
+.rf-pending-footer-divider {
+  color: #263750;
+}
+
+
+/* =========================================================
+   13. ENTRY ANIMATION
+   ========================================================= */
+
+@keyframes rf-pending-card-entry {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* =========================================================
+   14. TABLET
+   ========================================================= */
+
+@media (max-width: 650px) {
+  .rf-pending-page {
+    padding: 24px 15px;
+  }
+
+  .rf-pending-card {
+    max-width: 530px;
+    padding: 31px 28px 21px;
+  }
+}
+
+
+/* =========================================================
+   15. MOBILE
+   ========================================================= */
+
+@media (max-width: 500px) {
+  .rf-pending-page {
+    align-items: flex-start;
+    padding: 18px 12px;
+  }
+
+  .rf-pending-card {
+    margin-top: 5px;
+    padding: 28px 19px 19px;
+    border-radius: 14px;
+  }
+
+  .rf-pending-icon {
+    width: 58px;
+    height: 58px;
+  }
+
+  .rf-pending-title {
+    font-size: 20px;
+  }
+
+  .rf-pending-description {
+    font-size: 10px;
+  }
+
+  .rf-pending-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-pending-primary-button,
+  .rf-pending-secondary-button {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   16. SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .rf-pending-page {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .rf-pending-card {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .rf-pending-title {
+    font-size: 18px;
+  }
+
+  .rf-pending-status-box {
+    padding: 14px;
+  }
+
+  .rf-pending-status-row {
+    font-size: 9px;
+  }
+}
+
+
+/* =========================================================
+   17. ACCESSIBILITY
+   ========================================================= */
+
+.rf-pending-primary-button:focus-visible,
+.rf-pending-secondary-button:focus-visible {
+  outline: 2px solid #00e5ff;
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   18. REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-pending-card {
+    animation: none;
+  }
+
+  .rf-pending-primary-button,
+  .rf-pending-secondary-button {
+    transition: none;
+  }
+}

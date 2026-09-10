@@ -1,0 +1,111 @@
+/* ============================================================
+   RINGFINDER SENTINEL
+   PROTECTED ROUTE STYLES
+   ============================================================ */
+
+
+/* ============================================================
+   01. AUTHENTICATION LOADING CONTAINER
+   ============================================================ */
+
+.rf-protected-loading {
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background:
+    radial-gradient(
+      circle at 50% 35%,
+      rgba(0, 229, 255, 0.06),
+      transparent 35%
+    ),
+    #050911;
+
+  color: #e8f1fb;
+
+  font-family: var(
+    --rf-font,
+    Inter,
+    system-ui,
+    sans-serif
+  );
+}
+
+
+/* ============================================================
+   02. SUBTLE GRID BACKGROUND
+   ============================================================ */
+
+.rf-protected-loading::before {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      rgba(0, 229, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 229, 255, 0.025) 1px,
+      transparent 1px
+    );
+
+  background-size: 42px 42px;
+
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+
+/* ============================================================
+   03. LOADING CONTENT LAYER
+   ============================================================ */
+
+.rf-protected-loading > * {
+  position: relative;
+
+  z-index: 1;
+}
+
+
+/* ============================================================
+   04. RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 600px) {
+  .rf-protected-loading {
+    padding: 18px;
+  }
+}
+
+
+/* ============================================================
+   05. SMALL MOBILE
+   ============================================================ */
+
+@media (max-width: 380px) {
+  .rf-protected-loading {
+    padding: 14px;
+  }
+}
+
+
+/* ============================================================
+   06. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-protected-loading,
+  .rf-protected-loading::before {
+    animation: none;
+  }
+}

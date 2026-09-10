@@ -1,0 +1,1461 @@
+/* ==========================================================
+   FRAUD RINGS
+   RingFinder Fraud Ring & Syndicate Monitoring
+   ========================================================== */
+
+
+/* ==========================================================
+   1. PAGE CONTAINER
+   ========================================================== */
+
+.rf-fraud-rings-page {
+  width: 100%;
+  min-width: 0;
+
+  padding: 4px 0 30px;
+
+  color: #e2e8f0;
+
+  animation: rfRingsPageEnter 0.35s ease-out;
+}
+
+
+/* ==========================================================
+   2. LOADING STATE
+   ========================================================== */
+
+.rf-rings-loading {
+  width: 100%;
+  min-height: 320px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+}
+
+
+/* ==========================================================
+   3. PAGE HEADER
+   ========================================================== */
+
+.rf-rings-header {
+  position: relative;
+
+  width: 100%;
+  min-height: 125px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+
+  padding: 21px 23px;
+
+  margin-bottom: 13px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 90% 20%,
+      rgba(139, 92, 246, 0.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      120deg,
+      #0d1727 0%,
+      #0d1523 58%,
+      #111827 100%
+    );
+
+  border: 1px solid #1d2b40;
+  border-radius: 13px;
+
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.16);
+}
+
+.rf-rings-header::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 3px;
+  height: 100%;
+
+  background: #8b5cf6;
+
+  box-shadow:
+    0 0 18px rgba(139, 92, 246, 0.45);
+}
+
+.rf-rings-header::after {
+  content: "";
+
+  position: absolute;
+
+  right: -100px;
+  top: -120px;
+
+  width: 260px;
+  height: 260px;
+
+  border: 1px solid rgba(139, 92, 246, 0.08);
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 40px rgba(139, 92, 246, 0.015),
+    0 0 0 80px rgba(139, 92, 246, 0.01);
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================
+   4. HEADER CONTENT
+   ========================================================== */
+
+.rf-rings-header-content {
+  position: relative;
+  z-index: 1;
+
+  min-width: 0;
+}
+
+.rf-rings-title-row {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+}
+
+.rf-rings-title-icon {
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #a78bfa;
+
+  background: rgba(139, 92, 246, 0.08);
+
+  border: 1px solid rgba(139, 92, 246, 0.2);
+
+  border-radius: 10px;
+}
+
+
+/* ==========================================================
+   5. TITLE LINE
+   ========================================================== */
+
+.rf-rings-title-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-bottom: 7px;
+}
+
+.rf-rings-title-line h2 {
+  margin: 0;
+
+  color: #f1f5f9;
+
+  font-size: 19px;
+  line-height: 1.25;
+  font-weight: 750;
+
+  letter-spacing: -0.02em;
+}
+
+.rf-rings-header-content p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  line-height: 1.6;
+}
+
+
+/* ==========================================================
+   6. ACTIVE MONITORING BADGE
+   ========================================================== */
+
+.rf-rings-active-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  min-height: 22px;
+
+  padding: 3px 8px;
+
+  color: #4ade80;
+
+  background: rgba(34, 197, 94, 0.06);
+
+  border: 1px solid rgba(34, 197, 94, 0.18);
+
+  border-radius: 5px;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.rf-rings-status-dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 7px rgba(34, 197, 94, 0.8);
+
+  animation:
+    rfRingsStatusPulse 2s ease-in-out infinite;
+}
+
+
+/* ==========================================================
+   7. TOTAL FLAGGED VALUE
+   ========================================================== */
+
+.rf-rings-value-card {
+  position: relative;
+  z-index: 1;
+
+  min-width: 160px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  padding: 11px 13px;
+
+  background:
+    rgba(8, 15, 26, 0.65);
+
+  border: 1px solid #263750;
+
+  border-radius: 9px;
+}
+
+.rf-rings-value-label {
+  margin-bottom: 4px;
+
+  color: #475569;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+}
+
+.rf-rings-value-card strong {
+  color: #c4b5fd;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 750;
+}
+
+.rf-rings-value-usd {
+  margin-top: 2px;
+
+  color: #64748b;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+}
+
+
+/* ==========================================================
+   8. SUMMARY BAR
+   ========================================================== */
+
+.rf-rings-summary-bar {
+  width: 100%;
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 10px 14px;
+
+  margin-bottom: 13px;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 10px;
+}
+
+
+/* ==========================================================
+   9. SUMMARY ITEM
+   ========================================================== */
+
+.rf-rings-summary-item {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  min-width: 0;
+}
+
+.rf-rings-summary-item > div:last-child {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.rf-rings-summary-item span {
+  color: #475569;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: 0.06em;
+}
+
+.rf-rings-summary-item strong {
+  color: #cbd5e1;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 10px;
+  font-weight: 750;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   10. SUMMARY ICON
+   ========================================================== */
+
+.rf-rings-summary-icon {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid;
+
+  border-radius: 8px;
+}
+
+.rf-rings-summary-purple {
+  color: #a78bfa;
+
+  background: rgba(139, 92, 246, 0.07);
+
+  border-color: rgba(139, 92, 246, 0.18);
+}
+
+.rf-rings-summary-red {
+  color: #f87171;
+
+  background: rgba(239, 68, 68, 0.07);
+
+  border-color: rgba(239, 68, 68, 0.18);
+}
+
+.rf-rings-summary-green {
+  color: #34d399;
+
+  background: rgba(34, 197, 94, 0.07);
+
+  border-color: rgba(34, 197, 94, 0.18);
+}
+
+
+/* ==========================================================
+   11. SUMMARY DIVIDER
+   ========================================================== */
+
+.rf-rings-summary-divider {
+  width: 1px;
+  height: 31px;
+
+  flex: 0 0 1px;
+
+  background: #1d2b40;
+}
+
+
+/* ==========================================================
+   12. SUMMARY REFRESH
+   ========================================================== */
+
+.rf-rings-summary-refresh {
+  margin-left: auto;
+}
+
+.rf-rings-refresh-button {
+  height: 32px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 0 10px;
+
+  color: #64748b;
+
+  background: #101a2a;
+
+  border: 1px solid #263750;
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.rf-rings-refresh-button:hover:not(:disabled) {
+  color: #a78bfa;
+
+  background: #142033;
+
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.rf-rings-refresh-button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+}
+
+.rf-rings-refresh-spin {
+  animation:
+    rfRingsRotate 1s linear infinite;
+}
+
+
+/* ==========================================================
+   13. RING GRID
+   ========================================================== */
+
+.rf-rings-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+
+/* ==========================================================
+   14. EMPTY STATE
+   ========================================================== */
+
+.rf-rings-empty {
+  width: 100%;
+  min-height: 280px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+
+  text-align: center;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 12px;
+}
+
+.rf-rings-empty-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 13px;
+
+  color: #64748b;
+
+  background: #101a2a;
+
+  border: 1px solid #263750;
+  border-radius: 11px;
+}
+
+.rf-rings-empty h3 {
+  margin: 0 0 6px;
+
+  color: #cbd5e1;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.rf-rings-empty p {
+  max-width: 430px;
+
+  margin: 0;
+
+  color: #475569;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  line-height: 1.6;
+}
+
+
+/* ==========================================================
+   15. MODAL OVERLAY
+   ========================================================== */
+
+.rf-ring-modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 25px;
+
+  background:
+    rgba(2, 6, 14, 0.78);
+
+  backdrop-filter: blur(7px);
+
+  animation:
+    rfRingModalFade 0.2s ease-out;
+}
+
+
+/* ==========================================================
+   16. MODAL
+   ========================================================== */
+
+.rf-ring-modal {
+  width: min(720px, 100%);
+
+  max-height: calc(100vh - 50px);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0f1928,
+      #0b121f
+    );
+
+  border: 1px solid #263750;
+  border-radius: 13px;
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(139, 92, 246, 0.04);
+
+  animation:
+    rfRingModalEnter 0.22s ease-out;
+}
+
+
+/* ==========================================================
+   17. MODAL HEADER
+   ========================================================== */
+
+.rf-ring-modal-header {
+  min-height: 82px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 17px 19px;
+
+  border-bottom: 1px solid #1d2b40;
+}
+
+.rf-ring-modal-id-row {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 6px;
+}
+
+.rf-ring-modal-id {
+  color: #a78bfa;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.rf-ring-modal-header h3 {
+  margin: 0;
+
+  color: #f1f5f9;
+
+  font-size: 17px;
+  font-weight: 750;
+}
+
+
+/* ==========================================================
+   18. MODAL CLOSE
+   ========================================================== */
+
+.rf-ring-modal-close {
+  width: 32px;
+  height: 32px;
+
+  flex: 0 0 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  color: #64748b;
+
+  background: #101a2a;
+
+  border: 1px solid #263750;
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rf-ring-modal-close:hover {
+  color: #f87171;
+
+  background: rgba(239, 68, 68, 0.07);
+
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+
+/* ==========================================================
+   19. DETAIL GRID
+   ========================================================== */
+
+.rf-ring-detail-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 8px;
+
+  padding: 14px 18px;
+}
+
+
+/* ==========================================================
+   20. DETAIL CARD
+   ========================================================== */
+
+.rf-ring-detail-card {
+  position: relative;
+
+  min-height: 77px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 10px 11px;
+
+  background: #0d1523;
+
+  border: 1px solid #1d2b40;
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+.rf-ring-detail-card::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 2px;
+  height: 100%;
+}
+
+.rf-ring-detail-card > span {
+  margin-bottom: 6px;
+
+  color: #475569;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 6px;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+}
+
+.rf-ring-detail-card strong {
+  color: #cbd5e1;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 18px;
+  line-height: 1;
+
+  font-weight: 750;
+}
+
+.rf-ring-detail-card small {
+  color: #64748b;
+
+  font-size: 8px;
+  font-weight: 600;
+}
+
+
+/* ==========================================================
+   21. DETAIL COLORS
+   ========================================================== */
+
+.rf-ring-detail-red::before {
+  background: #ef4444;
+}
+
+.rf-ring-detail-red strong {
+  color: #f87171;
+}
+
+.rf-ring-detail-cyan::before {
+  background: #00e5ff;
+}
+
+.rf-ring-detail-cyan strong {
+  color: #67e8f9;
+}
+
+.rf-ring-detail-purple::before {
+  background: #8b5cf6;
+}
+
+.rf-ring-detail-purple strong {
+  color: #a78bfa;
+}
+
+.rf-ring-detail-green::before {
+  background: #22c55e;
+}
+
+.rf-ring-detail-green strong {
+  color: #4ade80;
+}
+
+
+/* ==========================================================
+   22. DETAIL SECTION
+   ========================================================== */
+
+.rf-ring-detail-section {
+  padding: 0 18px 14px;
+}
+
+.rf-ring-detail-section h4 {
+  margin: 0 0 7px;
+
+  color: #64748b;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: 0.11em;
+}
+
+
+/* ==========================================================
+   23. PATTERN BOX
+   ========================================================== */
+
+.rf-ring-pattern-box {
+  min-height: 50px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 10px 11px;
+
+  color: #94a3b8;
+
+  background: #101a2a;
+
+  border: 1px solid #1d2b40;
+  border-radius: 7px;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  line-height: 1.6;
+}
+
+
+/* ==========================================================
+   24. WALLET HEADING
+   ========================================================== */
+
+.rf-ring-wallet-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.rf-ring-wallet-heading > span {
+  min-width: 23px;
+  height: 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #67e8f9;
+
+  background: rgba(0, 229, 255, 0.06);
+
+  border: 1px solid rgba(0, 229, 255, 0.16);
+  border-radius: 5px;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+  font-weight: 700;
+}
+
+
+/* ==========================================================
+   25. WALLET LIST
+   ========================================================== */
+
+.rf-ring-wallet-list {
+  max-height: 145px;
+
+  overflow-y: auto;
+
+  padding: 5px;
+
+  background: #0a111d;
+
+  border: 1px solid #1d2b40;
+  border-radius: 7px;
+}
+
+.rf-ring-wallet-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.rf-ring-wallet-list::-webkit-scrollbar-track {
+  background: #0a111d;
+}
+
+.rf-ring-wallet-list::-webkit-scrollbar-thumb {
+  background: #263750;
+
+  border-radius: 999px;
+}
+
+
+/* ==========================================================
+   26. WALLET ROW
+   ========================================================== */
+
+.rf-ring-wallet-row {
+  min-height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 5px 7px;
+
+  color: #94a3b8;
+
+  border-bottom: 1px solid rgba(29, 43, 64, 0.6);
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.rf-ring-wallet-row:last-child {
+  border-bottom: 0;
+}
+
+.rf-ring-wallet-row:hover {
+  color: #cbd5e1;
+
+  background: rgba(20, 32, 51, 0.55);
+}
+
+.rf-ring-wallet-row span {
+  min-width: 0;
+
+  overflow: hidden;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-ring-wallet-row svg {
+  flex: 0 0 auto;
+
+  color: #475569;
+}
+
+
+/* ==========================================================
+   27. WALLET EMPTY
+   ========================================================== */
+
+.rf-ring-wallet-empty {
+  padding: 15px;
+
+  color: #475569;
+
+  text-align: center;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+}
+
+
+/* ==========================================================
+   28. MODAL FOOTER
+   ========================================================== */
+
+.rf-ring-modal-footer {
+  min-height: 61px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-top: auto;
+
+  padding: 11px 18px;
+
+  background: #0a111d;
+
+  border-top: 1px solid #1d2b40;
+}
+
+
+/* ==========================================================
+   29. INSPECTION STATUS
+   ========================================================== */
+
+.rf-ring-inspection-status {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: #475569;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.rf-ring-inspection-status span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #00e5ff;
+
+  box-shadow:
+    0 0 7px rgba(0, 229, 255, 0.7);
+}
+
+
+/* ==========================================================
+   30. CLOSE INSPECTION BUTTON
+   ========================================================== */
+
+.rf-ring-close-button {
+  min-height: 32px;
+
+  padding: 0 11px;
+
+  color: #94a3b8;
+
+  background: #101a2a;
+
+  border: 1px solid #263750;
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  font-family:
+    var(--rf-mono),
+    "JetBrains Mono",
+    "Consolas",
+    monospace;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.rf-ring-close-button:hover {
+  color: #cbd5e1;
+
+  background: #142033;
+
+  border-color: #334967;
+}
+
+
+/* ==========================================================
+   31. PAGE ANIMATION
+   ========================================================== */
+
+@keyframes rfRingsPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ==========================================================
+   32. STATUS ANIMATION
+   ========================================================== */
+
+@keyframes rfRingsStatusPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
+
+
+/* ==========================================================
+   33. ROTATION ANIMATION
+   ========================================================== */
+
+@keyframes rfRingsRotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ==========================================================
+   34. MODAL FADE
+   ========================================================== */
+
+@keyframes rfRingModalFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* ==========================================================
+   35. MODAL ENTER
+   ========================================================== */
+
+@keyframes rfRingModalEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* ==========================================================
+   36. LARGE TABLET
+   ========================================================== */
+
+@media (max-width: 1100px) {
+  .rf-rings-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .rf-rings-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-rings-value-card {
+    align-items: flex-start;
+  }
+}
+
+
+/* ==========================================================
+   37. TABLET
+   ========================================================== */
+
+@media (max-width: 850px) {
+  .rf-rings-summary-bar {
+    flex-wrap: wrap;
+  }
+
+  .rf-rings-summary-divider {
+    display: none;
+  }
+
+  .rf-rings-summary-refresh {
+    margin-left: 0;
+  }
+
+  .rf-ring-detail-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* ==========================================================
+   38. SMALL TABLET
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .rf-rings-header {
+    padding: 17px;
+  }
+
+  .rf-rings-title-line {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-rings-title-line h2 {
+    font-size: 17px;
+  }
+
+  .rf-rings-summary-bar {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 11px;
+
+    padding: 12px;
+  }
+
+  .rf-rings-summary-item {
+    width: 100%;
+  }
+
+  .rf-rings-summary-refresh {
+    width: 100%;
+  }
+
+  .rf-rings-refresh-button {
+    width: 100%;
+  }
+
+  .rf-rings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-ring-modal-overlay {
+    padding: 12px;
+  }
+
+  .rf-ring-modal {
+    max-height: calc(100vh - 24px);
+  }
+}
+
+
+/* ==========================================================
+   39. MOBILE
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .rf-fraud-rings-page {
+    padding-bottom: 20px;
+  }
+
+  .rf-rings-title-row {
+    gap: 10px;
+  }
+
+  .rf-rings-title-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-basis: 38px;
+  }
+
+  .rf-rings-header-content p {
+    font-size: 7px;
+  }
+
+  .rf-rings-value-card {
+    width: 100%;
+  }
+
+  .rf-ring-detail-grid {
+    padding: 12px;
+
+    gap: 7px;
+  }
+
+  .rf-ring-detail-section {
+    padding: 0 12px 12px;
+  }
+
+  .rf-ring-modal-header {
+    padding: 14px;
+  }
+
+  .rf-ring-modal-footer {
+    padding: 10px 12px;
+  }
+}
+
+
+/* ==========================================================
+   40. VERY SMALL SCREENS
+   ========================================================== */
+
+@media (max-width: 420px) {
+  .rf-rings-header {
+    padding: 14px;
+  }
+
+  .rf-rings-title-line h2 {
+    font-size: 15px;
+  }
+
+  .rf-rings-active-badge {
+    font-size: 6px;
+  }
+
+  .rf-rings-value-card strong {
+    font-size: 18px;
+  }
+
+  .rf-ring-detail-card {
+    min-height: 68px;
+
+    padding: 8px;
+  }
+
+  .rf-ring-detail-card strong {
+    font-size: 15px;
+  }
+
+  .rf-ring-modal-header h3 {
+    font-size: 14px;
+  }
+
+  .rf-ring-inspection-status {
+    font-size: 6px;
+  }
+
+  .rf-ring-close-button {
+    font-size: 7px;
+  }
+}

@@ -1,0 +1,737 @@
+/* =========================================================
+   TRANSACTION NETWORK
+   RingFinder — Bitcoin Graph Visualization
+   ========================================================= */
+
+
+/* =========================================================
+   1. PAGE CONTAINER
+   ========================================================= */
+
+.rf-transaction-network-page {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 4px 0 30px;
+  color: #e6edf7;
+}
+
+
+/* =========================================================
+   2. LOADING STATE
+   ========================================================= */
+
+.rf-network-loading {
+  width: 100%;
+  min-height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* =========================================================
+   3. ERROR STATE
+   ========================================================= */
+
+.rf-network-error {
+  width: 100%;
+  min-height: 190px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 25px;
+  border: 1px solid #44232a;
+  border-radius: 14px;
+  background: #0d121c;
+}
+
+.rf-network-error-icon {
+  width: 47px;
+  height: 47px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 11px;
+  background: rgba(239, 68, 68, 0.07);
+  color: #ef4444;
+}
+
+.rf-network-error-content h2 {
+  margin: 0 0 5px;
+  color: #edf3fa;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.rf-network-error-content p {
+  margin: 0;
+  color: #7d8da1;
+  font-size: 12px;
+}
+
+.rf-network-retry-button {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 0 11px;
+  border: 1px solid #30425b;
+  border-radius: 7px;
+  background: #111c2b;
+  color: #aebccd;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.rf-network-retry-button:hover {
+  border-color: #00e5ff;
+  color: #00e5ff;
+}
+
+
+/* =========================================================
+   4. PAGE HEADER
+   ========================================================= */
+
+.rf-network-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  margin-bottom: 16px;
+}
+
+.rf-network-header-content {
+  min-width: 0;
+}
+
+.rf-network-title-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.rf-network-title-icon {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 11px;
+  background: rgba(0, 229, 255, 0.07);
+  color: #00e5ff;
+}
+
+.rf-network-title-content {
+  min-width: 0;
+}
+
+.rf-network-title-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.rf-network-title-line h2 {
+  margin: 0;
+  color: #f0f5fb;
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+.rf-network-title-content p {
+  margin: 6px 0 0;
+  color: #75869b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   5. LIVE GRAPH BADGE
+   ========================================================= */
+
+.rf-network-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 23px;
+  padding: 0 8px;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 5px;
+  background: rgba(34, 197, 94, 0.06);
+  color: #67dc91;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-network-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.65);
+}
+
+
+/* =========================================================
+   6. HEADER ACTIONS
+   ========================================================= */
+
+.rf-network-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.rf-network-stats {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+
+/* =========================================================
+   7. STAT CARD
+   ========================================================= */
+
+.rf-network-stat-card {
+  min-width: 125px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  border: 1px solid #1d2b40;
+  border-radius: 9px;
+  background: #0d1523;
+}
+
+.rf-network-stat-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+}
+
+.rf-network-stat-cyan {
+  border: 1px solid rgba(0, 229, 255, 0.18);
+  background: rgba(0, 229, 255, 0.06);
+  color: #00e5ff;
+}
+
+.rf-network-stat-purple {
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(139, 92, 246, 0.07);
+  color: #a78bfa;
+}
+
+.rf-network-stat-content {
+  min-width: 0;
+}
+
+.rf-network-stat-content span {
+  display: block;
+  color: #61738a;
+  font-size: 8px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rf-network-stat-content strong {
+  display: block;
+  margin-top: 2px;
+  color: #dce7f2;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.rf-network-stat-content small {
+  display: block;
+  margin-top: 1px;
+  color: #506278;
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   8. REFRESH BUTTON
+   ========================================================= */
+
+.rf-network-refresh-button {
+  min-height: 39px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid #263750;
+  border-radius: 8px;
+  background: #0d1523;
+  color: #94a4b7;
+  font-size: 10px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.rf-network-refresh-button:hover:not(:disabled) {
+  border-color: rgba(0, 229, 255, 0.4);
+  background: #111c2b;
+  color: #00e5ff;
+}
+
+.rf-network-refresh-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rf-network-refresh-spin {
+  animation: rf-network-spin 0.9s linear infinite;
+}
+
+@keyframes rf-network-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   9. STATUS BAR
+   ========================================================= */
+
+.rf-network-status-bar {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 0 13px;
+  margin-bottom: 14px;
+  border: 1px solid #1d2b40;
+  border-radius: 8px;
+  background: #0b121e;
+}
+
+.rf-network-status-left,
+.rf-network-status-right {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.rf-network-status-left > span:last-child {
+  color: #596b80;
+  font-size: 9px;
+}
+
+.rf-network-operational {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5bc77d;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.rf-network-operational > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 7px rgba(34, 197, 94, 0.55);
+}
+
+.rf-network-status-divider {
+  width: 1px;
+  height: 13px;
+  background: #263750;
+}
+
+.rf-network-status-right {
+  color: #5f7186;
+  font-size: 9px;
+}
+
+.rf-network-status-right svg {
+  flex-shrink: 0;
+  color: #74869b;
+}
+
+
+/* =========================================================
+   10. GRAPH SECTION
+   ========================================================= */
+
+.rf-network-graph-section {
+  overflow: hidden;
+  border: 1px solid #1d2b40;
+  border-radius: 13px;
+  background: #0b121e;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================================================
+   11. GRAPH HEADING
+   ========================================================= */
+
+.rf-network-graph-heading {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 15px 18px;
+  border-bottom: 1px solid #1a2738;
+  background: #101a2a;
+}
+
+.rf-network-eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  color: #00bcd4;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.rf-network-graph-heading h3 {
+  margin: 0;
+  color: #dfe8f2;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rf-network-graph-heading p {
+  margin: 5px 0 0;
+  color: #617287;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.rf-network-engine-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 0 9px;
+  border: 1px solid rgba(139, 92, 246, 0.23);
+  border-radius: 5px;
+  background: rgba(139, 92, 246, 0.06);
+  color: #a78bfa;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   12. GRAPH CONTAINER
+   ========================================================= */
+
+.rf-network-graph-container {
+  position: relative;
+  min-height: 560px;
+  padding: 0;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(0, 229, 255, 0.025),
+      transparent 42%
+    ),
+    #080e18;
+}
+
+
+/* =========================================================
+   13. GRAPH CONTAINER OVERRIDES
+   ========================================================= */
+
+.rf-network-graph-container > * {
+  max-width: 100%;
+}
+
+.rf-network-graph-container canvas,
+.rf-network-graph-container svg {
+  max-width: 100%;
+}
+
+
+/* =========================================================
+   14. FOOTER
+   ========================================================= */
+
+.rf-network-footer {
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 3px;
+  margin-top: 9px;
+  color: #4f6176;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  letter-spacing: 0.03em;
+}
+
+.rf-network-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #579c6d;
+  white-space: nowrap;
+}
+
+.rf-network-footer-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 7px rgba(34, 197, 94, 0.5);
+}
+
+.rf-network-footer-divider {
+  width: 1px;
+  height: 12px;
+  background: #263750;
+}
+
+
+/* =========================================================
+   15. PAGE ANIMATION
+   ========================================================= */
+
+.rf-network-page-header,
+.rf-network-status-bar,
+.rf-network-graph-section {
+  animation: rf-network-fade-up 380ms ease both;
+}
+
+.rf-network-status-bar {
+  animation-delay: 50ms;
+}
+
+.rf-network-graph-section {
+  animation-delay: 90ms;
+}
+
+@keyframes rf-network-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   16. LARGE TABLET
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  .rf-network-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-network-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+
+/* =========================================================
+   17. TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .rf-network-title-line h2 {
+    font-size: 21px;
+  }
+
+  .rf-network-graph-container {
+    min-height: 500px;
+  }
+}
+
+
+/* =========================================================
+   18. MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .rf-transaction-network-page {
+    padding-bottom: 22px;
+  }
+
+  .rf-network-title-row {
+    align-items: flex-start;
+  }
+
+  .rf-network-title-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .rf-network-title-line {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .rf-network-title-line h2 {
+    font-size: 19px;
+  }
+
+  .rf-network-header-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rf-network-stats {
+    width: 100%;
+  }
+
+  .rf-network-stat-card {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .rf-network-refresh-button {
+    width: 100%;
+  }
+
+  .rf-network-status-bar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 10px 12px;
+  }
+
+  .rf-network-status-right {
+    width: 100%;
+  }
+
+  .rf-network-status-divider {
+    display: none;
+  }
+
+  .rf-network-graph-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-network-graph-container {
+    min-height: 430px;
+  }
+
+  .rf-network-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .rf-network-footer-divider {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   19. SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+  .rf-network-title-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .rf-network-title-line h2 {
+    font-size: 17px;
+  }
+
+  .rf-network-title-content p {
+    font-size: 10px;
+  }
+
+  .rf-network-stats {
+    flex-direction: column;
+  }
+
+  .rf-network-stat-card {
+    width: 100%;
+  }
+
+  .rf-network-graph-heading {
+    padding: 13px;
+  }
+
+  .rf-network-graph-container {
+    min-height: 380px;
+  }
+}
+
+
+/* =========================================================
+   20. ACCESSIBILITY
+   ========================================================= */
+
+.rf-network-refresh-button:focus-visible,
+.rf-network-retry-button:focus-visible {
+  outline: 2px solid #00e5ff;
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   21. REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-network-refresh-spin {
+    animation: none;
+  }
+
+  .rf-network-page-header,
+  .rf-network-status-bar,
+  .rf-network-graph-section {
+    animation: none;
+  }
+
+  .rf-network-refresh-button,
+  .rf-network-retry-button {
+    transition: none;
+  }
+}

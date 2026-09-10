@@ -1,0 +1,1007 @@
+/* =========================================================
+   TEMPORAL VALIDATION
+   RingFinder — Temporal Integrity Audit
+   ========================================================= */
+
+
+/* =========================================================
+   1. PAGE CONTAINER
+   ========================================================= */
+
+.rf-temporal-validation-page {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 4px 0 32px;
+  color: #e6edf7;
+}
+
+
+/* =========================================================
+   2. LOADING STATE
+   ========================================================= */
+
+.rf-temporal-validation-loading {
+  width: 100%;
+  min-height: 430px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* =========================================================
+   3. ERROR STATE
+   ========================================================= */
+
+.rf-temporal-validation-error {
+  width: 100%;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid #44232a;
+  border-radius: 14px;
+  background: #0d121c;
+}
+
+.rf-temporal-validation-error-icon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 11px;
+  background: rgba(239, 68, 68, 0.07);
+  color: #ef4444;
+}
+
+.rf-temporal-validation-error h2 {
+  margin: 0 0 5px;
+  color: #edf3fa;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.rf-temporal-validation-error p {
+  margin: 0;
+  color: #7e8da1;
+  font-size: 12px;
+}
+
+.rf-temporal-validation-retry {
+  margin-top: 14px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 11px;
+  border: 1px solid #30425b;
+  border-radius: 7px;
+  background: #111c2b;
+  color: #aab8c9;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.rf-temporal-validation-retry:hover {
+  border-color: #00e5ff;
+  color: #00e5ff;
+}
+
+
+/* =========================================================
+   4. PAGE HEADER
+   ========================================================= */
+
+.rf-temporal-validation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+.rf-temporal-validation-header-content {
+  min-width: 0;
+}
+
+.rf-temporal-validation-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+  color: #00e5ff;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.rf-temporal-validation-header h2 {
+  margin: 0;
+  color: #f2f7fc;
+  font-size: 26px;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+.rf-temporal-validation-header p {
+  max-width: 780px;
+  margin: 7px 0 0;
+  color: #77879a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   5. REFRESH BUTTON
+   ========================================================= */
+
+.rf-temporal-validation-refresh {
+  min-height: 38px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 13px;
+  border: 1px solid #263750;
+  border-radius: 8px;
+  background: #0d1523;
+  color: #9caabd;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.rf-temporal-validation-refresh:hover:not(:disabled) {
+  border-color: rgba(0, 229, 255, 0.4);
+  background: #111c2b;
+  color: #00e5ff;
+}
+
+.rf-temporal-validation-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   6. SECURITY BANNER
+   ========================================================= */
+
+.rf-temporal-banner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 23px 25px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  border-radius: 14px;
+  background:
+    radial-gradient(
+      circle at 90% 20%,
+      rgba(0, 229, 255, 0.1),
+      transparent 32%
+    ),
+    #0d1827;
+}
+
+.rf-temporal-banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #00e5ff,
+    transparent
+  );
+  opacity: 0.65;
+}
+
+.rf-temporal-banner-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 12px;
+  background: rgba(0, 229, 255, 0.07);
+  color: #00e5ff;
+}
+
+.rf-temporal-banner-content {
+  min-width: 0;
+}
+
+.rf-temporal-banner-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 8px;
+}
+
+.rf-temporal-guarantee,
+.rf-temporal-cutoff {
+  display: inline-flex;
+  align-items: center;
+  min-height: 23px;
+  padding: 0 8px;
+  border-radius: 5px;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.rf-temporal-guarantee {
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  background: rgba(34, 197, 94, 0.06);
+  color: #6ee79b;
+}
+
+.rf-temporal-cutoff {
+  border: 1px solid #263750;
+  background: #101a2a;
+  color: #8291a4;
+}
+
+.rf-temporal-banner h2 {
+  margin: 0;
+  color: #edf5fc;
+  font-size: 20px;
+  font-weight: 730;
+}
+
+.rf-temporal-banner p {
+  max-width: 850px;
+  margin: 7px 0 0;
+  color: #7f90a4;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   7. TIMELINE CARD
+   ========================================================= */
+
+.rf-temporal-timeline-card {
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+  background: #0d1523;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+}
+
+
+/* =========================================================
+   8. SECTION HEADING
+   ========================================================= */
+
+.rf-temporal-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 18px 21px;
+  border-bottom: 1px solid #1a2738;
+  background: #101a2a;
+}
+
+.rf-temporal-heading-icon {
+  width: 33px;
+  height: 33px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(0, 229, 255, 0.06);
+  color: #00e5ff;
+}
+
+.rf-temporal-section-heading span {
+  display: block;
+  margin-bottom: 3px;
+  color: #5f7188;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.rf-temporal-section-heading h3 {
+  margin: 0;
+  color: #dfe8f3;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   9. TIMELINE
+   ========================================================= */
+
+.rf-temporal-timeline {
+  position: relative;
+  padding: 24px 25px 10px;
+}
+
+.rf-temporal-timeline::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  bottom: 25px;
+  left: 42px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    #00e5ff,
+    #263750 45%,
+    #22c55e
+  );
+  opacity: 0.55;
+}
+
+.rf-temporal-timeline-item {
+  position: relative;
+  display: flex;
+  gap: 18px;
+  min-height: 70px;
+  padding-bottom: 17px;
+}
+
+.rf-timeline-marker {
+  position: relative;
+  z-index: 2;
+  width: 34px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.rf-timeline-marker span {
+  width: 11px;
+  height: 11px;
+  margin-top: 4px;
+  border-radius: 50%;
+  border: 2px solid #5b6d82;
+  background: #0d1523;
+}
+
+.rf-timeline-training .rf-timeline-marker span {
+  border-color: #00e5ff;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
+}
+
+.rf-timeline-cutoff .rf-timeline-marker span {
+  border-color: #f59e0b;
+  background: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.rf-timeline-testing .rf-timeline-marker span {
+  border-color: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+}
+
+.rf-timeline-content {
+  min-width: 0;
+  flex: 1;
+  padding: 1px 0;
+}
+
+.rf-timeline-period {
+  color: #aab8c9;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.rf-timeline-stage {
+  margin-top: 4px;
+  color: #e4edf6;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.rf-timeline-count {
+  margin-top: 5px;
+  color: #64768b;
+  font-size: 10px;
+}
+
+.rf-timeline-count strong {
+  color: #8ea0b5;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+}
+
+.rf-timeline-pattern {
+  display: inline-flex;
+  margin-top: 7px;
+  padding: 4px 7px;
+  border: 1px solid #263750;
+  border-radius: 4px;
+  background: #101a2a;
+  color: #71849a;
+  font-size: 9px;
+}
+
+.rf-temporal-timeline-empty {
+  padding: 30px;
+  text-align: center;
+  color: #66778b;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   10. EXPLANATION
+   ========================================================= */
+
+.rf-temporal-explanation {
+  margin: 4px 21px 21px;
+  padding: 17px;
+  border: 1px solid rgba(59, 130, 246, 0.16);
+  border-radius: 9px;
+  background: rgba(59, 130, 246, 0.035);
+}
+
+.rf-temporal-explanation-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #8fa9c6;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rf-temporal-explanation-title span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.45);
+}
+
+.rf-temporal-explanation p {
+  margin: 0;
+  color: #78899d;
+  font-size: 10px;
+  line-height: 1.75;
+}
+
+
+/* =========================================================
+   11. METRIC COMPARISON
+   ========================================================= */
+
+.rf-temporal-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   12. COMPARISON CARD
+   ========================================================= */
+
+.rf-temporal-comparison-card {
+  overflow: hidden;
+  min-width: 0;
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+  background: #0d1523;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+}
+
+.rf-temporal-realistic {
+  border-color: rgba(34, 197, 94, 0.18);
+}
+
+.rf-temporal-flawed {
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+
+/* =========================================================
+   13. COMPARISON HEADER
+   ========================================================= */
+
+.rf-temporal-comparison-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 19px;
+  border-bottom: 1px solid #1a2738;
+  background: #101a2a;
+}
+
+.rf-temporal-comparison-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.rf-temporal-realistic .rf-temporal-comparison-title {
+  color: #22c55e;
+}
+
+.rf-temporal-flawed .rf-temporal-comparison-title {
+  color: #f59e0b;
+}
+
+.rf-temporal-comparison-title h3 {
+  margin: 0;
+  color: #e4edf6;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rf-temporal-comparison-subtitle {
+  display: block;
+  margin-top: 5px;
+  color: #5f7188;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+
+/* =========================================================
+   14. STATUS BADGES
+   ========================================================= */
+
+.rf-temporal-production-badge,
+.rf-temporal-leakage-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  flex-shrink: 0;
+  padding: 0 8px;
+  border-radius: 5px;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.rf-temporal-production-badge {
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  background: rgba(34, 197, 94, 0.06);
+  color: #69dc93;
+}
+
+.rf-temporal-leakage-badge {
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  background: rgba(245, 158, 11, 0.06);
+  color: #f3bb55;
+}
+
+
+/* =========================================================
+   15. METRIC GRID
+   ========================================================= */
+
+.rf-temporal-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 16px 17px;
+}
+
+
+/* =========================================================
+   16. SECONDARY METRICS
+   ========================================================= */
+
+.rf-temporal-secondary-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 17px 17px;
+  border: 1px solid #1d2b40;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #1d2b40;
+}
+
+.rf-temporal-secondary-metrics > div {
+  min-width: 0;
+  padding: 11px;
+  background: #0d1523;
+}
+
+.rf-temporal-secondary-metrics span {
+  display: block;
+  margin-bottom: 5px;
+  color: #607187;
+  font-size: 9px;
+}
+
+.rf-temporal-secondary-metrics strong {
+  color: #aebdce;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   17. WARNING
+   ========================================================= */
+
+.rf-temporal-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0 17px 17px;
+  padding: 12px;
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  border-radius: 8px;
+  background: rgba(245, 158, 11, 0.045);
+}
+
+.rf-temporal-warning-icon {
+  width: 27px;
+  height: 27px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(245, 158, 11, 0.08);
+  color: #f59e0b;
+}
+
+.rf-temporal-warning p {
+  margin: 0;
+  color: #8c7b5b;
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.rf-temporal-warning strong {
+  color: #e6b85b;
+}
+
+
+/* =========================================================
+   18. VALIDATION SUMMARY
+   ========================================================= */
+
+.rf-temporal-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 17px 19px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.035);
+}
+
+.rf-temporal-summary-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.06);
+  color: #22c55e;
+}
+
+.rf-temporal-summary span {
+  display: block;
+  margin-bottom: 5px;
+  color: #62cf89;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.rf-temporal-summary p {
+  margin: 0;
+  color: #8393a5;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   19. FOOTER
+   ========================================================= */
+
+.rf-temporal-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  padding: 0 3px;
+  color: #4e6075;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  letter-spacing: 0.04em;
+}
+
+.rf-temporal-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5b9d72;
+}
+
+.rf-temporal-footer-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 7px rgba(34, 197, 94, 0.5);
+}
+
+.rf-temporal-footer-divider {
+  width: 1px;
+  height: 12px;
+  background: #263750;
+}
+
+
+/* =========================================================
+   20. SPIN ANIMATION
+   ========================================================= */
+
+.rf-temporal-validation-spin {
+  animation: rf-temporal-spin 0.9s linear infinite;
+}
+
+@keyframes rf-temporal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   21. PAGE ANIMATION
+   ========================================================= */
+
+.rf-temporal-validation-page > section {
+  animation: rf-temporal-fade-up 400ms ease both;
+}
+
+.rf-temporal-validation-page > section:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.rf-temporal-validation-page > section:nth-child(3) {
+  animation-delay: 100ms;
+}
+
+.rf-temporal-validation-page > section:nth-child(4) {
+  animation-delay: 140ms;
+}
+
+@keyframes rf-temporal-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   22. LARGE TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .rf-temporal-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-temporal-validation-header {
+    align-items: flex-start;
+  }
+}
+
+
+/* =========================================================
+   23. TABLET
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .rf-temporal-validation-header {
+    flex-direction: column;
+  }
+
+  .rf-temporal-validation-refresh {
+    align-self: flex-start;
+  }
+
+  .rf-temporal-banner {
+    align-items: flex-start;
+  }
+
+  .rf-temporal-banner h2 {
+    font-size: 18px;
+  }
+}
+
+
+/* =========================================================
+   24. MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .rf-temporal-validation-page {
+    padding-bottom: 24px;
+  }
+
+  .rf-temporal-validation-header h2 {
+    font-size: 22px;
+  }
+
+  .rf-temporal-validation-refresh {
+    width: 100%;
+  }
+
+  .rf-temporal-banner {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .rf-temporal-banner-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .rf-temporal-banner-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rf-temporal-timeline {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .rf-temporal-timeline::before {
+    left: 32px;
+  }
+
+  .rf-temporal-explanation {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  .rf-temporal-metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-temporal-secondary-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-temporal-comparison-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-temporal-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .rf-temporal-footer-divider {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   25. SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+  .rf-temporal-section-heading {
+    padding: 15px;
+  }
+
+  .rf-temporal-section-heading h3 {
+    font-size: 12px;
+  }
+
+  .rf-temporal-banner h2 {
+    font-size: 17px;
+  }
+
+  .rf-temporal-banner p {
+    font-size: 10px;
+  }
+
+  .rf-temporal-comparison-header {
+    padding: 15px;
+  }
+
+  .rf-temporal-metric-grid {
+    padding: 13px;
+  }
+
+  .rf-temporal-warning,
+  .rf-temporal-secondary-metrics {
+    margin-left: 13px;
+    margin-right: 13px;
+  }
+
+  .rf-temporal-warning {
+    margin-bottom: 13px;
+  }
+
+  .rf-temporal-summary {
+    padding: 14px;
+  }
+}
+
+
+/* =========================================================
+   26. ACCESSIBILITY
+   ========================================================= */
+
+.rf-temporal-validation-refresh:focus-visible,
+.rf-temporal-validation-retry:focus-visible {
+  outline: 2px solid #00e5ff;
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   27. REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-temporal-validation-spin {
+    animation: none;
+  }
+
+  .rf-temporal-validation-page > section {
+    animation: none;
+  }
+
+  .rf-temporal-validation-refresh,
+  .rf-temporal-validation-retry {
+    transition: none;
+  }
+}

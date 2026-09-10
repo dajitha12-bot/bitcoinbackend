@@ -1,0 +1,822 @@
+/* =========================================================
+   RESULTS PAGE
+   RingFinder — Final Evaluation & Audit
+   ========================================================= */
+
+
+/* =========================================================
+   1. PAGE CONTAINER
+   ========================================================= */
+
+.rf-results-page {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 4px 0 32px;
+  color: #e6edf7;
+}
+
+
+/* =========================================================
+   2. LOADING STATE
+   ========================================================= */
+
+.rf-results-loading {
+  min-height: 420px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* =========================================================
+   3. ERROR STATE
+   ========================================================= */
+
+.rf-results-error {
+  width: 100%;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid #44232a;
+  border-radius: 14px;
+  background: #0d121c;
+  color: #e6edf7;
+}
+
+.rf-results-error-icon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+}
+
+.rf-results-error h2 {
+  margin: 0 0 5px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.rf-results-error p {
+  margin: 0;
+  color: #8b98aa;
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   4. HEADER BANNER
+   ========================================================= */
+
+.rf-results-banner {
+  position: relative;
+  overflow: hidden;
+  min-height: 190px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 30px;
+  margin-bottom: 20px;
+  border: 1px solid #1d2b40;
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(0, 229, 255, 0.09),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 20% 100%,
+      rgba(59, 130, 246, 0.06),
+      transparent 30%
+    ),
+    #0d1523;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.22);
+}
+
+.rf-results-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    );
+  background-size: 32px 32px;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 30%,
+    black 80%,
+    transparent
+  );
+}
+
+.rf-results-banner-content {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+
+/* =========================================================
+   5. BANNER META ROW
+   ========================================================= */
+
+.rf-results-meta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.rf-results-report-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 229, 255, 0.28);
+  border-radius: 5px;
+  background: rgba(0, 229, 255, 0.06);
+  color: #00e5ff;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.rf-results-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 26px;
+  padding: 0 10px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 5px;
+  background: rgba(34, 197, 94, 0.06);
+  color: #8de4aa;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.rf-results-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.65);
+}
+
+
+/* =========================================================
+   6. BANNER TYPOGRAPHY
+   ========================================================= */
+
+.rf-results-banner h2 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #f7fbff;
+  font-family: var(--rf-font, Inter, sans-serif);
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.15;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+.rf-results-banner p {
+  position: relative;
+  z-index: 1;
+  margin: 11px 0 0;
+  color: #8f9db0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   7. BANNER ACTIONS
+   ========================================================= */
+
+.rf-results-banner-actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.rf-results-refresh-button,
+.rf-results-download-button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.rf-results-refresh-button {
+  padding: 0 13px;
+  border: 1px solid #263750;
+  background: rgba(10, 17, 29, 0.8);
+  color: #9ba9bb;
+}
+
+.rf-results-refresh-button:hover:not(:disabled) {
+  border-color: #3a526f;
+  background: #111c2c;
+  color: #e7eef8;
+}
+
+.rf-results-refresh-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.rf-results-download-button {
+  padding: 0 15px;
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  background: rgba(0, 229, 255, 0.09);
+  color: #7aefff;
+}
+
+.rf-results-download-button:hover {
+  border-color: rgba(0, 229, 255, 0.7);
+  background: rgba(0, 229, 255, 0.15);
+  box-shadow: 0 0 22px rgba(0, 229, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.rf-results-pdf-label {
+  color: #61758d;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+
+/* =========================================================
+   8. MAIN METRICS
+   ========================================================= */
+
+.rf-results-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   9. SAFEGUARD SECTION
+   ========================================================= */
+
+.rf-results-safeguards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   10. SAFEGUARD CARD
+   ========================================================= */
+
+.rf-results-safeguard-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 230px;
+  padding: 22px;
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+  background: #0d1523;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+.rf-results-safeguard-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 22px;
+  right: 22px;
+  height: 1px;
+  opacity: 0.7;
+}
+
+.rf-safeguard-temporal::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #00e5ff,
+    transparent
+  );
+}
+
+.rf-safeguard-adversarial::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #22c55e,
+    transparent
+  );
+}
+
+
+/* =========================================================
+   11. SAFEGUARD HEADING
+   ========================================================= */
+
+.rf-results-safeguard-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rf-results-safeguard-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.rf-safeguard-temporal .rf-results-safeguard-icon {
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  background: rgba(0, 229, 255, 0.07);
+  color: #00e5ff;
+}
+
+.rf-safeguard-adversarial .rf-results-safeguard-icon {
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  background: rgba(34, 197, 94, 0.07);
+  color: #22c55e;
+}
+
+.rf-results-safeguard-heading h3 {
+  margin: 0;
+  color: #eaf1fa;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.rf-results-safeguard-heading p {
+  margin: 4px 0 0;
+  color: #68798e;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   12. SAFEGUARD SCORE
+   ========================================================= */
+
+.rf-results-safeguard-score {
+  margin-top: 24px;
+  color: #f3f8ff;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 32px;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+
+.rf-safeguard-temporal .rf-results-safeguard-score {
+  color: #53edff;
+}
+
+.rf-safeguard-adversarial .rf-results-safeguard-score {
+  color: #65e69a;
+}
+
+.rf-results-safeguard-score span {
+  margin-left: 9px;
+  color: #63758a;
+  font-family: var(--rf-font, Inter, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+
+/* =========================================================
+   13. SAFEGUARD DESCRIPTION
+   ========================================================= */
+
+.rf-results-safeguard-description {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 17px;
+  padding-top: 16px;
+  border-top: 1px solid #1a2738;
+}
+
+.rf-results-safeguard-description svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #22c55e;
+}
+
+.rf-results-safeguard-description p {
+  margin: 0;
+  color: #8291a4;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   14. ASSESSMENT CARD
+   ========================================================= */
+
+.rf-results-assessment {
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 1px solid #1d2b40;
+  border-radius: 14px;
+  background: #0d1523;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================================================
+   15. ASSESSMENT HEADER
+   ========================================================= */
+
+.rf-results-assessment-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px;
+  border-bottom: 1px solid #1a2738;
+  background: #101a2a;
+}
+
+.rf-results-assessment-icon {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.08);
+  color: #a78bfa;
+}
+
+.rf-results-assessment-heading span {
+  display: block;
+  margin-bottom: 4px;
+  color: #64758b;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.rf-results-assessment-heading h3 {
+  margin: 0;
+  color: #eaf1fa;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   16. ASSESSMENT CONTENT
+   ========================================================= */
+
+.rf-results-assessment-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 125px;
+  padding: 25px 38px;
+}
+
+.rf-results-assessment-content p {
+  margin: 0;
+  max-width: 1000px;
+  color: #aab7c7;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.rf-results-quote-mark {
+  align-self: flex-start;
+  color: rgba(0, 229, 255, 0.4);
+  font-family: Georgia, serif;
+  font-size: 38px;
+  line-height: 0.8;
+}
+
+.rf-quote-end {
+  align-self: flex-end;
+}
+
+
+/* =========================================================
+   17. REPORT FOOTER
+   ========================================================= */
+
+.rf-results-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 38px;
+  padding: 0 4px;
+  color: #53657a;
+  font-family: var(--rf-mono, "JetBrains Mono", monospace);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+.rf-results-footer-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.rf-results-footer-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00e5ff;
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+}
+
+.rf-results-footer-divider {
+  width: 1px;
+  height: 13px;
+  background: #263750;
+}
+
+.rf-results-footer-text {
+  color: #4f6075;
+}
+
+
+/* =========================================================
+   18. REFRESH ANIMATION
+   ========================================================= */
+
+.rf-results-spin {
+  animation: rf-results-spin 0.9s linear infinite;
+}
+
+@keyframes rf-results-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   19. PAGE ENTRY ANIMATION
+   ========================================================= */
+
+.rf-results-banner,
+.rf-results-safeguard-card,
+.rf-results-assessment {
+  animation: rf-results-fade-up 420ms ease both;
+}
+
+.rf-results-safeguard-card:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.rf-results-assessment {
+  animation-delay: 110ms;
+}
+
+@keyframes rf-results-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   20. LARGE TABLET
+   ========================================================= */
+
+@media (max-width: 1180px) {
+  .rf-results-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rf-results-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-results-banner-actions {
+    width: 100%;
+  }
+
+  .rf-results-download-button {
+    margin-left: auto;
+  }
+}
+
+
+/* =========================================================
+   21. TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .rf-results-safeguards {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-results-banner {
+    padding: 24px;
+  }
+
+  .rf-results-banner h2 {
+    font-size: 27px;
+  }
+}
+
+
+/* =========================================================
+   22. MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .rf-results-page {
+    padding: 0 0 24px;
+  }
+
+  .rf-results-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-results-banner {
+    min-height: auto;
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .rf-results-banner h2 {
+    font-size: 23px;
+  }
+
+  .rf-results-banner p {
+    font-size: 12px;
+  }
+
+  .rf-results-banner-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rf-results-refresh-button,
+  .rf-results-download-button {
+    width: 100%;
+  }
+
+  .rf-results-download-button {
+    margin-left: 0;
+  }
+
+  .rf-results-safeguard-card {
+    min-height: auto;
+    padding: 19px;
+  }
+
+  .rf-results-assessment-heading {
+    padding: 16px;
+  }
+
+  .rf-results-assessment-content {
+    padding: 22px 18px;
+  }
+
+  .rf-results-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 0;
+  }
+
+  .rf-results-footer-divider {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   23. SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 450px) {
+  .rf-results-meta-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rf-results-report-badge,
+  .rf-results-status {
+    font-size: 9px;
+  }
+
+  .rf-results-banner h2 {
+    font-size: 21px;
+  }
+
+  .rf-results-safeguard-heading h3 {
+    font-size: 13px;
+  }
+
+  .rf-results-safeguard-score {
+    font-size: 27px;
+  }
+
+  .rf-results-assessment-content {
+    display: block;
+  }
+
+  .rf-results-quote-mark {
+    display: none;
+  }
+
+  .rf-results-assessment-content p {
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   24. ACCESSIBILITY
+   ========================================================= */
+
+.rf-results-refresh-button:focus-visible,
+.rf-results-download-button:focus-visible {
+  outline: 2px solid #00e5ff;
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   25. REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-results-spin {
+    animation: none;
+  }
+
+  .rf-results-banner,
+  .rf-results-safeguard-card,
+  .rf-results-assessment {
+    animation: none;
+  }
+
+  .rf-results-refresh-button,
+  .rf-results-download-button {
+    transition: none;
+  }
+}
