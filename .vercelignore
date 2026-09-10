@@ -1,0 +1,13 @@
+.git
+.env
+.env.local
+venv
+__pycache__
+*.pyc
+db.sqlite3
+!backend/db.sqlite3
+media
+sample_csv
+frontend
+node_modules
+dist
