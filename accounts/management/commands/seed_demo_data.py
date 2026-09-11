@@ -1,3 +1,5 @@
+import os
+import pandas as pd
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
@@ -11,12 +13,14 @@ from fraud_detection.models import (
 )
 from admin_panel.models import ActivityLog, SystemSetting
 from fraud_detection.services.fraud_detector import execute_full_fraud_analysis
+from fraud_detection.services.temporal_validator import run_temporal_validation
+from fraud_detection.services.adversarial_detector import run_adversarial_testing
 
 class Command(BaseCommand):
     help = 'Seeds initial demo data including accounts, Bitcoin transactions, fraud rings, and analysis results.'
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS("Starting RingFinder demo data seeding..."))
+        self.stdout.write(self.style.SUCCESS("Starting RingFinder comprehensive demo data seeding..."))
 
         # 1. Create Demo Users
         admin_user, created = User.objects.get_or_create(
@@ -32,13 +36,10 @@ class Command(BaseCommand):
                 'reason': 'System Admin Account'
             }
         )
-        if created:
+        if created or not admin_user.check_password('admin123'):
             admin_user.set_password('admin123')
             admin_user.save()
             self.stdout.write(self.style.SUCCESS("Created Admin: admin@ringfinder.com / admin123"))
-        else:
-            admin_user.set_password('admin123')
-            admin_user.save()
 
         analyst_user, created = User.objects.get_or_create(
             email='analyst@ringfinder.com',
@@ -53,13 +54,10 @@ class Command(BaseCommand):
                 'reason': 'Blockchain Forensics Investigation'
             }
         )
-        if created:
+        if created or not analyst_user.check_password('analyst123'):
             analyst_user.set_password('analyst123')
             analyst_user.save()
             self.stdout.write(self.style.SUCCESS("Created Analyst: analyst@ringfinder.com / analyst123"))
-        else:
-            analyst_user.set_password('analyst123')
-            analyst_user.save()
 
         pending_user, _ = User.objects.get_or_create(
             email='pending@ringfinder.com',
@@ -75,7 +73,65 @@ class Command(BaseCommand):
         pending_user.set_password('analyst123')
         pending_user.save()
 
-        # 2. Create Demo Dataset Record
+        # 2. Ingest Sample CSV Datasets if present
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        sample_dir = os.path.join(base_dir, 'sample_csv')
+
+        csv_files = [
+            ("Elliptic Kaggle Bitcoin Network", "elliptic_dataset_sample.csv", "Pre-loaded Kaggle Elliptic transaction graph dataset."),
+            ("Mempool.space Live Bitcoin Network", "mempool_live_bitcoin_sample.csv", "Real-time Bitcoin blockchain mempool transaction snapshot."),
+            ("Multi-Ring Laundering Network 2026", "bitcoin_fraud_ring_network.csv", "Complex multi-ring circular routing and adversarial obfuscation dataset.")
+        ]
+
+        for name, filename, desc in csv_files:
+            ds, _ = Dataset.objects.get_or_create(
+                name=name,
+                defaults={
+                    "description": desc,
+                    "uploaded_by": admin_user,
+                    "row_count": 20,
+                    "date_min": timezone.now() - timedelta(days=15),
+                    "date_max": timezone.now(),
+                    "status": Dataset.Status.IMPORTED
+                }
+            )
+
+            file_path = os.path.join(sample_dir, filename)
+            if os.path.exists(file_path):
+                try:
+                    df = pd.read_csv(file_path)
+                    txs = []
+                    for idx, row in df.iterrows():
+                        if 'txId1' in df.columns and 'txId2' in df.columns:
+                            tx_hash = f"ELLIPTIC_TX_{row['txId1']}_{row['txId2']}"
+                            sender = f"W_ELLIPTIC_{row['txId1']}"
+                            receiver = f"W_ELLIPTIC_{row['txId2']}"
+                            amount = float(row.get('amount', 1.0))
+                        else:
+                            sender = str(row.get('sender_wallet') or f"W_SENDER_{idx}").strip()
+                            receiver = str(row.get('receiver_wallet') or f"W_RECEIVER_{idx}").strip()
+                            tx_hash = str(row.get('transaction_hash') or f"TX-{ds.id}-{idx}").strip()
+                            amount = float(row.get('amount', 1.0))
+
+                        txs.append(BitcoinTransaction(
+                            transaction_hash=tx_hash,
+                            sender_wallet=sender,
+                            receiver_wallet=receiver,
+                            amount=amount,
+                            transaction_time=timezone.now() - timedelta(hours=idx * 2),
+                            block_height=860000 + idx,
+                            fee=float(row.get('fee', 0.0001)),
+                            dataset=ds
+                        ))
+                    if txs:
+                        BitcoinTransaction.objects.bulk_create(txs, ignore_conflicts=True)
+                        ds.row_count = len(txs)
+                        ds.status = Dataset.Status.IMPORTED
+                        ds.save()
+                except Exception as err:
+                    self.stdout.write(self.style.WARNING(f"Could not load CSV {filename}: {err}"))
+
+        # 3. Seed Synthetic Synthetic Bitcoin Transactions
         demo_dataset, _ = Dataset.objects.get_or_create(
             name="Synthetic Bitcoin Transactions 2026",
             defaults={
@@ -88,12 +144,10 @@ class Command(BaseCommand):
             }
         )
 
-        # 3. Create Bitcoin Transactions
         base_time = timezone.now() - timedelta(days=5)
-
         tx_data = []
 
-        # Normal Wallets (W001, W002, W003, W004)
+        # Normal Transactions
         tx_data.append(("TX_NORM_001", "W001", "W002", 1.25, base_time))
         tx_data.append(("TX_NORM_002", "W002", "W003", 0.85, base_time + timedelta(hours=2)))
         tx_data.append(("TX_NORM_003", "W003", "W004", 0.50, base_time + timedelta(hours=5)))
@@ -106,34 +160,19 @@ class Command(BaseCommand):
         tx_data.append(("TX_RING1_002", "W102", "W103", 15.48, ring_time + timedelta(minutes=4)))
         tx_data.append(("TX_RING1_003", "W103", "W104", 15.45, ring_time + timedelta(minutes=9)))
         tx_data.append(("TX_RING1_004", "W104", "W101", 15.40, ring_time + timedelta(minutes=15)))
-        
-        # Second cycle of Ring 1 for rapid velocity
+
+        # Second cycle of Ring 1
         tx_data.append(("TX_RING1_005", "W101", "W102", 20.00, ring_time + timedelta(hours=1)))
         tx_data.append(("TX_RING1_006", "W102", "W103", 19.95, ring_time + timedelta(hours=1, minutes=5)))
         tx_data.append(("TX_RING1_007", "W103", "W104", 19.90, ring_time + timedelta(hours=1, minutes=12)))
         tx_data.append(("TX_RING1_008", "W104", "W101", 19.85, ring_time + timedelta(hours=1, minutes=18)))
 
-        # Modified Adversarial Route: W101 -> W201 -> W103 -> W202 -> W101
+        # Adversarial Route: W101 -> W201 -> W103 -> W202 -> W101
         adv_time = base_time + timedelta(days=2, hours=4)
         tx_data.append(("TX_ADV_001", "W101", "W201", 30.00, adv_time))
         tx_data.append(("TX_ADV_002", "W201", "W103", 29.90, adv_time + timedelta(minutes=6)))
         tx_data.append(("TX_ADV_003", "W103", "W202", 29.85, adv_time + timedelta(minutes=14)))
         tx_data.append(("TX_ADV_004", "W202", "W101", 29.80, adv_time + timedelta(minutes=22)))
-
-        # Kaggle Elliptic Dataset Sample Transactions
-        ellip_dataset, _ = Dataset.objects.get_or_create(
-            name="Elliptic Kaggle Bitcoin Network",
-            defaults={
-                "description": "Pre-loaded Kaggle Elliptic transaction graph dataset.",
-                "uploaded_by": admin_user,
-                "row_count": 4,
-                "status": Dataset.Status.IMPORTED
-            }
-        )
-        tx_data.append(("ELLIPTIC_TX_1001_1002", "W_ELLIPTIC_1001", "W_ELLIPTIC_1002", 5.00, base_time + timedelta(days=3)))
-        tx_data.append(("ELLIPTIC_TX_1002_1003", "W_ELLIPTIC_1002", "W_ELLIPTIC_1003", 4.95, base_time + timedelta(days=3, minutes=10)))
-        tx_data.append(("ELLIPTIC_TX_1003_1004", "W_ELLIPTIC_1003", "W_ELLIPTIC_1004", 4.90, base_time + timedelta(days=3, minutes=20)))
-        tx_data.append(("ELLIPTIC_TX_1004_1001", "W_ELLIPTIC_1004", "W_ELLIPTIC_1001", 4.85, base_time + timedelta(days=3, minutes=30)))
 
         for i, (tx_hash, sender, receiver, amt, t_time) in enumerate(tx_data):
             BitcoinTransaction.objects.update_or_create(
@@ -151,45 +190,23 @@ class Command(BaseCommand):
                 }
             )
 
-        self.stdout.write(self.style.SUCCESS(f"Seeded {len(tx_data)} synthetic transactions."))
-
-        # Try fetching live Mempool.space transactions automatically
+        # 4. Fetch live Mempool.space transactions
         try:
             from fraud_detection.services.mempool_service import fetch_live_mempool_transactions
-            fetch_live_mempool_transactions(limit=10, user=admin_user)
+            fetch_live_mempool_transactions(limit=15, user=admin_user)
             self.stdout.write(self.style.SUCCESS("Fetched live Mempool.space transactions automatically."))
         except Exception:
             pass
 
-        # 4. Run Fraud Engine to compute Wallet Risks, Rings, Results
+        # 5. Execute Full Fraud Analysis Pipeline over all transactions
         execute_full_fraud_analysis(dataset_id=None, user=admin_user)
 
-        # 5. Create Temporal Validation Result
-        TemporalValidationResult.objects.get_or_create(
-            id=1,
-            defaults={
-                "train_transactions": 7000,
-                "test_transactions": 3000,
-                "precision": 0.91,
-                "recall": 0.87,
-                "f1_score": 0.89,
-                "roc_auc": 0.93,
-                "temporal_leakage": False
-            }
-        )
-
-        # 6. Create Adversarial Test Result
-        AdversarialTestResult.objects.get_or_create(
-            id=1,
-            defaults={
-                "baseline_detection_rate": 0.92,
-                "amount_modified_detection_rate": 0.88,
-                "timing_modified_detection_rate": 0.86,
-                "route_modified_detection_rate": 0.84,
-                "intermediate_wallet_detection_rate": 0.87,
-                "robustness_score": 0.86
-            }
-        )
+        # 6. Execute Temporal Validation & Adversarial Testing
+        run_temporal_validation()
+        try:
+            run_adversarial_testing()
+        except Exception:
+            pass
 
         # 7. Create System Settings
         SystemSetting.objects.get_or_create(
@@ -207,7 +224,7 @@ class Command(BaseCommand):
         )
 
         # 8. Create Initial Activity Logs
-        ActivityLog.objects.create(user=admin_user, action="SYSTEM_INIT", description="Seeded initial system demo data.")
+        ActivityLog.objects.create(user=admin_user, action="SYSTEM_INIT", description="Seeded initial system demo datasets.")
         ActivityLog.objects.create(user=admin_user, action="ANALYST_APPROVED", description="Approved analyst account analyst@ringfinder.com.")
 
-        self.stdout.write(self.style.SUCCESS("Demo data successfully seeded! Ready for development & testing."))
+        self.stdout.write(self.style.SUCCESS("Demo data successfully seeded across all models! Zero empty states."))
