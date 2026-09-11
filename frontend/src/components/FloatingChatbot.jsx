@@ -53,14 +53,18 @@ const ChatWidgetInner = () => {
           <div className="rf-chat-prompts">
             {isAdmin ? (
               <>
-                <button onClick={() => sendMessage("What is current system health?")}>System Health?</button>
-                <button onClick={() => sendMessage("What is current model F1 score?")}>Model F1?</button>
+                <button onClick={() => sendMessage("Which wallet has the most incoming transactions this week?")}>Top Wallet Flow?</button>
+                <button onClick={() => sendMessage("Which ring is the largest across the entire system?")}>Largest Ring?</button>
+                <button onClick={() => sendMessage("What is the current model's F1 score?")}>Model F1?</button>
+                <button onClick={() => sendMessage("What is the current system health?")}>System Health?</button>
                 <button onClick={() => sendMessage("Which analyst accounts are pending approval?")}>Pending Approvals?</button>
+                <button onClick={() => sendMessage("Who sent money to wallet 0xA1b2C3 in case #42?")}>Test Analyst Rejection</button>
               </>
             ) : (
               <>
-                <button onClick={() => sendMessage("Which wallet is the ring leader?")}>Leader Wallet?</button>
+                <button onClick={() => sendMessage("Which wallet is the current ring leader?")}>Leader Wallet?</button>
                 <button onClick={() => sendMessage("What common patterns do the top 5 riskiest rings share?")}>Pattern Match?</button>
+                <button onClick={() => sendMessage("Retrain the model with the latest data.")}>Test Admin Rejection</button>
               </>
             )}
           </div>
