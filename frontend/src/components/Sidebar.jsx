@@ -62,6 +62,11 @@ export const Sidebar = ({ role }) => {
       icon: Shield,
     },
     {
+      path: '/analyst/dataset-management',
+      label: 'Dataset Management',
+      icon: Database,
+    },
+    {
       path: '/analyst/results',
       label: 'Final Results',
       icon: Award,

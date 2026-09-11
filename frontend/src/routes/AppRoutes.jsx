@@ -129,6 +129,11 @@ export const AppRoutes = () => {
         />
 
         <Route
+          path="dataset-management"
+          element={<DatasetManagement />}
+        />
+
+        <Route
           path="results"
           element={<Results />}
         />
