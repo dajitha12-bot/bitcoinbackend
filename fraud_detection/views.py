@@ -268,3 +268,13 @@ class LiveMempoolFetchView(APIView):
             return Response(res, status=status.HTTP_200_OK)
         return Response(res, status=status.HTTP_400_BAD_REQUEST)
 
+class ExplainChatbotView(APIView):
+    permission_classes = [IsAdminOrApprovedAnalyst]
+
+    def post(self, request):
+        from fraud_detection.services.explainability_bot import ExplainabilityBotService
+        question = request.data.get('question', '')
+        result = ExplainabilityBotService.process_question(question)
+        return Response(result, status=status.HTTP_200_OK)
+
+

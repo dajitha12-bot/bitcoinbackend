@@ -12,8 +12,9 @@ from fraud_detection.views import (
     AdversarialTestingView,
     ModelPerformanceView,
     ModelPerformanceHistoryView,
-    LiveMempoolFetchView
-    , AnalystDashboardStatsView
+    LiveMempoolFetchView,
+    AnalystDashboardStatsView,
+    ExplainChatbotView
 )
 
 urlpatterns = [
@@ -32,4 +33,5 @@ urlpatterns = [
     path('model-performance/', ModelPerformanceView.as_view(), name='model_performance'),
     path('model-performance/history/', ModelPerformanceHistoryView.as_view(), name='model_performance_history'),
     path('mempool/fetch/', LiveMempoolFetchView.as_view(), name='mempool_fetch'),
+    path('explain-chatbot/', ExplainChatbotView.as_view(), name='explain_chatbot'),
 ]

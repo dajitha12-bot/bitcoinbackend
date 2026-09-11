@@ -1,12 +1,12 @@
 import React, { createContext, useState } from 'react';
 import { chatbotService } from '../services/chatbotService';
 
-export const ChatContext = createContext(null);
+export const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
   const [messages, setMessages] = useState([
     {
-      id: 'welcome',
+      id: 1,
       sender: 'bot',
       type: 'DATA_ANSWER',
       text: 'Hello Analyst. I am your AI Graph Assistant. Ask me about wallet flows, ring leaders, fraud patterns, or what-if scenarios.',
@@ -16,24 +16,27 @@ export const ChatProvider = ({ children }) => {
   const [isTyping, setIsTyping] = useState(false);
 
   const sendMessage = async (queryText) => {
-    const query = queryText.trim();
-    if (!query) return;
+    const userMsg = {
+      id: Date.now(),
+      sender: 'user',
+      text: queryText,
+      timestamp: new Date().toLocaleTimeString()
+    };
 
-    setMessages((previousMessages) => [
-      ...previousMessages,
-      { id: `${Date.now()}-user`, sender: 'user', text: query, timestamp: new Date().toLocaleTimeString() }
-    ]);
+    setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
 
-    try {
-      const response = await chatbotService.answerQuestion(query);
-      setMessages((previousMessages) => [
-        ...previousMessages,
-        { id: `${Date.now()}-bot`, sender: 'bot', ...response, timestamp: new Date().toLocaleTimeString() }
-      ]);
-    } finally {
-      setIsTyping(false);
-    }
+    const response = await chatbotService.answerQuestion(queryText);
+
+    const botMsg = {
+      id: Date.now() + 1,
+      sender: 'bot',
+      ...response,
+      timestamp: new Date().toLocaleTimeString()
+    };
+
+    setMessages(prev => [...prev, botMsg]);
+    setIsTyping(false);
   };
 
   return (

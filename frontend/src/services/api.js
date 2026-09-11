@@ -59,10 +59,39 @@ export const apiCall = async (
 };
 
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+
+export const post = async (endpoint, body) => {
+  const token =
+    localStorage.getItem('access_token') ||
+    localStorage.getItem('accessToken') ||
+    localStorage.getItem('token');
+
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  });
+
+  const data = await response.json();
+  return { status: response.status, data };
+};
+
 /* ============================================================
    DEFAULT EXPORT
    ============================================================ */
 
 export default {
   apiCall,
+  post,
 };
