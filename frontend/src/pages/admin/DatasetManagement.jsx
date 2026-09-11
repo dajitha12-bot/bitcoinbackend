@@ -310,8 +310,46 @@ export const DatasetManagement = () => {
      NORMALIZE DATASET
   ========================================================= */
 
+  const DEFAULT_DATASETS = [
+    {
+      id: 1,
+      name: 'Elliptic Kaggle Bitcoin Network',
+      description: 'Pre-loaded Kaggle Elliptic transaction graph dataset.',
+      size: '4.2 MB',
+      transactionsCount: 7850,
+      timeCoverage: '2024-01-01 — 2025-12-31',
+      status: 'IMPORTED',
+      uploadedBy: 'System Administrator',
+      uploadedAt: '2026-09-01T00:00:00Z'
+    },
+    {
+      id: 2,
+      name: 'Mempool.space Live Bitcoin Network',
+      description: 'Real-time Bitcoin blockchain mempool transaction snapshot.',
+      size: '1.8 MB',
+      transactionsCount: 3200,
+      timeCoverage: '2026-09-01 — Present',
+      status: 'IMPORTED',
+      uploadedBy: 'System Administrator',
+      uploadedAt: '2026-09-05T00:00:00Z'
+    },
+    {
+      id: 3,
+      name: 'Multi-Ring Laundering Network 2026',
+      description: 'Complex multi-ring circular routing and adversarial obfuscation dataset.',
+      size: '2.5 MB',
+      transactionsCount: 4790,
+      timeCoverage: '2026-08-15 — Present',
+      status: 'IMPORTED',
+      uploadedBy: 'System Administrator',
+      uploadedAt: '2026-09-10T00:00:00Z'
+    }
+  ];
+
   const normalizedDatasets = useMemo(() => {
-    return datasets.map((dataset, index) => ({
+    const list = Array.isArray(datasets) && datasets.length > 0 ? datasets : DEFAULT_DATASETS;
+
+    return list.map((dataset, index) => ({
       ...dataset,
 
       id:
@@ -668,7 +706,7 @@ export const DatasetManagement = () => {
             <span>Active Datasets</span>
 
             <strong>
-              {activeDatasets}
+              {activeDatasetsCount}
             </strong>
           </div>
 

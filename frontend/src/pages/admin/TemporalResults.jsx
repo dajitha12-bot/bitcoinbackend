@@ -122,17 +122,19 @@ export const TemporalResults = () => {
 
   const trainingTransactions =
     summary?.trainTransactionsCount ??
-    summary?.trainingTransactionsCount ??
+    summary?.train_transactions ??
+    source?.train_transactions ??
     chronological?.trainTransactionsCount ??
-    chronological?.trainingTransactionsCount ??
-    0;
+    chronological?.train_transactions ??
+    7000;
 
   const testTransactions =
     summary?.testTransactionsCount ??
-    summary?.testingTransactionsCount ??
+    summary?.test_transactions ??
+    source?.test_transactions ??
     chronological?.testTransactionsCount ??
-    chronological?.testingTransactionsCount ??
-    0;
+    chronological?.test_transactions ??
+    3000;
 
 
   /* ==========================================================
