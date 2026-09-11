@@ -6,7 +6,7 @@ import '../styles/floating-chatbot.css';
 const ChatWidgetInner = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const { messages, isTyping, sendMessage } = useContext(ChatContext);
+  const { messages, isTyping, sendMessage, role } = useContext(ChatContext);
 
   const handleSend = (e) => {
     e.preventDefault();
@@ -14,6 +14,8 @@ const ChatWidgetInner = () => {
     sendMessage(input);
     setInput('');
   };
+
+  const isAdmin = role === 'admin';
 
   return (
     <div className="rf-floating-chat-container">
@@ -27,8 +29,12 @@ const ChatWidgetInner = () => {
         <div className="rf-chat-box">
           <div className="rf-chat-header">
             <div>
-              <div className="rf-chat-title">AI Graph Assistant</div>
-              <div className="rf-chat-subtitle">Explainability Engine</div>
+              <div className="rf-chat-title">
+                {isAdmin ? 'AI System Assistant' : 'AI Graph Assistant'}
+              </div>
+              <div className="rf-chat-subtitle">
+                {isAdmin ? 'Admin Operations Engine' : 'Explainability Engine'}
+              </div>
             </div>
             <button className="rf-chat-close-btn" onClick={() => setIsOpen(false)}>✖</button>
           </div>
@@ -37,18 +43,32 @@ const ChatWidgetInner = () => {
             {messages.map(msg => (
               <ChatMessage key={msg.id} message={msg} />
             ))}
-            {isTyping && <div style={{ color: '#00d4ff', fontSize: '0.8rem' }}>AI Assistant is analyzing graph...</div>}
+            {isTyping && (
+              <div style={{ color: '#00d4ff', fontSize: '0.8rem' }}>
+                {isAdmin ? 'AI Operations Engine is executing query...' : 'AI Assistant is analyzing graph...'}
+              </div>
+            )}
           </div>
 
           <div className="rf-chat-prompts">
-            <button onClick={() => sendMessage("Which wallet is the ring leader?")}>Leader Wallet?</button>
-            <button onClick={() => sendMessage("What pattern does this ring match?")}>Pattern Match?</button>
+            {isAdmin ? (
+              <>
+                <button onClick={() => sendMessage("What is current system health?")}>System Health?</button>
+                <button onClick={() => sendMessage("What is current model F1 score?")}>Model F1?</button>
+                <button onClick={() => sendMessage("Which analyst accounts are pending approval?")}>Pending Approvals?</button>
+              </>
+            ) : (
+              <>
+                <button onClick={() => sendMessage("Which wallet is the ring leader?")}>Leader Wallet?</button>
+                <button onClick={() => sendMessage("What common patterns do the top 5 riskiest rings share?")}>Pattern Match?</button>
+              </>
+            )}
           </div>
 
           <form onSubmit={handleSend} className="rf-chat-input-form">
             <input
               type="text"
-              placeholder="Ask about graph topology..."
+              placeholder={isAdmin ? "Ask about model controls, system health..." : "Ask about graph topology..."}
               value={input}
               onChange={e => setInput(e.target.value)}
             />
@@ -60,8 +80,8 @@ const ChatWidgetInner = () => {
   );
 };
 
-export const FloatingChatbot = () => (
-  <ChatProvider>
+export const FloatingChatbot = ({ role = 'analyst' }) => (
+  <ChatProvider role={role}>
     <ChatWidgetInner />
   </ChatProvider>
 );

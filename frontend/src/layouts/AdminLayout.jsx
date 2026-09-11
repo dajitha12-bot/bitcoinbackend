@@ -35,7 +35,7 @@ export const AdminLayout = () => {
           <Outlet />
         </main>
 
-        <FloatingChatbot />
+        <FloatingChatbot role="admin" />
 
       </div>
 

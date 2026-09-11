@@ -5,11 +5,541 @@ const extractWallet = (query, fallback = '0xA1b2C3...99') => {
   return match ? match[1] : fallback;
 };
 
-const localAnswer = (query) => {
+const localAnswer = (query, role = 'analyst') => {
   const q = query.toLowerCase().trim();
+  const isAdmin = role === 'admin';
 
   // ============================================================
-  // 1. 📡 WALLET-FLOW QUESTIONS
+  // 🔐 CROSS-ROLE BEHAVIOUR & REJECTIONS
+  // ============================================================
+
+  // Case 1: Rejection if Admin asks Analyst Case-Level Queries
+  if (isAdmin && (q.includes('case #') || q.includes('my assigned case') || q.includes('file a new case') || (q.includes('who sent money') && q.includes('case')))) {
+    if (q.includes('assigned case')) {
+      return {
+        type: 'REJECTION',
+        text: 'You do not have assigned cases. This is an analyst function.'
+      };
+    }
+    if (q.includes('file a new case')) {
+      return {
+        type: 'REJECTION',
+        text: 'Case filing is an analyst action. Please assign this to an analyst.'
+      };
+    }
+    return {
+      type: 'REJECTION',
+      text: 'Case-level investigation is handled by analysts. Please view case details in the Analyst Management page.'
+    };
+  }
+
+  // Case 2: Rejection if Analyst asks Admin-Only Controls
+  if (!isAdmin && (q.includes('retrain the model') || q.includes('rollback') || q.includes('roll back') || q.includes('deploy model') || q.includes('schedule retraining') || q.includes('approve analyst') || q.includes('reject analyst') || q.includes('disable analyst') || q.includes('set the fraud threshold'))) {
+    return {
+      type: 'REJECTION',
+      text: 'Retraining the model and system management are admin-only actions. Please escalate to your system administrator.'
+    };
+  }
+
+
+  // ============================================================
+  // 👑 ADMIN CHATBOT ENGINE (Categories 1 - 9)
+  // ============================================================
+  if (isAdmin) {
+
+    // --- CATEGORY 1: SYSTEM-WIDE WALLET FLOWS ---
+    if (q.includes('most incoming transactions') || q.includes('most incoming')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Top System Wallet by Incoming Transactions (This Week):',
+        data: ['Wallet 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa — 142 Incoming Transactions (Total Value: 248.50 BTC)'],
+        wallets: ['1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa']
+      };
+    }
+    if (q.includes('top 10 wallets') || q.includes('top 10') || q.includes('transaction volume')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Top 10 System-Wide Wallets by Transaction Volume:',
+        data: [
+          '1. Wallet 1A1zP1...Na — 450.00 BTC (84 txs)',
+          '2. Wallet 3FZbgi...3N — 320.40 BTC (62 txs)',
+          '3. Wallet bc1q88...01 — 210.15 BTC (48 txs)',
+          '4. Wallet 1bc294...02 — 180.50 BTC (39 txs)',
+          '5. Wallet 3J98t1...Ly — 145.80 BTC (31 txs)',
+          '6. Wallet bc1qxy...lh — 120.00 BTC (25 txs)',
+          '7. Wallet 13zb1h...8a — 98.50 BTC (19 txs)',
+          '8. Wallet 3K7mP9...99 — 89.20 BTC (15 txs)',
+          '9. Wallet 1F1tAa...Xq — 85.10 BTC (14 txs)',
+          '10. Wallet bc1q99...00 — 82.50 BTC (12 txs)'
+        ],
+        wallets: ['1A1zP1...Na', '3FZbgi...3N', 'bc1q88...01']
+      };
+    }
+    if (q.includes('flagged in the last 24 hours') || q.includes('flagged in last 24') || q.includes('flagged in 24')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Wallets Flagged in Last 24 Hours:',
+        data: ['Total Flagged: 18 High-Risk Wallets (+12.5% 24h trend)', 'Critical Level: 8 Wallets', 'High Risk Level: 10 Wallets'],
+        wallets: []
+      };
+    }
+    if (q.includes('more than 100 unique') || q.includes('100 unique addresses') || q.includes('unique addresses')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Highly-Connected System Nodes (Unique Counterparties > 100):',
+        data: [
+          'Wallet 1A1zP1eP...Na — 142 Unique Addresses (Hub Node)',
+          'Wallet 3FZbgi29...3N — 118 Unique Addresses (Mixer Hub)',
+          'Wallet bc1q888a...01 — 105 Unique Addresses (Dispersal Node)'
+        ],
+        wallets: ['1A1zP1eP...Na', '3FZbgi29...3N', 'bc1q888a...01']
+      };
+    }
+    if (q.includes('highest transaction activity') || q.includes('country') || q.includes('geo')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Geographic Transaction Volume Breakdown (Top 5):',
+        data: [
+          '1. United States — 38.4% (4,930 Txs)',
+          '2. Germany — 18.2% (2,336 Txs)',
+          '3. Singapore — 14.5% (1,861 Txs)',
+          '4. United Kingdom — 12.1% (1,553 Txs)',
+          '5. Japan — 9.3% (1,194 Txs)'
+        ],
+        wallets: []
+      };
+    }
+
+    // --- CATEGORY 2: SYSTEM-WIDE RING LEADERS ---
+    if (q.includes('largest across the entire system') || q.includes('largest ring')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Largest System Fraud Ring Profile (RING-001):',
+        data: [
+          'Ring ID: RING-001 (18 Member Wallets)',
+          'Total Transferred BTC: 142.50 BTC ($9,262,500 USD)',
+          'Average Node Degree: 6.4 Connections/Wallet',
+          'Graph Topology: Strongly Connected 4-Hop Multi-Cycle'
+        ],
+        wallets: ['RING-001']
+      };
+    }
+    if (q.includes('detected in the last 7 days') || q.includes('last 7 days')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Fraud Rings Detected in Last 7 Days (6 Active Rings):',
+        data: [
+          '1. RING-001 (18 Wallets, Confidence 94.8%)',
+          '2. RING-002 (12 Wallets, Confidence 92.1%)',
+          '3. RING-004 (8 Wallets, Confidence 89.5%)',
+          '4. RING-006 (6 Wallets, Confidence 88.2%)',
+          '5. RING-009 (5 Wallets, Confidence 86.4%)',
+          '6. RING-011 (4 Wallets, Confidence 85.0%)'
+        ],
+        wallets: ['RING-001', 'RING-002', 'RING-004']
+      };
+    }
+    if (q.includes('closed the most fraud cases') || q.includes('analyst has closed')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Analyst Case Resolution Performance Leaderboard:',
+        data: ['Lead Fraud Analyst (analyst@ringfinder.com) — 38 Closed Cases (Avg Resolution Time: 4.2 hours)'],
+        wallets: []
+      };
+    }
+    if (q.includes('total value protected') || q.includes('value protected')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Total Value Protected Across All Active Rings:',
+        data: ['Total BTC Protected: 428.50 BTC', 'Total USD Equivalent: $27,852,500 USD (at $65,000/BTC rate)'],
+        wallets: []
+      };
+    }
+    if (q.includes('highest average fraud score') || q.includes('highest average score')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Highest Risk Monitored Ring:',
+        data: ['Ring RING-001 — Average Member Fraud Score: 95/100 (CRITICAL RISK)'],
+        wallets: ['RING-001']
+      };
+    }
+    if (q.includes('currently active') || q.includes('how many rings')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Live Monitored Fraud Rings Status:',
+        data: ['Currently Active Rings: 14 Monitored Clusters (12 Stable, 2 Accelerating)'],
+        wallets: []
+      };
+    }
+
+    // --- CATEGORY 3: MODEL HEALTH & PERFORMANCE ---
+    if (q.includes("model's f1 score") || q.includes('f1 score') || q.includes('model f1')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Latest Deployed GraphSAGE GNN Model Performance Metrics:',
+        data: [
+          'F1 Score: 0.928',
+          'PR-AUC: 0.945',
+          'Precision: 0.942 (94.2%)',
+          'Recall: 0.915 (91.5%)',
+          'ROC-AUC: 0.954'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('last retrained') || q.includes('when was the model')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Model Retraining Audit Log:',
+        data: ['Last Retrained Timestamp: 2026-09-10 02:00:00 UTC', 'Deployed Model Version: v2.4-GraphSAGE-Prod'],
+        wallets: []
+      };
+    }
+    if (q.includes('retrain the model now') || q.includes('should i retrain')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Model Retraining Assessment Recommendation:',
+        data: [
+          'Recommendation: NO IMMEDIATE RETRAIN NEEDED.',
+          'F1 Score Decay: -0.002 (Minimal degradation)',
+          'Feature Data Drift: 1.4% (Well below 5.0% threshold)'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('f1 trend over the last 30 days') || q.includes('f1 trend')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: '30-Day F1 Score History Across Retrain Cycles:',
+        data: [
+          'Day 1 (v2.1): 0.912',
+          'Day 10 (v2.2): 0.920',
+          'Day 20 (v2.3): 0.925',
+          'Day 30 (v2.4 - Current): 0.928'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('version performs best') || q.includes('model version performs')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Model Architecture Version Comparison:',
+        data: [
+          '1. Version v2.4 (GraphSAGE 3-Hop) — F1: 0.928 [Active Production]',
+          '2. Version v2.3 (GraphSAGE 2-Hop) — F1: 0.914',
+          '3. Version v2.1 (GCN Baseline) — F1: 0.892'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('data drift percentage') || q.includes('data drift')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Feature Store Data Drift Status:',
+        data: ['Current Data Drift: 1.4%', 'Retrain Threshold: 5.0%', 'Status: STABLE / LOW DRIFT'],
+        wallets: []
+      };
+    }
+
+    // --- CATEGORY 4: MODEL CONTROL (ADMIN-ONLY EXECUTION) ---
+    if (q.includes('retrain the model with') || q.includes('retrain the model')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Executing GraphSAGE Model Retraining Job:',
+        data: [
+          'Status: RETRAINING_SUCCESSFUL',
+          'New Model Version: v2.5-GraphSAGE-Prod',
+          'New Model F1 Score: 0.934 (+0.006 improvement)',
+          'Deployment Status: Deployed to Live Pipeline'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('roll back to') || q.includes('rollback')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Executing Model Version Rollback:',
+        data: ['Status: ROLLBACK_SUCCESSFUL', 'Restored Model Version: v2.3-GraphSAGE-Prod', 'Active Deployment: LIVE'],
+        wallets: []
+      };
+    }
+    if (q.includes('deploy model version') || q.includes('deploy model')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Executing Model Deployment:',
+        data: ['Status: DEPLOYED', 'Deployed Model Version: v2.3-Prod', 'Pipeline Status: ACTIVE'],
+        wallets: []
+      };
+    }
+    if (q.includes('schedule retraining') || q.includes('retraining for tonight')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Model Retraining Cron Job Scheduled:',
+        data: ['Schedule Time: 2026-09-12 02:00:00 UTC', 'Job Identifier: SCHED-8842', 'Status: QUEUED'],
+        wallets: []
+      };
+    }
+    if (q.includes('cancel the scheduled retraining') || q.includes('cancel the scheduled')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Cancelling Scheduled Job:',
+        data: ['Job ID SCHED-8842 has been cancelled successfully.'],
+        wallets: []
+      };
+    }
+
+    // --- CATEGORY 5: ADVERSARIAL ATTACK HISTORY ---
+    if (q.includes('attack history') || q.includes('attack history from')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Adversarial Perturbation Attack History (Last 30 Days):',
+        data: [
+          '1. Peel Chain Amount Micro-Splitting (Passed - 87.2% Retained)',
+          '2. Temporal Transfer Delay Injection (Passed - 86.7% Retained)',
+          '3. Intermediary Hop Insertion (Passed - 84.4% Retained)',
+          '4. Scatter-Gather Parallel Routing (Passed - 90.2% Retained)'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('worst f1 drop') || q.includes('worst f1')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Maximum Adversarial Attack Impact:',
+        data: ['Worst Attack Type: Intermediary Hop Insertion', 'F1 Drop: -0.082', 'Retained Robustness Score: 84.4%'],
+        wallets: []
+      };
+    }
+    if (q.includes('defence performed best') || q.includes('defense performed best')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Best Performing Graph Defense Technique:',
+        data: ['Top Defense: GNN Temporal Topological Flow Defense', 'Recovery Rate: 94.2% retained performance'],
+        wallets: []
+      };
+    }
+    if (q.includes('attack success rate over time') || q.includes('attack success rate')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Adversarial Evasion Success Rate History:',
+        data: ['30 Days Ago: 18.5%', '15 Days Ago: 15.2%', 'Present: 13.7% (Decreasing Evasion Rate)'],
+        wallets: []
+      };
+    }
+    if (q.includes('attack type is most common') || q.includes('most common attack')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Ranked Adversarial Attack Frequencies:',
+        data: [
+          '1. Peel Chain Amount Splitting (42% of attempts)',
+          '2. Temporal Delay Injection (31% of attempts)',
+          '3. Intermediary Mixing Hop Insertion (27% of attempts)'
+        ],
+        wallets: []
+      };
+    }
+
+    // --- CATEGORY 6: SYSTEM HEALTH ---
+    if (q.includes('current system health') || q.includes('system health')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'RingFinder System Operational Health Metrics:',
+        data: [
+          'System Status: OPTIMAL / HEALTHY',
+          'CPU Load: 14%',
+          'Memory Usage: 32% (2.4 GB / 8.0 GB)',
+          'API Average Latency: 42ms',
+          'Uptime: 99.98%'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('api response times') || q.includes('response times')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'API Latency Profile (Last Hour):',
+        data: ['Average Latency: 42ms', 'P95 Latency: 58ms', 'Max Latency: 118ms (during dataset ingestion)'],
+        wallets: []
+      };
+    }
+    if (q.includes('most frequently called') || q.includes('frequently called')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Most Frequently Called API Endpoints:',
+        data: [
+          '1. GET /api/fraud/network/ (1,420 calls)',
+          '2. GET /api/transactions/ (980 calls)',
+          '3. POST /api/fraud/analyze/ (340 calls)'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('errors in the last 24 hours') || q.includes('errors in last 24')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Error Log Audit Summary (Last 24 Hours):',
+        data: ['Total HTTP 5xx Errors: 0', 'Unhandled Exceptions: 0', 'Database Deadlocks: 0', 'Status: CLEAN LOGS'],
+        wallets: []
+      };
+    }
+    if (q.includes('current database size') || q.includes('database size')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Database Storage & Growth Metrics:',
+        data: ['Database Size: 380.9 MB', 'Growth Trend: +12.4 MB/week', 'Total Transactions Indexed: 48,250 rows'],
+        wallets: []
+      };
+    }
+
+    // --- CATEGORY 7: USER & ANALYST MANAGEMENT ---
+    if (q.includes('pending approval') || q.includes('analyst accounts are pending')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Pending Analyst Registration Approvals (1 Pending):',
+        data: ['Applicant: pending@ringfinder.com (Applicant Analyst — FinTech Research Institute)'],
+        wallets: []
+      };
+    }
+    if (q.includes('approve analyst account') || q.includes('approve analyst')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Executed Analyst Approval:',
+        data: ['Account status set to APPROVED. Credentials activated.'],
+        wallets: []
+      };
+    }
+    if (q.includes('reject analyst account') || q.includes('reject analyst')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Executed Analyst Rejection:',
+        data: ['Account application status set to REJECTED.'],
+        wallets: []
+      };
+    }
+    if (q.includes('activity of analyst id') || q.includes('activity of analyst')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Analyst Activity Log Profile:',
+        data: [
+          'Logged In: 08:15 AM UTC',
+          'Ran Fraud Analysis Run #14: 08:30 AM UTC',
+          'Exported Compliance Report: 09:12 AM UTC'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('most active this week') || q.includes('analyst has been most active')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Most Active Analyst Leaderboard:',
+        data: ['Lead Fraud Analyst (analyst@ringfinder.com) — 142 System Actions this week'],
+        wallets: []
+      };
+    }
+    if (q.includes('disable analyst account') || q.includes('disable analyst')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Executed Analyst Disable Command:',
+        data: ['Analyst account disabled. Access token revoked.'],
+        wallets: []
+      };
+    }
+
+    // --- CATEGORY 8: ALERTS & THRESHOLDS ---
+    if (q.includes('current fraud threshold') || q.includes('fraud threshold')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Current Risk Scoring Threshold Settings:',
+        data: [
+          'Critical Risk Threshold: 0.80 (80/100)',
+          'High Risk Threshold: 0.60 (60/100)',
+          'Configuration Source: System Settings (global_config)'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('set the fraud threshold') || q.includes('set fraud threshold')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Fraud Threshold Updated:',
+        data: ['Critical Risk Threshold set to 0.85 successfully.'],
+        wallets: []
+      };
+    }
+    if (q.includes('alerts triggered in the last 24 hours') || q.includes('alerts triggered')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: '24-Hour System Alert Log:',
+        data: [
+          '1. High-Volume Cycle Alert (RING-001, Severity: CRITICAL)',
+          '2. Rapid Dispersal Node Flagged (Severity: HIGH)'
+        ],
+        wallets: []
+      };
+    }
+    if (q.includes('alert rule triggers the most') || q.includes('alert rule triggers')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Top Triggered Alert Rule:',
+        data: ['Rule #3: Rapid Transfer Velocity (< 10 minutes transfer interval) — Triggered 42 times'],
+        wallets: []
+      };
+    }
+    if (q.includes('disable alert rule') || q.includes('disable alert')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Alert Rule Status Updated:',
+        data: ['Alert Rule "Rapid-Layering Detection" disabled.'],
+        wallets: []
+      };
+    }
+
+    // --- CATEGORY 9: REPORTING & COMPLIANCE ---
+    if (q.includes('generate a compliance report') || q.includes('compliance report')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Compliance Audit PDF Report Generated:',
+        data: ['Period: Last Month', 'Audit Trail Hash: SHA256-88a91c', 'Status: Ready for PDF Download'],
+        wallets: []
+      };
+    }
+    if (q.includes('export all predictions') || q.includes('export all')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Quarterly Predictions Export Corpus:',
+        data: ['12,840 Records Prepared for CSV Export.'],
+        wallets: []
+      };
+    }
+    if (q.includes('total value protected this year') || q.includes('value protected this year')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Year-To-Date Protected Value Summary:',
+        data: ['Total BTC Protected: 1,420.50 BTC', 'Total USD Value: $92,332,500 USD'],
+        wallets: []
+      };
+    }
+    if (q.includes('generate a report of all high-risk rings') || q.includes('report of all high-risk')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'High-Risk Rings Forensic Audit PDF Generated:',
+        data: ['Contains forensic details for 14 active monitored rings.'],
+        wallets: []
+      };
+    }
+    if (q.includes('send the monthly report') || q.includes('send monthly report')) {
+      return {
+        type: 'DATA_ANSWER',
+        text: 'Dispatching Monthly Compliance Report:',
+        data: ['Monthly Compliance Report emailed to compliance@ringfinder.com.'],
+        wallets: []
+      };
+    }
+  }
+
+
+  // ============================================================
+  // 🕵️ ANALYST CHATBOT ENGINE
   // ============================================================
 
   // Q1: Who sent money to wallet <address>?
@@ -72,11 +602,6 @@ const localAnswer = (query) => {
     };
   }
 
-
-  // ============================================================
-  // 2. 🏆 RING-LEADER QUESTIONS
-  // ============================================================
-
   // Q5: Which wallet is the current ring leader?
   if (q.includes('current ring leader') || q.includes('which wallet is the ring leader') || q.includes('leader wallet') || (q.includes('ring') && q.includes('leader'))) {
     return {
@@ -136,11 +661,6 @@ const localAnswer = (query) => {
       wallets: [targetWallet, 'RING-001', 'RING-004']
     };
   }
-
-
-  // ============================================================
-  // 3. 🕵️ FRAUD-PATTERN QUESTIONS
-  // ============================================================
 
   // Q9: What is the fraud score for wallet <address>?
   if (q.includes('fraud score for wallet') || q.includes('fraud score of wallet') || q.includes('score for wallet')) {
@@ -202,11 +722,6 @@ const localAnswer = (query) => {
     };
   }
 
-
-  // ============================================================
-  // 4. 🔧 WHAT-IF / SIMULATION QUESTIONS
-  // ============================================================
-
   // Q13: If I remove wallet <address>, how does the ring structure change?
   if (q.includes('remove wallet') || q.includes('if i remove') || q.includes('ring structure change')) {
     const targetWallet = extractWallet(query, '0xABC123...');
@@ -224,7 +739,7 @@ const localAnswer = (query) => {
   }
 
   // Q14: What happens to the fraud score of wallet <address> if I blacklist it?
-  if (q.includes('if i blacklist') || q.includes('blacklist') || q.includes('fraud score') && q.includes('blacklist')) {
+  if (q.includes('if i blacklist') || q.includes('blacklist')) {
     const targetWallet = extractWallet(query, '0xDEF456...');
     return {
       type: 'DATA_ANSWER',
@@ -256,27 +771,27 @@ const localAnswer = (query) => {
   }
 
 
-  // ============================================================
   // DEFAULT CLARIFICATION FALLBACK
-  // ============================================================
   return {
     type: 'CLARIFICATION',
-    text: 'Please rephrase your query. I answer questions about wallet flows, ring leaders, fraud patterns, or what-if simulations.'
+    text: isAdmin
+      ? 'Please rephrase your administrative query. I answer questions about system health, model controls, analyst management, alerts, or audit reporting.'
+      : 'Please rephrase your query. I answer questions about wallet flows, ring leaders, fraud patterns, or what-if simulations.'
   };
 };
 
 export const chatbotService = {
-  answerQuestion: async (query) => {
+  answerQuestion: async (query, role = 'analyst') => {
     try {
       if (typeof api.post === 'function') {
-        const response = await api.post('/fraud/explain-chatbot/', { question: query });
+        const response = await api.post('/fraud/explain-chatbot/', { question: query, role });
         if (response.data && response.data.text) return response.data;
       }
     } catch (error) {
       console.log('Django Chatbot endpoint offline, using local graph engine fallback...');
     }
 
-    return localAnswer(query);
+    return localAnswer(query, role);
   }
 };
 
