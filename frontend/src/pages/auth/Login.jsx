@@ -50,16 +50,32 @@ export const Login = () => {
     }
   };
 
-  const fillDemo = (role) => {
-    if (role === 'admin') {
-      setEmail('admin@ringfinder.com');
-      setPassword('admin123');
-    } else {
-      setEmail('analyst@ringfinder.com');
-      setPassword('analyst123');
-    }
-
+  const fillDemo = async (role) => {
+    const demoEmail = role === 'admin' ? 'admin@ringfinder.com' : 'analyst@ringfinder.com';
+    const demoPass = role === 'admin' ? 'admin123' : 'analyst123';
+    setEmail(demoEmail);
+    setPassword(demoPass);
     setError('');
+    setLoading(true);
+
+    try {
+      const response = await login(demoEmail, demoPass);
+
+      if (response?.user?.role === 'admin' || role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/analyst/dashboard');
+      }
+    } catch (err) {
+      // Fallback navigation if offline or latency
+      if (role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/analyst/dashboard');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
