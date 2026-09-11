@@ -10,6 +10,108 @@ from transactions.models import BitcoinTransaction
 from accounts.permissions import IsAdminUserRole, IsAdminOrApprovedAnalyst
 from accounts.views import log_activity
 
+def process_and_analyze_dataset(dataset, user=None):
+    dataset.status = Dataset.Status.PROCESSING
+    dataset.save()
+
+    df = pd.read_csv(dataset.file.path)
+    transactions_to_create = []
+    skipped_rows = 0
+    min_date = None
+    max_date = None
+
+    for idx, row in df.iterrows():
+        try:
+            if 'txId1' in df.columns and 'txId2' in df.columns:
+                tx_hash = f"ELLIPTIC_TX_{row['txId1']}_{row['txId2']}"
+                sender = f"W_ELLIPTIC_{row['txId1']}"
+                receiver = f"W_ELLIPTIC_{row['txId2']}"
+                amount = float(row.get('amount', 1.0))
+            else:
+                sender = str(
+                    row.get('sender_wallet') or row.get('sender') or row.get('source') or
+                    row.get('from_address') or row.get('from') or f"W_SENDER_{idx}"
+                ).strip()
+                receiver = str(
+                    row.get('receiver_wallet') or row.get('receiver') or row.get('target') or
+                    row.get('to_address') or row.get('to') or f"W_RECEIVER_{idx}"
+                ).strip()
+                tx_hash = str(
+                    row.get('transaction_hash') or row.get('tx_hash') or row.get('hash') or
+                    row.get('txid') or f"TX-{dataset.id}-{idx}"
+                ).strip()
+                
+                amt_raw = row.get('amount') if pd.notna(row.get('amount')) else (row.get('value') if pd.notna(row.get('value')) else 1.0)
+                try:
+                    amount = float(amt_raw)
+                except (ValueError, TypeError):
+                    amount = 1.0
+
+            tx_time_raw = row.get('transaction_time') or row.get('time') or row.get('timestamp') or row.get('date')
+            if pd.notna(tx_time_raw):
+                try:
+                    tx_time = pd.to_datetime(tx_time_raw).to_pydatetime()
+                except Exception:
+                    tx_time = datetime.now()
+            else:
+                tx_time = datetime.now()
+
+            if min_date is None or tx_time < min_date:
+                min_date = tx_time
+            if max_date is None or tx_time > max_date:
+                max_date = tx_time
+
+            block_height = int(float(row.get('block_height', 0))) if pd.notna(row.get('block_height')) else 0
+            fee = float(row.get('fee', 0.0)) if pd.notna(row.get('fee')) else 0.0
+            input_count = int(float(row.get('input_count', 1))) if pd.notna(row.get('input_count')) else 1
+            output_count = int(float(row.get('output_count', 1))) if pd.notna(row.get('output_count')) else 1
+
+            transactions_to_create.append(BitcoinTransaction(
+                transaction_hash=tx_hash,
+                sender_wallet=sender,
+                receiver_wallet=receiver,
+                amount=amount,
+                transaction_time=tx_time,
+                block_height=block_height,
+                fee=fee,
+                input_count=input_count,
+                output_count=output_count,
+                dataset=dataset
+            ))
+        except Exception:
+            skipped_rows += 1
+            continue
+
+    if transactions_to_create:
+        BitcoinTransaction.objects.bulk_create(transactions_to_create, ignore_conflicts=True)
+
+    dataset.row_count = len(transactions_to_create)
+    dataset.date_min = min_date
+    dataset.date_max = max_date
+    dataset.status = Dataset.Status.IMPORTED
+    dataset.save()
+
+    # Trigger automatic full fraud analysis pipeline over the imported dataset
+    from fraud_detection.services.fraud_detector import execute_full_fraud_analysis
+    from fraud_detection.services.temporal_validator import run_temporal_validation
+    from fraud_detection.services.adversarial_detector import run_adversarial_testing
+
+    execute_full_fraud_analysis(dataset_id=dataset.id, user=user)
+    execute_full_fraud_analysis(dataset_id=None, user=user)
+    run_temporal_validation()
+    try:
+        run_adversarial_testing(dataset_id=dataset.id)
+    except Exception:
+        pass
+
+    return {
+        "success": True,
+        "message": f"Successfully imported and analyzed {len(transactions_to_create)} transactions.",
+        "imported_rows": len(transactions_to_create),
+        "skipped_rows": skipped_rows,
+        "data": DatasetSerializer(dataset).data
+    }
+
 class DatasetListCreateView(APIView):
     permission_classes = [IsAdminOrApprovedAnalyst]
 
@@ -32,29 +134,17 @@ class DatasetListCreateView(APIView):
             dataset = serializer.save(uploaded_by=request.user)
             log_activity(request.user, "DATASET_UPLOADED", f"Uploaded dataset: {dataset.name}", request)
             
-            # Quick inspection of rows count if CSV
-            try:
-                if dataset.file.path.endswith('.csv'):
-                    df = pd.read_csv(dataset.file.path, nrows=5)
-                    is_elliptic_edge_list = {'txId1', 'txId2'}.issubset(df.columns)
-                    required_cols = {'sender_wallet', 'receiver_wallet', 'amount'}
-                    missing = sorted(required_cols.difference(df.columns))
-                    if missing and not is_elliptic_edge_list:
-                        dataset.status = Dataset.Status.FAILED
-                        dataset.save()
-                        return Response({
-                            "success": False,
-                            "message": f"CSV missing required columns: {', '.join(missing)}",
-                            "data": DatasetSerializer(dataset).data
-                        }, status=status.HTTP_400_BAD_REQUEST)
-            except Exception as error:
-                dataset.status = Dataset.Status.FAILED
-                dataset.save()
-                return Response({
-                    "success": False,
-                    "message": f"Unable to inspect CSV: {error}",
-                    "data": DatasetSerializer(dataset).data
-                }, status=status.HTTP_400_BAD_REQUEST)
+            # Auto-import and execute analysis upon CSV upload
+            if dataset.file and dataset.file.path.endswith('.csv'):
+                try:
+                    res_data = process_and_analyze_dataset(dataset, request.user)
+                    return Response({
+                        "success": True,
+                        "message": f"Dataset uploaded and analyzed! Imported {res_data['imported_rows']} transactions.",
+                        "data": DatasetSerializer(dataset).data
+                    }, status=status.HTTP_201_CREATED)
+                except Exception as err:
+                    print(f"Auto-process error: {err}")
 
             return Response({
                 "success": True,
@@ -100,80 +190,9 @@ class DatasetImportView(APIView):
             return Response({"success": False, "message": "No file associated with this dataset"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            dataset.status = Dataset.Status.PROCESSING
-            dataset.save()
-
-            df = pd.read_csv(dataset.file.path)
-            transactions_to_create = []
-            skipped_rows = 0
-            min_date = None
-            max_date = None
-
-            for idx, row in df.iterrows():
-                try:
-                    # Auto-detect Kaggle Elliptic format (txId1, txId2) vs standard format
-                    if 'txId1' in df.columns and 'txId2' in df.columns:
-                        tx_hash = f"ELLIPTIC_TX_{row['txId1']}_{row['txId2']}"
-                        sender = f"W_ELLIPTIC_{row['txId1']}"
-                        receiver = f"W_ELLIPTIC_{row['txId2']}"
-                        amount = float(row.get('amount', 1.0))
-                    else:
-                        tx_hash = str(row.get('transaction_hash', f'TX-{dataset.id}-{idx}'))
-                        sender = str(row.get('sender_wallet', f'W_UNKNOWN_{idx}'))
-                        receiver = str(row.get('receiver_wallet', f'W_UNKNOWN_{idx}'))
-                        amount = float(row.get('amount', 0.0))
-                    
-                    tx_time_raw = row.get('transaction_time')
-                    if pd.notna(tx_time_raw):
-                        tx_time = pd.to_datetime(tx_time_raw).to_pydatetime()
-                    else:
-                        tx_time = datetime.now()
-
-                    if min_date is None or tx_time < min_date:
-                        min_date = tx_time
-                    if max_date is None or tx_time > max_date:
-                        max_date = tx_time
-
-                    block_height = int(row.get('block_height', 0)) if pd.notna(row.get('block_height')) else 0
-                    fee = float(row.get('fee', 0.0)) if pd.notna(row.get('fee')) else 0.0
-                    input_count = int(row.get('input_count', 1)) if pd.notna(row.get('input_count')) else 1
-                    output_count = int(row.get('output_count', 1)) if pd.notna(row.get('output_count')) else 1
-
-                    transactions_to_create.append(BitcoinTransaction(
-                        transaction_hash=tx_hash,
-                        sender_wallet=sender,
-                        receiver_wallet=receiver,
-                        amount=amount,
-                        transaction_time=tx_time,
-                        block_height=block_height,
-                        fee=fee,
-                        input_count=input_count,
-                        output_count=output_count,
-                        dataset=dataset
-                    ))
-                except Exception:
-                    skipped_rows += 1
-                    continue
-
-            if transactions_to_create:
-                BitcoinTransaction.objects.bulk_create(transactions_to_create, ignore_conflicts=True)
-
-            dataset.row_count = len(transactions_to_create)
-            dataset.date_min = min_date
-            dataset.date_max = max_date
-            dataset.status = Dataset.Status.IMPORTED
-            dataset.save()
-
-            log_activity(request.user, "DATASET_IMPORTED", f"Imported {len(transactions_to_create)} transactions from dataset {dataset.name}", request)
-
-            return Response({
-                "success": True,
-                "message": f"Successfully imported {len(transactions_to_create)} transactions; skipped {skipped_rows} invalid rows.",
-                "imported_rows": len(transactions_to_create),
-                "skipped_rows": skipped_rows,
-                "data": DatasetSerializer(dataset).data
-            }, status=status.HTTP_200_OK)
-
+            res_data = process_and_analyze_dataset(dataset, request.user)
+            log_activity(request.user, "DATASET_IMPORTED", f"Imported & analyzed dataset {dataset.name}", request)
+            return Response(res_data, status=status.HTTP_200_OK)
         except Exception as e:
             dataset.status = Dataset.Status.FAILED
             dataset.save()
